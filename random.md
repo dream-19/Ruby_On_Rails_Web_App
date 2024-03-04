@@ -1,0 +1,3 @@
+- Devise per gestire l'autenticazione https://github.com/heartcombo/devise
+- rolify https://github.com/RolifyCommunity/rolify
+- mysql2 (gemma per mysql2)
