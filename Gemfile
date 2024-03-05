@@ -8,8 +8,6 @@ gem "rails", "~> 7.1.3", ">= 7.1.3.2"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
 
-# Use sqlite3 as the database for Active Record
-gem "sqlite3", "~> 1.4"
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
@@ -43,6 +41,9 @@ gem "bootsnap", require: false
 
 #Devise to manage authentication
 gem 'devise', "~> 4.9.3"
+
+#mysql as a database, with its most recent version
+gem 'mysql2', '~> 0.5'
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"

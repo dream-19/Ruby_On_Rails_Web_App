@@ -1,0 +1,27 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  beginning_time: 2024-03-05 12:37:11
+  beginning_date: 2024-03-05
+  ending_time: 2024-03-05 12:37:11
+  ending_date: 2024-03-05
+  max_participants: 1
+  address: MyString
+  cap: MyString
+  province: MyString
+  state: MyString
+  user: one
+
+two:
+  name: MyString
+  beginning_time: 2024-03-05 12:37:11
+  beginning_date: 2024-03-05
+  ending_time: 2024-03-05 12:37:11
+  ending_date: 2024-03-05
+  max_participants: 1
+  address: MyString
+  cap: MyString
+  province: MyString
+  state: MyString
+  user: two

@@ -20,6 +20,10 @@ test:
   <<: *default
   database: storage/test.sqlite3
 
-production:
-  <<: *default
-  database: storage/production.sqlite3
+development:
+  adapter: mysql2
+  encoding: utf8
+  database: EventManager
+  username: luciaa
+  password: viola1
+  host: localhost
