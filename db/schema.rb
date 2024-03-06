@@ -11,47 +11,49 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 2024_03_05_113723) do
-  create_table "events", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "name"
-    t.time "beginning_time"
-    t.date "beginning_date"
-    t.time "ending_time"
-    t.date "ending_date"
-    t.integer "max_participants"
-    t.string "address"
-    t.string "cap"
-    t.string "province"
-    t.string "state"
+  create_table "events", charset: "utf8mb3", force: :cascade do |t|
+    t.string "name", null: false
+    t.time "beginning_time", null: false
+    t.date "beginning_date", null: false
+    t.time "ending_time", null: false
+    t.date "ending_date", null: false
+    t.integer "max_participants", null: false
+    t.string "address", null: false
+    t.string "cap", null: false
+    t.string "province", null: false
+    t.string "state", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
-  create_table "subscriptions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "subscriptions", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "event_id", null: false
-    t.time "subscription_time"
-    t.date "subscription_date"
+    t.time "subscription_time", null: false
+    t.date "subscription_date", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["event_id"], name: "index_subscriptions_on_event_id"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
-  create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "name"
-    t.string "surname"
-    t.string "email"
+  create_table "users", charset: "utf8mb3", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "surname", null: false
+    t.string "role", default: "normal", null: false
+    t.string "email", null: false
     t.string "phone"
-    t.date "date_of_birth"
-    t.string "address"
-    t.string "cap"
-    t.string "province"
-    t.string "state"
-    t.string "password"
+    t.date "date_of_birth", null: false
+    t.string "address", null: false
+    t.string "cap", null: false
+    t.string "province", null: false
+    t.string "state", null: false
+    t.string "password", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "events", "users"
