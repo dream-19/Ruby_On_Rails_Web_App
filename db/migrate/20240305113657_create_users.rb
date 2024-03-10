@@ -11,7 +11,6 @@ class CreateUsers < ActiveRecord::Migration[7.1]
       t.string :cap, null:false
       t.string :province, null:false
       t.string :state, null:false
-      t.string :password, null:false
 
       t.timestamps
     end
