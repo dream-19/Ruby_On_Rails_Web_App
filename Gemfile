@@ -74,3 +74,5 @@ end
 # bundle update
 
 
+gem "bootstrap"
+gem "sassc-rails"
