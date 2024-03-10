@@ -49,6 +49,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_06_152202) do
     t.string "address", null: false
     t.string "cap", null: false
     t.string "province", null: false
+    t.string "city", null: false
     t.string "state", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

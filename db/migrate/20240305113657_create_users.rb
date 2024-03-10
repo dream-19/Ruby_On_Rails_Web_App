@@ -10,6 +10,7 @@ class CreateUsers < ActiveRecord::Migration[7.1]
       t.string :address, null:false
       t.string :cap, null:false
       t.string :province, null:false
+      t.string :city, null:false
       t.string :state, null:false
 
       t.timestamps
