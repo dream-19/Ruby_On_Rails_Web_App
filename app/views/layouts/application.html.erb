@@ -17,30 +17,47 @@
     <!-- Navbar present in every page -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="<%= root_path %>">EventManager</a>
+      <a class="navbar-brand" href="<%= root_path %>"><strong>EventManager</strong></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
+          <!-- USER SIGNED IN-->
           <% if user_signed_in? %>
             <li class="nav-item">
-              
-              <a class="nav-link" href="#"><i class="bi bi-person-circle"></i>
-              <%= current_user.role %>: 
-               <%= current_user.email %></a>
+              <a class="nav-link">
+                <i class="bi bi-person-circle"></i>
+                <%= current_user.role %>: 
+              </a>
             </li>
-            <li class="nav-item">
-              <%= link_to edit_user_registration_path, class: 'nav-link' do %>
-                <i class="bi bi-pencil-square"></i> Edit Profile
-              <% end %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                
+                <%= current_user.email %></a>
+              </a>
+              <ul class="dropdown-menu text-center" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">
+                      <%= link_to edit_user_registration_path, class: 'nav-link' do %>
+                        <i class="bi bi-pencil-square"></i> Edit Profile
+                      <% end %>
+                    </a>
+                </li>
+                <li><a class="dropdown-item" href="#">ELENCO REGISTRAZIONI</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <a class="dropdown-item"> 
+                    <!-- link to sign out the user -->
+                    <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: 'btn btn-outline-danger', form: { class: 'd-inline' } %>
+                  </a>
+                </li>
+              </ul>
             </li>
-            <li class="nav-item">
-              <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: 'btn btn-outline-danger', form: { class: 'd-inline' } %>
-            </li>
+           
+            <!-- NEW USER -->
           <% else %>
             <li class="nav-item">
-              <%= button_to "Sign in", new_user_session_path, class: 'btn btn-outline-primary' %>
+              <%= link_to "Sign in", new_user_session_path, class: 'btn btn-outline-primary' %>
             </li>
             <li class="nav-item">
               <%= link_to "Sign up", new_user_registration_path, class: 'btn btn-primary ms-2' %>
@@ -51,11 +68,19 @@
     </div>
   </nav>
 
+
     <% if notice %>
-      <p class="alert alert-success"><%= notice %></p>
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+      <%= notice %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     <% end %>
+
     <% if alert %>
-      <p class="alert alert-danger"><%= alert %></p>
+      <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        <%= alert %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
     <% end %>
 
     

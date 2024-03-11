@@ -7,11 +7,11 @@ class CreateUsers < ActiveRecord::Migration[7.1]
       t.string :email, null:false
       t.string :phone, null:true
       t.date :date_of_birth, null:false
-      t.string :address, null:false
-      t.string :cap, null:false
-      t.string :province, null:false
-      t.string :city, null:false
-      t.string :state, null:false
+      t.string :address, null:true
+      t.string :cap, null:true
+      t.string :province, null:true
+      t.string :city, null:true
+      t.string :state, null:true
 
       t.timestamps
     end

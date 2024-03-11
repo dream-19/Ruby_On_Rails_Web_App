@@ -5,7 +5,7 @@ class User < ApplicationRecord
   :recoverable, :rememberable, :validatable
  
   #Validation of the model
-  validates :name, :surname, :role, :email, :date_of_birth, :address, :cap, :province, :city, :state, presence: true
+  validates :name, :surname, :role, :email, :date_of_birth, presence: true
   validates :date_of_birth, format: { with: /\A\d{4}-\d{2}-\d{2}\z/, message: "must be in the format YYYY-MM-DD" }
   validates :email, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email address" }
 

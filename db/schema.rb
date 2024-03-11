@@ -46,11 +46,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_06_152202) do
     t.string "email", null: false
     t.string "phone"
     t.date "date_of_birth", null: false
-    t.string "address", null: false
-    t.string "cap", null: false
-    t.string "province", null: false
-    t.string "city", null: false
-    t.string "state", null: false
+    t.string "address"
+    t.string "cap"
+    t.string "province"
+    t.string "city"
+    t.string "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "encrypted_password", default: "", null: false
