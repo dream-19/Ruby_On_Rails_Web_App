@@ -1,0 +1,118 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-lg p-4">
+        <h2 class="text-center mb-4">Sign up as an User</h2>
+
+         <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "form-horizontal" }) do |f| %>
+          
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <%= f.label :name, "Name *", class: "form-label" %>
+              <%= f.text_field :name, autofocus: true, class: "form-control" %>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+              <%= f.label :surname, "Surname *", class: "form-label" %>
+              <%= f.text_field :surname, class: "form-control" %>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <%= f.label :date_of_birth, "Date of Birth *", class: "form-label" %>
+              <%= f.date_field :date_of_birth, class: "form-control" %>
+            </div>
+
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :email, "Email *", class: "form-label" %>
+            <%= f.email_field :email, autocomplete: "email", class: "form-control" %>
+          </div>
+
+        <%= f.hidden_field :type, value: 'NormalUser' %>
+ 
+
+          <div class="mb-3">
+            <%= f.label :phone, "Phone", class: "form-label" %>
+            <%= f.text_field :phone, class: "form-control" %>
+          </div>
+          
+
+          <div class="mb-3">
+            <%= f.label :address, class: "form-label" %>
+            <%= f.text_field :address, class: "form-control" %>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <%= f.label :cap, class: "form-label" %>
+              <%= f.text_field :cap, class: "form-control" %>
+            </div>
+
+            <div class="col-md-3 mb-3">
+              <%= f.label :city, class: "form-label" %>
+              <%= f.text_field :city, class: "form-control" %>
+            </div>
+
+            <div class="col-md-3 mb-3">
+              <%= f.label :province, class: "form-label" %>
+              <%= f.text_field :province, class: "form-control" %>
+            </div>
+
+            <div class="col-md-3 mb-3">
+              <%= f.label :state, class: "form-label" %>
+              <%= f.text_field :state, class: "form-control" %>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <%= f.label :password, "Password *", class: "form-label" %>
+              <% if @minimum_password_length %>
+                <em>(<%= @minimum_password_length %> characters minimum)</em><br />
+              <% end %>
+              <div class="input-group">
+                <%= f.password_field :password, id: "password", autocomplete: "new-password", class: "form-control" %>
+                <span class="input-group-text toggle-password-icon" toggle="#password"><i class="bi bi-eye-slash-fill"></i></span>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <%= f.label :password_confirmation, "Confirm Password *", class: "form-label" %>
+              <div class="input-group">
+                <%= f.password_field :password_confirmation, id: "password-confirmation", autocomplete: "new-password", class: "form-control" %>
+                <span class="input-group-text toggle-password-icon" toggle="#password-confirmation"><i class="bi bi-eye-slash-fill"></i></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <!-- Display error messages in alert -->
+            <% if resource.errors.any? %>
+              <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Please fix the following <%= pluralize(resource.errors.count, "error") %>:</h4>
+                <ul>
+                  <% resource.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+          </div>
+
+          <div class="actions d-grid gap-2">
+            <%= f.submit "Sign up", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+
+        <div class="mt-4 text-center">
+          <%= render "devise/shared/links" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

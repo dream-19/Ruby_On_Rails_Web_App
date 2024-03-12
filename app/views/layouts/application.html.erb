@@ -28,7 +28,7 @@
             <li class="nav-item">
               <a class="nav-link">
                 <i class="bi bi-person-circle"></i>
-                <%= current_user.role %>: 
+                <%= current_user.type %>: 
               </a>
             </li>
             <li class="nav-item dropdown">
@@ -60,7 +60,9 @@
               <%= link_to "Sign in", new_user_session_path, class: 'btn btn-outline-primary' %>
             </li>
             <li class="nav-item">
-              <%= link_to "Sign up", new_user_registration_path, class: 'btn btn-primary ms-2' %>
+              <!-- <%= link_to "Sign up", new_user_registration_path, class: 'btn btn-primary ms-2' %> -->
+              <%= link_to 'Sign Up as User', new_user_registration_path(user_type: 'NormalUser') %>
+              <%= link_to 'Sign Up as Organizer', new_user_registration_path(user_type: 'UserOrganizer') %>
             </li>
           <% end %>
         </ul>
