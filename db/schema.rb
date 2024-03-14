@@ -41,11 +41,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_06_152202) do
 
   create_table "users", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
-    t.string "surname", null: false
-    t.string "role", default: "normal", null: false
+    t.string "surname"
+    t.string "type", null: false
     t.string "email", null: false
     t.string "phone"
-    t.date "date_of_birth", null: false
+    t.date "date_of_birth"
     t.string "address"
     t.string "cap"
     t.string "province"

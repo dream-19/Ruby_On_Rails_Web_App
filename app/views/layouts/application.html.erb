@@ -9,6 +9,7 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"> 
 
   </head>
@@ -28,7 +29,7 @@
             <li class="nav-item">
               <a class="nav-link">
                 <i class="bi bi-person-circle"></i>
-                <%= current_user.role %>: 
+                <%= current_user.type %>: 
               </a>
             </li>
             <li class="nav-item dropdown">
@@ -60,8 +61,12 @@
               <%= link_to "Sign in", new_user_session_path, class: 'btn btn-outline-primary' %>
             </li>
             <li class="nav-item">
-              <%= link_to "Sign up", new_user_registration_path, class: 'btn btn-primary ms-2' %>
+              <%= link_to 'Sign Up as User', new_user_registration_path(user_type: 'UserNormal'), class: 'btn btn-primary ms-2' %>
             </li>
+            <li>
+              <%= link_to 'Sign Up as Organizer', '#', id: 'organizerLink', class: 'btn btn-primary ms-2' %>
+            </li>
+            
           <% end %>
         </ul>
       </div>
@@ -83,7 +88,23 @@
       </div>
     <% end %>
 
-    
+    <!-- Modal -->
+    <div class="modal fade" id="organizerModal" tabindex="-1" aria-labelledby="organizerModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="organizerModalLabel">Sign Up as Organizer</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>How would you like to sign up?</p>
+            <%= link_to 'Sign Up as User', new_user_registration_path(user_type: 'UserOrganizer'), class: 'btn btn-primary ms-2' %>
+            <%= link_to 'Sign Up as User', new_user_registration_path(user_type: 'CompanyOrganizer'), class: 'btn btn-primary ms-2' %>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <%= yield %>
   </body>
 </html>
