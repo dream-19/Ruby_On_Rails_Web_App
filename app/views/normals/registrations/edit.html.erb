@@ -2,89 +2,92 @@
   <div class="row justify-content-center">
     <div class="col-lg-8">
       <div class="card shadow-lg p-4">
-        <h2 class="text-center mb-4">Sign up as an User</h2>
+        <h2 class="text-center mb-4">Edit <%= resource_name.to_s.humanize %> (user account)</h2>
 
-         <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "form-horizontal" }) do |f| %>
-          
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "form-horizontal" }) do |f| %>
 
           <div class="row">
             <div class="col-md-4 mb-3">
               <%= f.label :name, "Name *", class: "form-label" %>
               <%= f.text_field :name, autofocus: true, class: "form-control" %>
             </div>
-            
+
             <div class="col-md-4 mb-3">
               <%= f.label :surname, "Surname *", class: "form-label" %>
               <%= f.text_field :surname, class: "form-control" %>
             </div>
 
-            <div class="col-md-4 mb-3">
+             <div class="col-md-4 mb-3">
               <%= f.label :date_of_birth, "Date of Birth *", class: "form-label" %>
               <%= f.date_field :date_of_birth, class: "form-control" %>
             </div>
-
           </div>
 
           <div class="mb-3">
             <%= f.label :email, "Email *", class: "form-label" %>
-            <%= f.email_field :email, autocomplete: "email", class: "form-control" %>
+            <%= f.email_field :email, class: "form-control" %>
           </div>
-
-        <%= f.hidden_field :type, value: 'NormalUser' %>
- 
 
           <div class="mb-3">
             <%= f.label :phone, "Phone", class: "form-label" %>
             <%= f.text_field :phone, class: "form-control" %>
           </div>
-          
+
+         
 
           <div class="mb-3">
-            <%= f.label :address, class: "form-label" %>
+            <%= f.label :address, "Address", class: "form-label" %>
             <%= f.text_field :address, class: "form-control" %>
           </div>
 
           <div class="row">
             <div class="col-md-3 mb-3">
-              <%= f.label :cap, class: "form-label" %>
+              <%= f.label :cap, "CAP", class: "form-label" %>
               <%= f.text_field :cap, class: "form-control" %>
             </div>
 
             <div class="col-md-3 mb-3">
-              <%= f.label :city, class: "form-label" %>
+              <%= f.label :city, "City", class: "form-label" %>
               <%= f.text_field :city, class: "form-control" %>
             </div>
 
             <div class="col-md-3 mb-3">
-              <%= f.label :province, class: "form-label" %>
+              <%= f.label :province, "Province", class: "form-label" %>
               <%= f.text_field :province, class: "form-control" %>
             </div>
 
             <div class="col-md-3 mb-3">
-              <%= f.label :state, class: "form-label" %>
+              <%= f.label :state, "State", class: "form-label" %>
               <%= f.text_field :state, class: "form-control" %>
             </div>
-
           </div>
 
           <div class="row">
             <div class="col-md-6 mb-3">
-              <%= f.label :password, "Password *", class: "form-label" %>
+              <%= f.label :password, "New Password", class: "form-label" %>
               <% if @minimum_password_length %>
                 <em>(<%= @minimum_password_length %> characters minimum)</em><br />
               <% end %>
               <div class="input-group">
-                <%= f.password_field :password, id: "password", autocomplete: "new-password", class: "form-control" %>
-                <span class="input-group-text toggle-password-icon" toggle="#password"><i class="bi bi-eye-slash-fill"></i></span>
+                <%= f.password_field :password, id: "password-edit", autocomplete: "new-password", class: "form-control" %>
+                <span class="input-group-text toggle-password-icon" toggle="#password-edit"><i class="bi bi-eye-slash-fill"></i></span>
               </div>
             </div>
 
             <div class="col-md-6 mb-3">
-              <%= f.label :password_confirmation, "Confirm Password *", class: "form-label" %>
+              <%= f.label :password_confirmation, "Confirm New Password", class: "form-label" %>
               <div class="input-group">
-                <%= f.password_field :password_confirmation, id: "password-confirmation", autocomplete: "new-password", class: "form-control" %>
-                <span class="input-group-text toggle-password-icon" toggle="#password-confirmation"><i class="bi bi-eye-slash-fill"></i></span>
+                <%= f.password_field :password_confirmation, id: "password-edit-confirmation", autocomplete: "new-password", class: "form-control" %>
+                <span class="input-group-text toggle-password-icon" toggle="#password-edit-confirmation"><i class="bi bi-eye-slash-fill"></i></span>
               </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :current_password, "Current Password * <i>(we need your current password to confirm your changes)</i>".html_safe, class: "form-label" %>
+            <div class="input-group">
+              <%= f.password_field :current_password, id: "current-password", autocomplete: "current-password", class: "form-control" %>
+              <span class="input-group-text toggle-password-icon" toggle="#current-password"><i class="bi bi-eye-slash-fill"></i></span>
             </div>
           </div>
 
@@ -100,27 +103,21 @@
                 </ul>
               </div>
             <% end %>
-      <% if flash[:errors].present? %>
-        <div class="alert alert-danger" role="alert">
-          <h4 class="alert-heading">Please fix the following errors:</h4>
-          <ul>
-            <% flash[:errors].each do |error| %>
-              <li><%= error %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
-
-
           </div>
 
           <div class="actions d-grid gap-2">
-            <%= f.submit "Sign up", class: "btn btn-primary" %>
+            <%= f.submit "Update", class: "btn btn-primary" %>
           </div>
         <% end %>
 
         <div class="mt-4 text-center">
-          <%= render "devise/shared/links" %>
+          <h3>Cancel my account</h3>
+          <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %>
+        </div>
+
+        <hr/>
+        <div class="col-md-3 mb-3">
+          <%= link_to "Back", :back, class: "btn btn-secondary" %>
         </div>
       </div>
     </div>
