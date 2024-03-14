@@ -5,8 +5,6 @@ import "controllers"
 import "popper"
 import "bootstrap"
 
-
-
 document.addEventListener("turbo:load", () => {
 
     // Toggle password visibility
@@ -32,9 +30,10 @@ document.addEventListener("turbo:load", () => {
     // Manage modal
     // Handle click on "Sign Up as Organizer" link
     document.getElementById("organizerLink").addEventListener("click", function() {
-      console.log($)
+  
       console.log("ciao");
-      $('#organizerModal').modal('show');
+      var myModal = new bootstrap.Modal(document.getElementById('organizerModal'), {});
+      myModal.show();
     });
 
   });

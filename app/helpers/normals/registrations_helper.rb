@@ -1,0 +1,2 @@
+module Normals::RegistrationsHelper
+end
