@@ -2,35 +2,91 @@
   <div class="mb-3">
     <%= f.label :name, "Company Name *", class: "form-label" %>
     <%= f.text_field :name, autofocus: true, class: "form-control" %>
+    <% if resource.errors[:name].present? %>
+      <div class="invalid-feedback" style="display:block;">
+        <% resource.errors.full_messages_for(:name).each do |message| %>
+          <%= message %><br/>
+        <% end %>
+      </div>
+    <% end %>
   </div>
   <div class="mb-3">
     <%= f.label :email, "Email *", class: "form-label" %>
     <%= f.email_field :email, class: "form-control" %>
+    <% if resource.errors[:email].present? %>
+      <div class="invalid-feedback" style="display:block;">
+        <% resource.errors.full_messages_for(:email).each do |message| %>
+          <%= message %><br/>
+        <% end %>
+      </div>
+    <% end %>
   </div>
   <div class="mb-3">
     <%= f.label :phone, "Phone *", class: "form-label" %>
     <%= f.text_field :phone, class: "form-control" %>
+    <% if resource.errors[:phone].present? %>
+      <div class="invalid-feedback" style="display:block;">
+        <% resource.errors.full_messages_for(:phone).each do |message| %>
+          <%= message %><br/>
+        <% end %>
+      </div>
+    <% end %>
   </div>
   <div class="mb-3">
     <%= f.label :address, "Address", class: "form-label" %>
     <%= f.text_field :address, class: "form-control" %>
+     <% if resource.errors[:address].present? %>
+      <div class="invalid-feedback" style="display:block;">
+        <% resource.errors.full_messages_for(:address).each do |message| %>
+          <%= message %><br/>
+        <% end %>
+      </div>
+    <% end %>
   </div>
   <div class="row">
     <div class="col-md-3 mb-3">
       <%= f.label :cap, "CAP", class: "form-label" %>
       <%= f.text_field :cap, class: "form-control" %>
+      <% if resource.errors[:cap].present? %>
+        <div class="invalid-feedback" style="display:block;">
+          <% resource.errors.full_messages_for(:cap).each do |message| %>
+            <%= message %><br/>
+          <% end %>
+        </div>
+      <% end %>
     </div>
     <div class="col-md-3 mb-3">
       <%= f.label :city, "City", class: "form-label" %>
       <%= f.text_field :city, class: "form-control" %>
+      <% if resource.errors[:city].present? %>
+        <div class="invalid-feedback" style="display:block;">
+          <% resource.errors.full_messages_for(:city).each do |message| %>
+            <%= message %><br/>
+          <% end %>
+        </div>
+      <% end %>
     </div>
     <div class="col-md-3 mb-3">
       <%= f.label :province, "Province", class: "form-label" %>
       <%= f.text_field :province, class: "form-control" %>
+      <% if resource.errors[:province].present? %>
+        <div class="invalid-feedback" style="display:block;">
+          <% resource.errors.full_messages_for(:province).each do |message| %>
+            <%= message %><br/>
+          <% end %>
+        </div>
+      <% end %>
     </div>
     <div class="col-md-3 mb-3">
       <%= f.label :state, "State", class: "form-label" %>
       <%= f.text_field :state, class: "form-control" %>
+      <% if resource.errors[:state].present? %>
+        <div class="invalid-feedback" style="display:block;">
+          <% resource.errors.full_messages_for(:state).each do |message| %>
+            <%= message %><br/>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
   <div class="row">
@@ -43,6 +99,13 @@
         <%= f.password_field :password, id: "password-edit", autocomplete: "new-password", class: "form-control" %>
         <span class="input-group-text toggle-password-icon" toggle="#password-edit"><i class="bi bi-eye-slash-fill"></i></span>
       </div>
+      <% if resource.errors[:password].present? %>
+        <div class="invalid-feedback" style="display:block;">
+          <% resource.errors.full_messages_for(:password).each do |message| %>
+            <%= message %><br/>
+          <% end %>
+        </div>
+      <% end %>
     </div>
     <div class="col-md-6 mb-3">
       <%= f.label :password_confirmation, "Confirm New Password", class: "form-label" %>
@@ -50,6 +113,13 @@
         <%= f.password_field :password_confirmation, id: "password-edit-confirmation", autocomplete: "new-password", class: "form-control" %>
         <span class="input-group-text toggle-password-icon" toggle="#password-edit-confirmation"><i class="bi bi-eye-slash-fill"></i></span>
       </div>
+      <% if resource.errors[:password_confirmation].present? %>
+        <div class="invalid-feedback" style="display:block;">
+          <% resource.errors.full_messages_for(:password_confirmation).each do |message| %>
+            <%= message %><br/>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
   <div class="mb-3">
@@ -58,20 +128,20 @@
       <%= f.password_field :current_password, id: "current-password", autocomplete: "current-password", class: "form-control" %>
       <span class="input-group-text toggle-password-icon" toggle="#current-password"><i class="bi bi-eye-slash-fill"></i></span>
     </div>
-  </div>
-  <div class="mb-3">
-    <!-- Display error messages in alert -->
-    <% if resource.errors.any? %>
-      <div class="alert alert-danger" role="alert">
-        <h4 class="alert-heading">Please fix the following <%= pluralize(resource.errors.count, "error") %>:</h4>
-        <ul>
-          <% resource.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
+    <% if resource.errors[:current_password].present? %>
+        <div class="invalid-feedback" style="display:block;">
+          <% resource.errors.full_messages_for(:current_password).each do |message| %>
+            <%= message %><br/>
           <% end %>
-        </ul>
-      </div>
-    <% end %>
+        </div>
+      <% end %>
   </div>
+  <!-- Display error messages in alert -->
+  <% if resource.errors.any? %>
+    <div class="alert alert-danger" role="alert">
+      <p><strong><%= pluralize(resource.errors.count, "error") %></strong> prohibited this user from being saved</p>
+    </div>
+  <% end %>
   <div class="actions d-grid gap-2">
     <%= f.submit "Update", class: "btn btn-primary" %>
   </div>
