@@ -5,57 +5,49 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-
-
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"> 
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   </head>
-
   <body>
     <!-- Navbar present in every page -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="<%= root_path %>"><strong>EventManager</strong></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <!-- USER SIGNED IN-->
-          <% if user_signed_in? %>
-            <li class="nav-item">
-              <a class="nav-link">
-                <i class="bi bi-person-circle"></i>
-                <%= current_user.type %>: 
+      <div class="container-fluid">
+        <a class="navbar-brand" href="<%= root_path %>"><strong>EventManager</strong></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <!-- USER SIGNED IN-->
+            <% if user_signed_in? %>
+              <li class="nav-item">
+                <a class="nav-link">
+                  <i class="bi bi-person-circle"></i>
+                  <%= current_user.type %>: 
+                </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <%= current_user.email %></a>
               </a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                
-                <%= current_user.email %></a>
-              </a>
-              <ul class="dropdown-menu text-center" aria-labelledby="navbarDropdown">
+              <ul class="dropdown-menu dropdown-menu-end text-center" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="#">
-                      <%= link_to edit_user_registration_path, class: 'nav-link' do %>
-                        <i class="bi bi-pencil-square"></i> Edit Profile
-                      <% end %>
-                    </a>
+                    <%= link_to edit_user_registration_path, class: 'nav-link' do %>
+                      <i class="bi bi-pencil-square"></i> Edit Profile
+                    <% end %>
+                  </a>
                 </li>
                 <li><a class="dropdown-item" href="#">ELENCO REGISTRAZIONI</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
-                  <a class="dropdown-item"> 
+                  <a class="dropdown-item">
                     <!-- link to sign out the user -->
                     <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: 'btn btn-outline-danger', form: { class: 'd-inline' } %>
                   </a>
                 </li>
               </ul>
             </li>
-           
             <!-- NEW USER -->
           <% else %>
             <li class="nav-item">
@@ -66,47 +58,26 @@
             </li>
             <li>
               <%= link_to 'Sign Up as Organizer', 'javascript:void(0);', class: 'btn btn-primary ms-2', 'data-bs-toggle': 'modal', 'data-bs-target': '#organizerModal' %>
-
+              <!-- Render the partial with the modal '_register_modal' in views>modals -->
+              <%= render 'modals/register_modal' %>
             </li>
-            
           <% end %>
         </ul>
       </div>
     </div>
   </nav>
-
-
-    <% if notice %>
+  <% if notice %>
     <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
       <%= notice %>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    <% end %>
-
-    <% if alert %>
-      <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-        <%= alert %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    <% end %>
-
-    <!-- Modal -->
-    <div class="modal fade" id="organizerModal" tabindex="-1" aria-labelledby="organizerModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="organizerModalLabel">Sign Up as Organizer</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body text-center">
-            <p>How would you like to sign up? Are you an user or a company?</p>
-            <%= link_to 'User', new_user_registration_path(user_type: UserRoles::USER_ORGANIZER), class: 'btn btn-primary ms-2' %>
-            <%= link_to 'Company', new_user_registration_path(user_type: UserRoles::COMPANY_ORGANIZER), class: 'btn btn-primary ms-2' %>
-          </div>
-        </div>
-      </div>
+  <% end %>
+  <% if alert %>
+    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+      <%= alert %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-
-    <%= yield %>
-  </body>
+  <% end %>
+  <%= yield %>
+</body>
 </html>

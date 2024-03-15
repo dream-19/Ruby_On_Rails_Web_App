@@ -1,0 +1,16 @@
+ <!-- Modal -->
+<div class="modal fade" id="organizerModal" tabindex="-1" aria-labelledby="organizerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="organizerModalLabel">Sign Up as Organizer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+        <p> How would you like to sign up? Are you an user or a company?</p>
+        <%= link_to 'User', new_user_registration_path(user_type: UserRoles::USER_ORGANIZER), class: 'btn btn-primary ms-2' %>
+        <%= link_to 'Company', new_user_registration_path(user_type: UserRoles::COMPANY_ORGANIZER), class: 'btn btn-primary ms-2' %>
+        </div>
+    </div>
+    </div>
+</div>
