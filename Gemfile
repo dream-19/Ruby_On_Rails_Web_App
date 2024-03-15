@@ -77,7 +77,3 @@ end
 gem "bootstrap"
 gem "sassc-rails"
 gem 'htmlbeautifier'
-<<<<<<< HEAD
-gem 'jquery-rails'
-=======
->>>>>>> origin/main

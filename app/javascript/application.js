@@ -27,14 +27,5 @@ document.addEventListener("turbo:load", () => {
       });
     });
 
-    // Manage modal
-    // Handle click on "Sign Up as Organizer" link
-    document.getElementById("organizerLink").addEventListener("click", function() {
-  
-      console.log("ciao");
-      var myModal = new bootstrap.Modal(document.getElementById('organizerModal'), {});
-      myModal.show();
-    });
-
   });
   
