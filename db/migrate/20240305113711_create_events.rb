@@ -10,7 +10,7 @@ class CreateEvents < ActiveRecord::Migration[7.1]
       t.string :address, null:false
       t.string :cap, null:false
       t.string :province, null:false
-      t.string :state, null:false
+      t.string :country, null:false
       t.references :user, null: false, foreign_key: true
 
       t.timestamps

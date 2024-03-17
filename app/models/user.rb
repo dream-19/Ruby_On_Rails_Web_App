@@ -5,7 +5,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
 
   # validates the length of all the possible fields:
-  validates :name, :surname,:email, :phone,:address, :cap, :province, :city, :state, length: { maximum: 255, too_long: "must be at most %{count} characters" }
+  validates :name, :surname,:email, :phone,:address, :cap, :province, :city, :country, length: { maximum: 255, too_long: "must be at most %{count} characters" }
 
 
   validates :type, presence: true

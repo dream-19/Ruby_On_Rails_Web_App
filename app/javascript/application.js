@@ -28,10 +28,7 @@ document.addEventListener("turbo:load", () => {
     });
 
 
-    console.log("hey")
-  const startsWith = "lus";
-  const countryCode = 'IT'; // Set this to the selected country's code
-  const username = 'helloworld'; // Replace with your GeoNames username
+  
 
   /*fetch(`http://api.geonames.org/searchJSON?name_startsWith=${startsWith}&country=${countryCode}&username=${username}`)
     .then(response => response.json())
@@ -42,6 +39,38 @@ document.addEventListener("turbo:load", () => {
       });
     })
     .catch(error => console.error('Error fetching cities:', error)); */
+
+    const username = 'helloworld';
+    // Fetch and display country suggestions
+    const countryInput = document.getElementById('user_country');
+    const countrySuggestions = document.getElementById('countrySuggestions');
+  
+    countryInput.addEventListener('input', function() {
+      const query = countryInput.value;
+      if (query.length >= 1) { // Start suggesting after 2 characters
+        fetch(`http://api.geonames.org/searchJSON?q=${query}&featureClass=P&username=${username}`)
+          .then(response => response.json())
+          .then(data => {
+            countrySuggestions.innerHTML = ''; // Clear previous suggestions
+            console.log(data.geonames);
+            data.geonames.forEach(country => {
+              //console.log(country.countryName); //print country name to console
+              const div = document.createElement('div');
+              div.textContent = country.countryName; // Use countryName for GeoNames
+              div.style.cursor = 'pointer';
+              div.addEventListener('click', () => {
+                countryInput.value = country.countryName; // Fill input on click
+                countrySuggestions.innerHTML = ''; // Clear suggestions
+              });
+              countrySuggestions.appendChild(div);
+            });
+          })
+          .catch(error => console.error('Error:', error));
+      } else {
+        console.log("clear suggestions")
+        countrySuggestions.innerHTML = ''; // Clear suggestions if input is less than 2 characters
+      }
+    });
 
   });
   

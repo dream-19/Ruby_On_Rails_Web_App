@@ -7,6 +7,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     # There are only 3 possible roles for a user. If i tries to insert a different one
     # it will redirect to the default user normal registration page with the default user type
     def validate_user_type
+        Rails.logger.debug("PIPPO")
         if params[:user_type].present?
             user_type = params[:user_type]
             if !UserRoles::ALL_ROLES.include?(user_type)

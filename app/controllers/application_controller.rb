@@ -6,8 +6,8 @@ class ApplicationController < ActionController::Base
     protected
   
     def configure_permitted_parameters
-      devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :surname, :date_of_birth, :address, :cap, :province, :city, :state, :phone, :type])
+      devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :surname, :date_of_birth, :address, :cap, :province, :city, :country, :phone, :type])
       # If you also want to allow users to edit these fields later, you can add:
-      devise_parameter_sanitizer.permit(:account_update, keys: [:name, :surname, :date_of_birth, :address, :cap, :province, :city, :state, :phone])
+      devise_parameter_sanitizer.permit(:account_update, keys: [:name, :surname, :date_of_birth, :address, :cap, :province, :city, :country, :phone])
     end
 end

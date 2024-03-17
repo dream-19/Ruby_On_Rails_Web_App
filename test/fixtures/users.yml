@@ -9,7 +9,7 @@ one:
   address: MyString
   cap: MyString
   province: MyString
-  state: MyString
+  country: MyString
   password: MyString
 
 two:
@@ -21,5 +21,5 @@ two:
   address: MyString
   cap: MyString
   province: MyString
-  state: MyString
+  country: MyString
   password: MyString
