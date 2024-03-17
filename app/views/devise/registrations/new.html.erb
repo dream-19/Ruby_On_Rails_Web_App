@@ -4,16 +4,16 @@
       <div class="card shadow-lg p-4">
         <% if params[:user_type] == UserRoles::USER_NORMAL %>
           <h2 class="text-center mb-4">Sign up as an User</h2>
-            <%= render 'form_user_normal', resource: resource, resource_name: resource_name %>
+            <%= render 'forms_partials/form_user_normal', resource: resource, resource_name: resource_name %>
         <% elsif params[:user_type] == UserRoles::COMPANY_ORGANIZER %>
           <h2 class="text-center mb-4">Sign up as an Organizer (as a company)</h2>
-            <%= render 'form_company_organizer', resource: resource, resource_name: resource_name %>
+            <%= render 'forms_partials/form_company_organizer', resource: resource, resource_name: resource_name %>
         <% elsif params[:user_type] == UserRoles::USER_ORGANIZER%>
           <h2 class="text-center mb-4">Sign up as an Organizer (as an user)</h2>
-            <%= render 'form_user_organizer', resource: resource, resource_name: resource_name %>
+            <%= render 'forms_partials/form_user_organizer', resource: resource, resource_name: resource_name %>
         <% else %>
           <h2 class="text-center mb-4">Sign up</h2>
-            <%= render 'form_user_normal', resource: resource, resource_name: resource_name %>
+            <%= render 'forms_partials/form_user_normal', resource: resource, resource_name: resource_name %>
         <% end %>
 
         <div class="mt-4 text-center">
