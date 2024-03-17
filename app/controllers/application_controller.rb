@@ -10,4 +10,12 @@ class ApplicationController < ActionController::Base
       # If you also want to allow users to edit these fields later, you can add:
       devise_parameter_sanitizer.permit(:account_update, keys: [:name, :surname, :date_of_birth, :address, :cap, :province, :city, :country, :phone])
     end
+
+    def after_sign_in_path_for(resource)
+      # Redirect to edit page
+      #edit_user_registration_path
+
+      root_path
+
+    end
 end

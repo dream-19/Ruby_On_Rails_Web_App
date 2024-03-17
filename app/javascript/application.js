@@ -10,11 +10,10 @@ document.addEventListener("turbo:load", () => {
     // Toggle password visibility
     document.querySelectorAll('.toggle-password-icon').forEach(el => {
       el.addEventListener('click', function (e) {
-        console.log('clicked');
+      
         // Determine the input field to toggle
         const input = document.querySelector(this.getAttribute('toggle'));
         const icon = this.querySelector('i'); // Target the <i> tag inside the span
-        console.log(input);
         if (input.type === "text") {
           input.type = "password";
           icon.classList.remove('bi-eye-fill');
@@ -108,19 +107,14 @@ document.addEventListener("turbo:load", () => {
       selected_country = selected_country.replace(/\b\w/g, (c) => c.toUpperCase()).trim();
 
       
-      console.log("try to find code");
       var countryInfo = countryInfos.geonames.find(country => country.countryName === selected_country);
       if (countryInfo) {
           countryCode = countryInfo.countryCode;
         if (query.length >= 1 ){
-          console.log("query " + query);
-          console.log("selected_country " + selected_country);
-          console.log("countryCode: " + countryCode);
         // Fetch the list of cities based on the country and the input
         fetch(`http://api.geonames.org/searchJSON?name_startsWith=${query}&country=${countryCode}&username=${username}`)
           .then(response => response.json())
           .then(data => {
-            console.log("cities found: "+ data.length);
             // delete what isn't needed (with the same city.name, and population = 0 and if city.name != city.toponymName)
             const uniqueCities = [];
             const cityNames = new Set();
@@ -137,7 +131,6 @@ document.addEventListener("turbo:load", () => {
             citySuggestions.innerHTML = '';
             data.geonames.forEach(city => {
               
-            console.log("city: " + city);
             const div = document.createElement('div');
             div.textContent = city.name;
             div.style.cursor = 'pointer';
@@ -159,9 +152,6 @@ document.addEventListener("turbo:load", () => {
                     const cap = matchingEntry.postalCode;
                     const province = matchingEntry.adminName2;
 
-                    console.log("cap " + cap);
-                    console.log("province " + province);
-
                     // Add value to the fields
                     document.getElementById('user_cap').value = cap;
                     document.getElementById('user_province').value = province;
@@ -175,7 +165,6 @@ document.addEventListener("turbo:load", () => {
               })
               .catch(error => console.error('Error fetching postal codes:', error));
 
-              console.log("provincia: " + province);
             });
             citySuggestions.appendChild(div);
           
@@ -188,7 +177,6 @@ document.addEventListener("turbo:load", () => {
         }
     }
     else{
-      console.log("cant find code");
       citySuggestions.innerHTML = '';
     }
       
