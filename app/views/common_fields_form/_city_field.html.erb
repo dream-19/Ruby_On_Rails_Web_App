@@ -1,5 +1,6 @@
 <%= f.label :city, class: "form-label" %>
-<%= f.text_field :city, class: "form-control" %>
+<%= f.text_field :city, id: "user_city", class: "form-control" %>
+<div id="citySuggestions" class="list-group suggestions"></div>
 <% if resource.errors[:city].present? %>
   <div class="invalid-feedback" style="display:block;">
     <% resource.errors.full_messages_for(:city).each do |message| %>

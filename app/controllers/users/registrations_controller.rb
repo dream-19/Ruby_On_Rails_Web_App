@@ -1,6 +1,7 @@
 # app/controllers/users/registrations_controller.rb
 class Users::RegistrationsController < Devise::RegistrationsController
     before_action :validate_user_type, only: [:new, :create]
+    
   
     private
   

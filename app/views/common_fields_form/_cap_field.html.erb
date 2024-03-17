@@ -1,5 +1,5 @@
  <%= f.label :cap, class: "form-label" %>
-<%= f.text_field :cap, class: "form-control" %>
+<%= f.text_field :cap, id: "user_cap", class: "form-control" %>
 <% if resource.errors[:cap].present? %>
   <div class="invalid-feedback" style="display:block;">
     <% resource.errors.full_messages_for(:cap).each do |message| %>
