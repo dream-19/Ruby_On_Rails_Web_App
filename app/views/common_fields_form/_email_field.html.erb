@@ -1,0 +1,9 @@
+<%= f.label :email, "Email *", class: "form-label" %>
+<%= f.email_field :email, autocomplete: "email", class: "form-control" %>
+<% if resource.errors[:email].present? %>
+  <div class="invalid-feedback" style="display:block;">
+    <% resource.errors.full_messages_for(:email).each do |message| %>
+      <%= message %><br/>
+    <% end %>
+  </div>
+<% end %>

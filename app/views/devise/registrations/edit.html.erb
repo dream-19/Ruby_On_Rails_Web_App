@@ -6,7 +6,7 @@
           <h2 class="text-center mb-4">Edit <%= resource_name.to_s.humanize %> (user account)</h2>
           <%= render 'form_user_normal_edit', resource: resource, resource_name: resource_name %>
         <% elsif current_user.type== UserRoles::COMPANY_ORGANIZER %>
-          <h2 class="text-center mb-4">Edit <%= resource_name.to_s.humanize %> (organizer account)</h2>
+          <h2 class="text-center mb-4">Edit <%= resource_name.to_s.humanize %> (company organizer account)</h2>
           <%= render 'form_company_organizer_edit', resource: resource, resource_name: resource_name %>
         <% elsif current_user.type == UserRoles::USER_ORGANIZER %>
           <h2 class="text-center mb-4">Edit <%= resource_name.to_s.humanize %> (organizer account)</h2>

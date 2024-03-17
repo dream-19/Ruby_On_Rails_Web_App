@@ -1,135 +1,41 @@
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "form-horizontal" }) do |f| %>
   <div class="mb-3">
-    <%= f.label :name, "Company Name *", class: "form-label" %>
-    <%= f.text_field :name, autofocus: true, class: "form-control" %>
-    <% if resource.errors[:name].present? %>
-      <div class="invalid-feedback" style="display:block;">
-        <% resource.errors.full_messages_for(:name).each do |message| %>
-          <%= message %><br/>
-        <% end %>
-      </div>
-    <% end %>
+    <%= render "common_fields_form/name_field", f: f %>
   </div>
   <div class="mb-3">
-    <%= f.label :email, "Email *", class: "form-label" %>
-    <%= f.email_field :email, autocomplete: "email", class: "form-control" %>
-    <% if resource.errors[:email].present? %>
-      <div class="invalid-feedback" style="display:block;">
-        <% resource.errors.full_messages_for(:email).each do |message| %>
-          <%= message %><br/>
-        <% end %>
-      </div>
-    <% end %>
+    <%= render "common_fields_form/email_field", f: f %>
   </div>
   <%= f.hidden_field :type, value: params[:user_type], id: "hidden_type" %>
   <%= hidden_field_tag :user_type, params[:user_type], id: "hidden_user_type" %>
   <div class="mb-3">
-    <%= f.label :phone, "Phone *", class: "form-label" %>
-    <%= f.text_field :phone, class: "form-control" %>
-    <% if resource.errors[:phone].present? %>
-      <div class="invalid-feedback" style="display:block;">
-        <% resource.errors.full_messages_for(:phone).each do |message| %>
-          <%= message %><br/>
-        <% end %>
-      </div>
-    <% end %>
+    <%= render "common_fields_form/phone_field", f: f %>
   </div>
   <div class="mb-3">
-    <%= f.label :address, class: "form-label" %>
-    <%= f.text_field :address, class: "form-control" %>
-    <% if resource.errors[:address].present? %>
-      <div class="invalid-feedback" style="display:block;">
-        <% resource.errors.full_messages_for(:address).each do |message| %>
-          <%= message %><br/>
-        <% end %>
-      </div>
-    <% end %>
+    <%= render "common_fields_form/address_field", f: f %>
   </div>
   <div class="row">
     <div class="col-md-3 mb-3">
-      <%= f.label :cap, class: "form-label" %>
-      <%= f.text_field :cap, class: "form-control" %>
-      <% if resource.errors[:cap].present? %>
-        <div class="invalid-feedback" style="display:block;">
-          <% resource.errors.full_messages_for(:cap).each do |message| %>
-            <%= message %><br/>
-          <% end %>
-        </div>
-      <% end %>
+      <%= render "common_fields_form/cap_field", f: f %>
     </div>
     <div class="col-md-3 mb-3">
-      <%= f.label :city, class: "form-label" %>
-      <%= f.text_field :city, class: "form-control" %>
-      <% if resource.errors[:city].present? %>
-        <div class="invalid-feedback" style="display:block;">
-          <% resource.errors.full_messages_for(:city).each do |message| %>
-            <%= message %><br/>
-          <% end %>
-        </div>
-      <% end %>
+      <%= render "common_fields_form/city_field", f: f %>
     </div>
     <div class="col-md-3 mb-3">
-      <%= f.label :province, class: "form-label" %>
-      <%= f.text_field :province, class: "form-control" %>
-      <% if resource.errors[:province].present? %>
-        <div class="invalid-feedback" style="display:block;">
-          <% resource.errors.full_messages_for(:province).each do |message| %>
-            <%= message %><br/>
-          <% end %>
-        </div>
-      <% end %>
+      <%= render "common_fields_form/province_field", f: f %>
     </div>
     <div class="col-md-3 mb-3">
-      <%= f.label :state, class: "form-label" %>
-      <%= f.text_field :state, class: "form-control" %>
-      <% if resource.errors[:state].present? %>
-        <div class="invalid-feedback" style="display:block;">
-          <% resource.errors.full_messages_for(:state).each do |message| %>
-            <%= message %><br/>
-          <% end %>
-        </div>
-      <% end %>
+      <%= render "common_fields_form/state_field", f: f %>
     </div>
   </div>
   <div class="row">
     <div class="col-md-6 mb-3">
-      <%= f.label :password, "Password *", class: "form-label" %>
-      <% if @minimum_password_length %>
-        <em>(<%= @minimum_password_length %> characters minimum)</em><br />
-      <% end %>
-      <div class="input-group">
-        <%= f.password_field :password, id: "password", autocomplete: "new-password", class: "form-control" %>
-        <span class="input-group-text toggle-password-icon" toggle="#password"><i class="bi bi-eye-slash-fill"></i></span>
-      </div>
-      <% if resource.errors[:password].present? %>
-        <div class="invalid-feedback" style="display:block;">
-          <% resource.errors.full_messages_for(:password).each do |message| %>
-            <%= message %><br/>
-          <% end %>
-        </div>
-      <% end %>
+      <%= render "common_fields_form/password_field", f: f %>
     </div>
     <div class="col-md-6 mb-3">
-      <%= f.label :password_confirmation, "Confirm Password *", class: "form-label" %>
-      <div class="input-group">
-        <%= f.password_field :password_confirmation, id: "password-confirmation", autocomplete: "new-password", class: "form-control" %>
-        <span class="input-group-text toggle-password-icon" toggle="#password-confirmation"><i class="bi bi-eye-slash-fill"></i></span>
-      </div>
-      <% if resource.errors[:password_confirmation].present? %>
-        <div class="invalid-feedback" style="display:block;">
-          <% resource.errors.full_messages_for(:password_confirmation).each do |message| %>
-            <%= message %><br/>
-          <% end %>
-        </div>
-      <% end %>
+      <%= render "common_fields_form/confirm_password_field", f: f %>
     </div>
   </div>
-  <!-- Display error messages in alert -->
-  <% if resource.errors.any? %>
-    <div class="alert alert-danger" role="alert">
-      <p><strong><%= pluralize(resource.errors.count, "error") %></strong> prohibited this user from being saved</p>
-    </div>
-  <% end %>
+  <%= render "common_fields_form/display_errors", f: f %>
   <div class="actions d-grid gap-2">
     <%= f.submit "Sign up", class: "btn btn-primary" %>
   </div>

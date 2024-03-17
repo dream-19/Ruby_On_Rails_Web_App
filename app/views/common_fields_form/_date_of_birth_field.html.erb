@@ -1,0 +1,9 @@
+<%= f.label :date_of_birth, "Date of Birth *", class: "form-label" %>
+<%= f.date_field :date_of_birth, class: "form-control" %>
+<% if resource.errors[:date_of_birth].present? %>
+  <div class="invalid-feedback" style="display:block;">
+    <% resource.errors.full_messages_for(:date_of_birth).each do |message| %>
+      <%= message %><br/>
+    <% end %>
+  </div>
+<% end %>

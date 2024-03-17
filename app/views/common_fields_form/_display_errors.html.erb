@@ -1,0 +1,6 @@
+<!-- Display error messages in alert -->
+<% if resource.errors.any? %>
+  <div class="alert alert-danger" role="alert">
+    <p><strong><%= pluralize(resource.errors.count, "error") %></strong> prohibited this user from being saved</p>
+  </div>
+<% end %>

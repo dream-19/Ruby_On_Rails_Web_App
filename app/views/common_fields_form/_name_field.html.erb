@@ -1,0 +1,13 @@
+<% if params[:user_type] == UserRoles::COMPANY_ORGANIZER %>
+  <%= f.label :name, "Company Name", class: "form-label" %>
+<% else %>
+  <%= f.label :name, "Name *", class: "form-label" %>
+<% end %>
+<%= f.text_field :name, autofocus: true, class: "form-control" %>
+<% if resource.errors[:name].present? %>
+  <div class="invalid-feedback" style="display:block;">
+    <% resource.errors.full_messages_for(:name).each do |message| %>
+      <%= message %><br/>
+    <% end %>
+  </div>
+<% end %>

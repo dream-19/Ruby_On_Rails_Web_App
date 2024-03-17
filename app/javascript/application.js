@@ -27,5 +27,21 @@ document.addEventListener("turbo:load", () => {
       });
     });
 
+
+    console.log("hey")
+  const startsWith = "lus";
+  const countryCode = 'IT'; // Set this to the selected country's code
+  const username = 'helloworld'; // Replace with your GeoNames username
+
+  /*fetch(`http://api.geonames.org/searchJSON?name_startsWith=${startsWith}&country=${countryCode}&username=${username}`)
+    .then(response => response.json())
+    .then(data => {
+      data.geonames.forEach(city => {
+        console.log(city.name);
+        
+      });
+    })
+    .catch(error => console.error('Error fetching cities:', error)); */
+
   });
   

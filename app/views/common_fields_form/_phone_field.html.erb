@@ -1,0 +1,13 @@
+<% if params[:user_type] == UserRoles::USER_NORMAL %>
+  <%= f.label :phone, "Phone", class: "form-label" %>
+<% else %>
+  <%= f.label :phone, "Phone *", class: "form-label" %>
+<% end %>
+<%= f.text_field :phone, class: "form-control" %>
+<% if resource.errors[:phone].present? %>
+  <div class="invalid-feedback" style="display:block;">
+    <% resource.errors.full_messages_for(:phone).each do |message| %>
+      <%= message %><br/>
+    <% end %>
+  </div>
+<% end %>

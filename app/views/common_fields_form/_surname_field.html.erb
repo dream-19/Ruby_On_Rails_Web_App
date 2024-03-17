@@ -1,0 +1,9 @@
+<%= f.label :surname, "Surname *", class: "form-label" %>
+<%= f.text_field :surname, class: "form-control" %>
+<% if resource.errors[:surname].present? %>
+  <div class="invalid-feedback" style="display:block;">
+    <% resource.errors.full_messages_for(:surname).each do |message| %>
+      <%= message %><br/>
+    <% end %>
+  </div>
+<% end %>
