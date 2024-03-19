@@ -11,11 +11,13 @@ class ApplicationController < ActionController::Base
       devise_parameter_sanitizer.permit(:account_update, keys: [:name, :surname, :date_of_birth, :address, :cap, :province, :city, :country, :phone])
     end
 
+    # If I am an organizer I am redirected to the organizer page to manage my events
     def after_sign_in_path_for(resource)
-      # Redirect to edit page
-      #edit_user_registration_path
-
-      root_path
+      if current_user.user_organizer?
+        events_path
+      else
+        super
+      end
 
     end
 end
