@@ -19,9 +19,11 @@ var cap = ""; //I take the first cap
 var countryCode = "";
 
 document.addEventListener("turbo:load", () => {
-  // Fetch the country
-  fetchCountries();
-
+  const formsWithLocations = document.querySelectorAll('.form-with-locations');
+  if(formsWithLocations.length > 0) {
+    // Fetch the country (only if it is required by the form)
+    fetchCountries();
+  }
   //Use event delegation to manage the click event on the country input (also when a form with error is submitted and reloaded with turbo)
   document.addEventListener("click", (event) => {
     // Check if the clicked element or any of its parents is the user_country element
