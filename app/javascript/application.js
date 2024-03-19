@@ -19,33 +19,47 @@ var cap = ""; //I take the first cap
 var countryCode = "";
 
 document.addEventListener("turbo:load", () => {
-  // Add event listeners to all the toggle password icons
-  document.querySelectorAll(".toggle-password-icon").forEach((el) => {
-    el.addEventListener("click", togglePasswordVisibility);
+  // Fetch the country
+  fetchCountries();
+
+  //Use event delegation to manage the click event on the country input (also when a form with error is submitted and reloaded with turbo)
+  document.addEventListener("click", (event) => {
+    // Check if the clicked element or any of its parents is the user_country element
+    const isCountrySelect = event.target.matches("#user_country") || event.target.closest("#user_country");
+    if (isCountrySelect) {
+      // Fetch and display country suggestions
+      countryInput = document.getElementById("user_country");
+      countrySuggestions = document.getElementById("countrySuggestions");
+      if (countryInput && countrySuggestions) {
+        countryInput.addEventListener("input", () => countrySuggest());
+      }
+    }
+
+    // Check if the clicked element or any of its parents is the user_city element
+    const isCitySelect = event.target.matches("#user_city") || event.target.closest("#user_city");
+    if (isCitySelect) {
+      // Fetch and display city suggestions (only if country is specified)
+      cityInput = document.getElementById("user_city");
+      citySuggestions = document.getElementById("citySuggestions");
+      if (cityInput && citySuggestions && countryInput) {
+        cityInput.addEventListener("input", () => citySuggest());
+      }
+    }
   });
 
-  //Fetch the list of all the countries when the form are loaded
-  const formsWithLocations = document.querySelectorAll(".form-with-locations");
-
-  if (formsWithLocations.length > 0) {
-    //fetch the list of all the countries
-    fetchCountries();
-
-    // Fetch and display country suggestions
-    countryInput = document.getElementById("user_country");
-    countrySuggestions = document.getElementById("countrySuggestions");
-    if (countryInput && countrySuggestions) {
-      countryInput.addEventListener("input", () => countrySuggest());
+  // Add event listeners to all the toggle password icons
+  document.addEventListener("mouseover", (event) => {
+    // Add event listeners to all the toggle password icons
+    const isTogglePasswordIcon = event.target.matches(".toggle-password-icon") || event.target.closest(".toggle-password-icon");
+    if (isTogglePasswordIcon) {
+      document.querySelectorAll(".toggle-password-icon").forEach((el) => {
+        el.addEventListener("click", togglePasswordVisibility);
+      });
     }
-
-    // Fetch and display city suggestions (only if country is specified)
-    cityInput = document.getElementById("user_city");
-    citySuggestions = document.getElementById("citySuggestions");
-    if (cityInput && citySuggestions && countryInput) {
-      cityInput.addEventListener("input", () => citySuggest());
-    }
-  } //end of if formsWithLocations
+  });
+  
 });
+
 
 //FUNCTION TO TOGGLE THE PASSWORD VISIBILITY
 function togglePasswordVisibility() {
