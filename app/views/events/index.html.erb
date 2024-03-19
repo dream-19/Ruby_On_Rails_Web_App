@@ -1,40 +1,38 @@
-<!-- app/views/events/index.html.erb -->
-<h1>Tutti gli Eventi</h1>
-
-
-<table class="table">
-  <thead>
-    <tr>
-      <th>Nome</th>
-      <th>Data e Ora di Inizio</th>
-      <th>Data e Ora di Fine</th>
-      <th>Partecipanti Max</th>
-      <th>Indirizzo</th>
-      <th>CAP</th>
-      <th>Provincia</th>
-      <th>Paese</th>
-      <th>Azioni</th>
-    </tr>
-  </thead>
-  <tbody>
+<div class="container mt-5">
+  <h1>All Events</h1>
+   <!--
+   <%= form_with(url: events_path, method: :get, local: true) do |form| %>
+    <%= form.select :sort_by, [['Ending date', 'ending_date'], ['Beginning date', 'beginning_date']], {}, { onchange: 'this.form.submit()' } %>
+  <% end %>
+  -->
+ 
+  <div class="row">
     <% @events.each do |event| %>
-      <tr>
-        <td><%= event.name %></td>
-        <td><%= event.beginning_date %> alle <%= event.beginning_time %></td>
-        <td><%= event.ending_date %> alle <%= event.ending_time %></td>
-        <td><%= event.max_participants %></td>
-        <td><%= event.address %></td>
-        <td><%= event.cap %></td>
-        <td><%= event.province %></td>
-        <td><%= event.country %></td>
-        <td>
-          <%= link_to 'Visualizza', event_path(event), class: 'btn btn-info' %>
-          <% if event.user == current_user %>
-            <%= link_to 'Modifica', edit_event_path(event), class: 'btn btn-warning' %>
-            <%= link_to 'Elimina', event_path(event), method: :delete, data: { confirm: 'Sei sicuro di voler eliminare questo evento?' }, class: 'btn btn-danger' %>
-          <% end %>
-        </td>
-      </tr>
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><%= event.name %></h5>
+            <h6 class="card-subtitle mb-2 text-muted">Start: <%= format_date(event.beginning_date) %> at <%= format_time(event.beginning_time) %></h6>
+            <h6 class="card-subtitle mb-2 text-muted">End: <%= format_date(event.ending_date) %> at <%= format_time(event.ending_time) %></h6>
+            <p class="card-text">Participants: <%= event.subscriptions.count %> / <%= event.max_participants %></p>
+            <p class="card-text">Address: <%= event.address %><br/>
+            <%= event.city %>, <%= event.province %> (<%= event.cap %>), <%= event.country %></p>
+          </div>
+          <div class="card-footer">
+            <%= link_to 'View', event_path(event), class: 'btn btn-info' %>
+            <% if event.user == current_user %>
+              <%= link_to 'Edit', edit_event_path(event), class: 'btn btn-primary' %>
+              
+              <%= link_to 'Delete', event_path(event), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
+             
+            <% end %>
+          </div>
+        </div>
+      </div>
     <% end %>
-  </tbody>
-</table>
+  </div>
+</div>
+
+<!-- TODO  
+DELETE 
+- MOSTRARE SOLO QUELLI VALIDI-->

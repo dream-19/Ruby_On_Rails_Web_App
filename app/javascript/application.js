@@ -4,6 +4,7 @@ import "@hotwired/turbo-rails";
 import "controllers";
 import "popper";
 import "bootstrap";
+//= require rails-ujs
 
 const username = "helloworld";
 var countryNames = [];

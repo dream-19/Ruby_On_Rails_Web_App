@@ -1,5 +1,4 @@
 class EventsController < ApplicationController
-  before_action :set_event, only: [:show, :edit, :update, :destroy]
   #check Authentication
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :my_events]
   before_action :check_organizer_role, only: [:new, :create, :edit, :update, :destroy, :my_events]
@@ -7,7 +6,9 @@ class EventsController < ApplicationController
 
   # GET /events
   def index
-    @events = Event.all
+    @events = Event.upcoming
+    
+    #.order(params[:sort_by])
   end
 
   def my_events
@@ -26,6 +27,11 @@ class EventsController < ApplicationController
 
   # GET /events/1/edit
   def edit
+    # Only the organizer can modify the event
+    unless current_user == @event.user
+      redirect_to @event, alert: 'You are not the organizer of this event.'
+    end
+
   end
 
   # POST /events
@@ -45,15 +51,34 @@ class EventsController < ApplicationController
 
   # PATCH/PUT /events/1
   def update
+    # Ensure only the organizer can update the event
+    unless current_user == @event.user
+      redirect_to @event, alert: 'You are not authorized to update this event.'
+      return
+    end
+
+    # Check if the number of participants hasn't been lowered too much
+    if event_params[:max_participants].to_i <  @event.subscriptions.count
+      redirect_to edit_event_path(@event), alert: 'The number of participants cannot be lowered below the current number of attendees: ' + @event.subscriptions.count.to_s
+      return
+    end
+    @event.subscriptions.count
     if @event.update(event_params)
       redirect_to @event, notice: 'Event was successfully updated.'
     else
-      render :edit
+      render my_events_path
     end
   end
 
   # DELETE /events/1
   def destroy
+    Rails.logger.debug("CARLA")
+    # Only the organizer can destroy the event
+    unless current_user == @event.user
+      redirect_to @event, alert: 'You are not authorized to destroy this event.'
+      return
+    end
+
     @event.destroy
     redirect_to events_url, notice: 'Event was successfully destroyed.'
   end
@@ -73,9 +98,7 @@ class EventsController < ApplicationController
   
     # Checks if the current user is logged in and is an organizer
     def check_organizer_role
-      Rails.logger.info "CARLA WHAT ARE U"
       unless current_user&.user_organizer?
-        Rails.logger.info "CARLAUser #{current_user&.id} is not an organizer"
         redirect_to root_path, alert: 'You must be an organizer to access this section.'
       end
     end

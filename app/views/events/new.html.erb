@@ -12,6 +12,10 @@
               <%= render "common_fields_form/max_participants_field", f: f, resource: @event, required: true  %>
             </div>
           </div>
+          <div class="mb-3">
+            <%= render "common_fields_form/description_field", f: f, resource: @event %>
+          </div>
+
           <div class="row">
             <div class="col-md-3 mb-3">
               <%= render "common_fields_form/beginning_date_field", f: f, resource: @event, required: true  %>

@@ -3,10 +3,15 @@ class Event < ApplicationRecord
   validates :name, :beginning_time, :beginning_date, :ending_time, :ending_date, :max_participants, :address, :cap, :province,:city, :country, presence: true
   validates :beginning_date, :ending_date, format: { with: /\A\d{4}-\d{2}-\d{2}\z/, message: "must be in the format YYYY-MM-DD" }
   validates :name,:address, :cap, :province, :city, :country, length: { maximum: 255, too_long: "must be at most %{count} characters" }
+  validates :description, length: { maximum: 500, too_long: "must be at most %{count} characters"  }
   validates :max_participants, numericality: { only_integer: true, greater_than: 0, message: "must be an integer > 0" }
 
   before_save :apply_camel_case
   validate :validate_time_date
+
+  def self.upcoming
+    where("ending_date >= ?", Date.today)
+  end
 
   private
 
@@ -30,10 +35,14 @@ class Event < ApplicationRecord
       errors.add(:ending_time, 'does not have a valid time component (HH:MM:SS)')
     end
 
-    if beginning_date.present? && ending_date.present? && beginning_time.present? && ending_time.present?
-      errors.add(:beginning_date, 'must be before the ending date') if beginning_date > ending_date
-      errors.add(:beginning_time, 'must be before the ending time') if beginning_date == ending_date && beginning_time >= ending_time
+    if ending_date.present?
       errors.add(:ending_date, 'cannot be before today') if ending_date < Date.today
+      if beginning_date.present? 
+        errors.add(:beginning_date, 'must be before the ending date') if beginning_date > ending_date
+        if beginning_time.present? && ending_time.present?
+          errors.add(:beginning_time, 'must be before the ending time') if beginning_date == ending_date && beginning_time >= ending_time
+        end 
+      end
     end
 
   end

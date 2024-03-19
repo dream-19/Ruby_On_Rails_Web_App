@@ -21,8 +21,8 @@
     <% @events.each do |event| %>
       <tr>
         <td><%= event.name %></td>
-        <td><%= event.beginning_date %> alle <%= event.beginning_time.strftime('%H:%M') %></td>
-        <td><%= event.ending_date %> alle <%= event.ending_time.strftime('%H:%M') %></td>
+        <td><%= format_date(event.beginning_date) %> alle <%= format_time(event.beginning_time) %></td>
+        <td><%= format_date(event.ending_date) %> alle <%= format_time(event.ending_time) %></td>
         <td><%= event.max_participants %></td>
         <td><%= event.address %></td>
         <td><%= event.cap %></td>
