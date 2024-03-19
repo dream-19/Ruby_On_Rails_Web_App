@@ -1,4 +1,9 @@
-<%= f.label :city, class: "form-label" %>
+<%= f.label :city, class: "form-label" do %>
+  City
+  <% if local_assigns[:required] %>
+    <span class ="asterisk">*</span>
+  <% end %>
+<% end %>
 <%= f.text_field :city, id: "user_city", class: "form-control" %>
 <div id="citySuggestions" class="list-group suggestions"></div>
 <% if resource.errors[:city].present? %>

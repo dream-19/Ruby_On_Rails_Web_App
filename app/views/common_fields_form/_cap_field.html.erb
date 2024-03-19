@@ -1,4 +1,9 @@
- <%= f.label :cap, class: "form-label" %>
+ <%= f.label :cap, class: "form-label" do %>
+  Cap
+  <% if local_assigns[:required] %>
+    <span class ="asterisk">*</span>
+  <% end %>
+<% end %>
 <%= f.text_field :cap, id: "user_cap", class: "form-control" %>
 <% if resource.errors[:cap].present? %>
   <div class="invalid-feedback" style="display:block;">

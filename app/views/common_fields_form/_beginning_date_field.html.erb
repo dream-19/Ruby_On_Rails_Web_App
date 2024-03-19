@@ -1,0 +1,14 @@
+<%= f.label :country, class: "form-label" do %>
+  Beginning Date
+  <% if local_assigns[:required] %>
+    <span class ="asterisk">*</span>
+  <% end %>
+<% end %>
+<%= f.date_field :beginning_date, class: "form-control" %>
+<% if resource.errors[:beginning_date].present? %>
+  <div class="invalid-feedback" style="display:block;">
+    <% resource.errors.full_messages_for(:beginning_date).each do |message| %>
+      <%= message %><br/>
+    <% end %>
+  </div>
+<% end %>

@@ -1,4 +1,9 @@
-<%= f.label :surname, "Surname *", class: "form-label" %>
+<%= f.label :surname, "Surname *", class: "form-label" do %>
+  Surname
+  <% if local_assigns[:required] %>
+    <span class ="asterisk">*</span>
+  <% end %>
+<% end %>
 <%= f.text_field :surname, class: "form-control" %>
 <% if resource.errors[:surname].present? %>
   <div class="invalid-feedback" style="display:block;">

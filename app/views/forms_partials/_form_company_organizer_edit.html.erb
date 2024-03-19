@@ -1,12 +1,12 @@
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "form-horizontal form-with-locations" }) do |f| %>
   <div class="mb-3">
-    <%= render "common_fields_form/name_field", f: f %>
+    <%= render "common_fields_form/name_field", f: f , required: true, label: "Company Name"  %>
   </div>
   <div class="mb-3">
-    <%= render "common_fields_form/email_field", f: f %>
+    <%= render "common_fields_form/email_field", f: f , required: true  %>
   </div>
   <div class="mb-3">
-    <%= render "common_fields_form/phone_field", f: f %>
+    <%= render "common_fields_form/phone_field", f: f , required: true  %>
   </div>
   <div class="row">
     <div class="col-md-3 mb-3">

@@ -1,4 +1,9 @@
-<%= f.label :province, class: "form-label" %>
+<%= f.label :province, class: "form-label" do %>
+  Province
+  <% if local_assigns[:required] %>
+    <span class ="asterisk">*</span>
+  <% end %>
+<% end %>
 <%= f.text_field :province, id: "user_province", class: "form-control", autocomplete: 'off' %>
 <% if resource.errors[:province].present? %>
   <div class="invalid-feedback" style="display:block;">

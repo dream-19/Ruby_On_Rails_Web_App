@@ -1,0 +1,14 @@
+<%= f.label :beginning_time, class: "form-label" do %>
+  Beginning Time
+  <% if local_assigns[:required] %>
+    <span class ="asterisk">*</span>
+  <% end %>
+<% end %>
+<%= f.time_field :beginning_time, class: "form-control" %>
+<% if resource.errors[:beginning_time].present? %>
+  <div class="invalid-feedback" style="display:block;">
+    <% resource.errors.full_messages_for(:beginning_time).each do |message| %>
+      <%= message %><br/>
+    <% end %>
+  </div>
+<% end %>

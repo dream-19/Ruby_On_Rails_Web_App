@@ -1,0 +1,54 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow-lg p-4">
+        <h2>New Event</h2>
+        <%= form_for @event, html: { class: "form-horizontal form-with-locations" } do |f| %>
+          <div class="row">
+            <div class="col-md-10 mb-3">
+              <%= render "common_fields_form/name_field", f: f, resource: @event, required: true, label: "Event Name" %>
+            </div>
+            <div class="col-md-2 mb-3">
+              <%= render "common_fields_form/max_participants_field", f: f, resource: @event, required: true  %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <%= render "common_fields_form/beginning_date_field", f: f, resource: @event, required: true  %>
+            </div>
+            <div class="col-md-3 mb-3">
+              <%= render "common_fields_form/beginning_time_field", f: f, resource: @event, required: true  %>
+            </div>
+            <div class="col-md-3 mb-3">
+              <%= render "common_fields_form/ending_date_field", f: f, resource: @event, required: true  %>
+            </div>
+            <div class="col-md-3 mb-3">
+              <%= render "common_fields_form/ending_time_field", f: f, resource: @event, required: true  %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <%= render "common_fields_form/country_field", f: f, resource: @event, required: true %>
+            </div>
+            <div class="col-md-3 mb-3">
+              <%= render "common_fields_form/city_field", f: f, resource: @event, required: true  %>
+            </div>
+            <div class="col-md-3 mb-3">
+              <%= render "common_fields_form/cap_field", f: f, resource: @event, required: true  %>
+            </div>
+            <div class="col-md-3 mb-3">
+              <%= render "common_fields_form/province_field", f: f, resource: @event, required: true  %>
+            </div>
+          </div>
+          <div class="mb-3">
+            <%= render "common_fields_form/address_field", f: f, resource: @event, required: true  %>
+          </div>
+          <%= render "common_fields_form/display_errors", f: f, resource: @event, required: true  %>
+          <div class="actions d-grid gap-2">
+            <%= f.submit "Create Event", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

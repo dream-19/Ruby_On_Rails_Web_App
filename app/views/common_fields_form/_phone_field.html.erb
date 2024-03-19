@@ -1,7 +1,8 @@
-<% if params[:user_type] == UserRoles::USER_NORMAL %>
-  <%= f.label :phone, "Phone", class: "form-label" %>
-<% else %>
-  <%= f.label :phone, "Phone *", class: "form-label" %>
+<%= f.label :phone,  class: "form-label" do %>
+  Phone
+  <% if local_assigns[:required] %>
+    <span class ="asterisk">*</span>
+  <% end %>
 <% end %>
 <%= f.text_field :phone, class: "form-control" %>
 <% if resource.errors[:phone].present? %>

@@ -1,0 +1,41 @@
+<!-- app/views/events/index.html.erb -->
+<h1>Tutti gli Eventi</h1>
+
+<%= link_to 'Crea Nuovo Evento', new_event_path, class: 'btn btn-success' %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Data e Ora di Inizio</th>
+      <th>Data e Ora di Fine</th>
+      <th>Partecipanti Max</th>
+      <th>Indirizzo</th>
+      <th>CAP</th>
+      <th>Provincia</th>
+      <th>Paese</th>
+      <th>Azioni</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @events.each do |event| %>
+      <tr>
+        <td><%= event.name %></td>
+        <td><%= event.beginning_date %> alle <%= event.beginning_time.strftime('%H:%M') %></td>
+        <td><%= event.ending_date %> alle <%= event.ending_time.strftime('%H:%M') %></td>
+        <td><%= event.max_participants %></td>
+        <td><%= event.address %></td>
+        <td><%= event.cap %></td>
+        <td><%= event.province %></td>
+        <td><%= event.country %></td>
+        <td>
+          <%= link_to 'Visualizza', event_path(event), class: 'btn btn-info' %>
+          <% if event.user == current_user %>
+            <%= link_to 'Modifica', edit_event_path(event), class: 'btn btn-warning' %>
+            <%= link_to 'Elimina', event_path(event), method: :delete, data: { confirm: 'Sei sicuro di voler eliminare questo evento?' }, class: 'btn btn-danger' %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

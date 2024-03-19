@@ -1,4 +1,9 @@
-<%= f.label :country, class: "form-label" %>
+<%= f.label :country, class: "form-label" do %>
+  Country
+  <% if local_assigns[:required] %>
+    <span class ="asterisk">*</span>
+  <% end %>
+<% end %>
 <%= f.text_field :country, class: "form-control", id: "user_country", autocomplete: 'off' %>
 <div id="countrySuggestions" class="list-group  suggestions"></div>
 <% if resource.errors[:country].present? %>

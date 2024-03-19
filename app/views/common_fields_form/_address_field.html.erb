@@ -1,4 +1,9 @@
-<%= f.label :address, class: "form-label" %>
+<%= f.label :address, class: "form-label" do %>
+  Address
+  <% if local_assigns[:required] %>
+    <span class ="asterisk">*</span>
+  <% end %>
+<% end %>
 <%= f.text_field :address, class: "form-control" %>
 <% if resource.errors[:address].present? %>
   <div class="invalid-feedback" style="display:block;">

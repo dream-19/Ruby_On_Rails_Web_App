@@ -1,4 +1,9 @@
-<%= f.label :date_of_birth, "Date of Birth *", class: "form-label" %>
+<%= f.label :date_of_birth, class: "form-label" do %>
+  Date of Birth
+  <% if local_assigns[:required] %>
+    <span class ="asterisk">*</span>
+  <% end %>
+<% end %>
 <%= f.date_field :date_of_birth, class: "form-control" %>
 <% if resource.errors[:date_of_birth].present? %>
   <div class="invalid-feedback" style="display:block;">

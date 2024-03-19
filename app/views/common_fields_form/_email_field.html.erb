@@ -1,4 +1,9 @@
-<%= f.label :email, "Email *", class: "form-label" %>
+<%= f.label :email, class: "form-label" do %>
+  Email
+  <% if local_assigns[:required] %>
+    <span class ="asterisk">*</span>
+  <% end %>
+<% end %>
 <%= f.email_field :email, autocomplete: "email", class: "form-control" %>
 <% if resource.errors[:email].present? %>
   <div class="invalid-feedback" style="display:block;">

@@ -1,7 +1,8 @@
-<% if params[:user_type] == UserRoles::COMPANY_ORGANIZER %>
-  <%= f.label :name, "Company Name", class: "form-label" %>
-<% else %>
-  <%= f.label :name, "Name *", class: "form-label" %>
+<%= f.label :name, class: "form-label" do %>
+  <%= local_assigns[:label] || "Name" %>
+  <% if local_assigns[:required] %>
+    <span class ="asterisk">*</span>
+  <% end %>
 <% end %>
 <%= f.text_field :name, autofocus: true, class: "form-control" %>
 <% if resource.errors[:name].present? %>
