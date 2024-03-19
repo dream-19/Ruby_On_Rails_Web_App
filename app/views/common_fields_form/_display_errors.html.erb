@@ -3,5 +3,23 @@
   <div class="alert alert-danger" role="alert">
     <p><strong><%= pluralize(resource.errors.count, "error") %></strong> prohibited this user from being saved</p>
     
+    <!-- display error message if user doesn't exists -->
+    <% if resource.errors[:user].any? %>
+      <p>
+        <% resource.errors[:user].each do |error| %>
+          <strong>User <%= error %></strong>
+        <% end %>
+      </p>
+    <% end %>
+
+    <!-- Display general error messages not tied to a specific field -->
+    <% if resource.errors[:base].any? %>
+      <p>
+        <% resource.errors[:base].each do |error| %>
+          <%= error %><br/>
+        <% end %>
+      </p>
+    <% end %>
+
   </div>
 <% end %>

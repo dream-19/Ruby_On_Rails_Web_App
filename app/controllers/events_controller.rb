@@ -1,5 +1,9 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy]
+  #check Authentication
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :my_events]
+  before_action :check_organizer_role, only: [:new, :create, :edit, :update, :destroy, :my_events]
+  before_action :set_event, only: [:show, :edit, :update, :destroy]
 
   # GET /events
   def index
@@ -27,7 +31,6 @@ class EventsController < ApplicationController
   # POST /events
   def create
     @event = current_user.events.build(event_params)
-    
     if @event.save
       # Reindirizzamento in caso di successo
       redirect_to @event, notice: 'Event was successfully created.'
@@ -56,6 +59,7 @@ class EventsController < ApplicationController
   end
 
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_event
       @event = Event.find(params[:id])
@@ -64,6 +68,16 @@ class EventsController < ApplicationController
     # Only allow a list of trusted parameters through.( the fields that you can modify)
     def event_params
       params.require(:event).permit(:name, :beginning_time, :beginning_date, :ending_time, :ending_date, :max_participants, :address, :cap, :province, :city, :country)
+    end
+
+  
+    # Checks if the current user is logged in and is an organizer
+    def check_organizer_role
+      Rails.logger.info "CARLA WHAT ARE U"
+      unless current_user&.user_organizer?
+        Rails.logger.info "CARLAUser #{current_user&.id} is not an organizer"
+        redirect_to root_path, alert: 'You must be an organizer to access this section.'
+      end
     end
     
 end
