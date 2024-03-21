@@ -30,6 +30,7 @@ document.addEventListener("turbo:load", () => {
     // Check if the clicked element or any of its parents is the user_country element
     const isCountrySelect = event.target.matches("#user_country") || event.target.closest("#user_country");
     if (isCountrySelect) {
+      console.log("add event listener input");
       // Fetch and display country suggestions
       countryInput = document.getElementById("user_country");
       countrySuggestions = document.getElementById("countrySuggestions");
@@ -95,7 +96,7 @@ function fetchCountries() {
 
 //FUNCTION TO SUGGEST COUNTRIES
 function countrySuggest() {
-  console.log("hello");
+ 
   const query = countryInput.value;
   if (query.length >= 1 && countryNames.length > 0) {
     // Start suggesting after 1 characters
