@@ -26,11 +26,10 @@ document.addEventListener("turbo:load", () => {
     fetchCountries();
   }
   //Use event delegation to manage the click event on the country input (also when a form with error is submitted and reloaded with turbo)
-  document.addEventListener("click", (event) => {
+  document.addEventListener("input", (event) => {
     // Check if the clicked element or any of its parents is the user_country element
     const isCountrySelect = event.target.matches("#user_country") || event.target.closest("#user_country");
     if (isCountrySelect) {
-      console.log("add event listener input");
       // Fetch and display country suggestions
       countryInput = document.getElementById("user_country");
       countrySuggestions = document.getElementById("countrySuggestions");
