@@ -1,11 +1,7 @@
 <div class="container mt-5">
   <h1>All Events</h1>
-   <!--
-   <%= form_with(url: events_path, method: :get, local: true) do |form| %>
-    <%= form.select :sort_by, [['Ending date', 'ending_date'], ['Beginning date', 'beginning_date']], {}, { onchange: 'this.form.submit()' } %>
-  <% end %>
-  -->
- 
+  
+
   <div class="row">
     <% @events.each do |event| %>
       <div class="col-md-4 mb-4">
@@ -22,17 +18,36 @@
             <%= link_to 'View', event_path(event), class: 'btn btn-info' %>
             <% if event.user == current_user %>
               <%= link_to 'Edit', edit_event_path(event), class: 'btn btn-primary' %>
+              <%= link_to 'Delete', 'javascript:void(0);', class: 'btn btn-danger ms-2', 'data-bs-toggle': 'modal', 'data-bs-target': "#deleteEvent#{event.id}"  %>
               
-              <%= link_to 'Delete', event_path(event), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
-             
             <% end %>
           </div>
         </div>
       </div>
+      <!-- MODAL -->
+      <div class="modal fade" id="deleteEvent<%= event.id %>" tabindex="-1" aria-labelledby="deleteEventLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteEventLabel">Delete: <%= event.name %></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p> Are you sure you want to delete the event? </p>
+                <p>Deleting the events means also canceling all of the subscriptions</p>
+              
+              
+              <%= link_to "Delete", event, data: { turbo_method: :delete }, class: "btn btn-danger" %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--  END MODAL-->
     <% end %>
   </div>
 </div>
 
-<!-- TODO  
-DELETE 
-- MOSTRARE SOLO QUELLI VALIDI-->
+
+
+            
