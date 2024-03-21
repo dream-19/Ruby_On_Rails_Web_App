@@ -28,6 +28,16 @@ class User < ApplicationRecord
     self.type == UserRoles::USER_ORGANIZER || self.type == UserRoles::COMPANY_ORGANIZER
   end
 
+  def get_name
+    name = ''
+    if self.type == UserRoles::COMPANY_ORGANIZER
+      name = self.name 
+    else 
+      name = self.name + ' ' + self.surname
+    end
+    return name
+  end
+
   private
 
   #Apply camel case to fields
@@ -45,6 +55,4 @@ class User < ApplicationRecord
   end
 
 end
-
-
 

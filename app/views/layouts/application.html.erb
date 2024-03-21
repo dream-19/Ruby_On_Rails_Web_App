@@ -21,15 +21,10 @@
           <ul class="navbar-nav ms-auto">
             <!-- USER SIGNED IN-->
             <% if user_signed_in? %>
-              <li class="nav-item">
-                <a class="nav-link">
-                  <i class="bi bi-person-circle"></i>
-                  <%= current_user.type %>: 
-                </a>
-              </li>
+              
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <%= current_user.email %></a>
+                  Ciao <%= current_user.get_name %>!</a>
               </a>
               <ul class="dropdown-menu dropdown-menu-end text-center" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="#">
@@ -38,10 +33,22 @@
                     <% end %>
                   </a>
                 </li>
+                <% if current_user.type != UserRoles::USER_NORMAL %>
+                  <li>
+                    <a class="dropdown-item" href="#">
+                      <%= link_to my_events_path, class: 'nav-link' do %>
+                        <i class="bi bi-calendar"></i> My Events
+                      <% end %>
+                      
+                    </a>
+                  </li>
+                <% end %>
                 <li>
+                 
                   <a class="dropdown-item" href="#">
-                  <%= link_to 'All of the events', events_path %>
-                  <%= link_to 'My events', my_events_path %>
+                    <%= link_to root_path , class: 'nav-link' do %>
+                      <i class="bi bi-house"></i> Home
+                    <% end %>
                   </a>
                 </li>
                 <li><hr class="dropdown-divider"></li>
