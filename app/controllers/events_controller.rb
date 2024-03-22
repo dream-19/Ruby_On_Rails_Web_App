@@ -12,9 +12,9 @@ class EventsController < ApplicationController
       params[:order_by] = params[:order_by].split('-')[0]
 
       if params[:order_by] == 'organizer'
-        @events = Event.upcoming.joins(:user).order('users.name ' + direction)
+        @events = Event.upcoming.joins(:user).order('users.name ' +  direction)
       elsif params[:order_by] == 'participants'
-        @events = Event.upcoming.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id)' + direction)
+        @events = direction == 'asc' ? Event.upcoming.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) ASC' ) : Event.upcoming.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) DESC' )
       else
       @events =  Event.upcoming.order(params[:order_by] + ' ' + direction) 
       end

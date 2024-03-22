@@ -1,31 +1,41 @@
 <div class="container mt-5">
   <h1>All Events</h1>
   <div class="row">
-    
+    <!-- search by menù: selection for the field and input field -->
+    <div class="col-md-8 mb-3">
+
+    </div>
     <!-- Select menù to decide the order of the events -->
     <div class="col-md-4 mb-3">
-      <%= select_tag :order_by,
-               options_for_select({
-                'Beginning Date (ASC)' => 'beginning_date-asc',
-                'Beginning Date (DESC)' => 'beginning_date-desc',
-                'Beginning Time (ASC)' => 'beginning_time-asc',
-                'Beginning Time (DESC)' => 'beginning_time-desc',
-                'Ending Date (ASC)' => 'ending_date-asc',
-                'Ending Date (DESC)' => 'ending_date-desc',
-                'Ending Time (ASC)' => 'ending_time-asc',
-                'Ending Time (DESC)' => 'ending_time-desc',
-                'Name (ASC)' => 'name-asc',
-                'Name (DESC)' => 'name-desc',
-                'Number of Participants (ASC)' => 'participants-asc',
-                'Number of Participants (DESC)' => 'participants-desc',
-                'City (ASC)' => 'city-asc',
-                'City (DESC)' => 'city-desc',
-                'Organizer (ASC)' => 'organizer-asc',
-                'Organizer (DESC)' => 'organizer-desc'
-               }),
-               onchange: 'updateEventsList(this.value)',
-               class: 'form-select' %>
-    </div>
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <label for="order_by" class="form-label">Order By:</label>
+          </div>
+          <div class="col-md-9 mb-3">
+          <%= select_tag :order_by,
+                   options_for_select({
+                    'Beginning Date (ASC)' => 'beginning_date-asc',
+                    'Beginning Date (DESC)' => 'beginning_date-desc',
+                    'Beginning Time (ASC)' => 'beginning_time-asc',
+                    'Beginning Time (DESC)' => 'beginning_time-desc',
+                    'Ending Date (ASC)' => 'ending_date-asc',
+                    'Ending Date (DESC)' => 'ending_date-desc',
+                    'Ending Time (ASC)' => 'ending_time-asc',
+                    'Ending Time (DESC)' => 'ending_time-desc',
+                    'Name (ASC)' => 'name-asc',
+                    'Name (DESC)' => 'name-desc',
+                    'Number of Participants (ASC)' => 'participants-asc',
+                    'Number of Participants (DESC)' => 'participants-desc',
+                    'City (ASC)' => 'city-asc',
+                    'City (DESC)' => 'city-desc',
+                    'Organizer (ASC)' => 'organizer-asc',
+                    'Organizer (DESC)' => 'organizer-desc'
+                   }),
+                   onchange: 'updateEventsList(this.value)',
+                   class: 'form-select',
+                   id: 'order_by' %>
+        </div>
+      </div>
   </div>
 
   <div class="row" id ="events-list">
