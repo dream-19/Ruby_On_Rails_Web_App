@@ -1,24 +1,26 @@
-<div class="container-fluid">
-<h1>All Events</h1>
+<div class="container-fluid mt-4">
+  <h1 class="mb-4">My Events</h1>
 
-<div class="row">
-  <div class="col">
-    <%= link_to 'Create New Event', new_event_path, class: 'btn btn-success' %>
+  <div class="row mb-3">
+    <div class="col text-start">
+      <%= link_to 'Create New Event', new_event_path, class: 'btn btn-success' %>
+    </div>
+    <div class="col text-end">
+      <button id="bulk-delete" class="btn btn-danger">Delete Selected</button>
+    </div>
   </div>
-  <div class="col">
-    <button id="bulk-delete" class="btn btn-danger">Delete Selected</button>
 
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Current Events</h2>
+      <div id="current-events" data-events='<%= @current_events_json %>'></div>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <h2>Past Events</h2>
+      <div id="past-events" data-events='<%= @past_events_json %>'></div>
+    </div>
   </div>
 </div>
-
-<h2>Current Events</h2>
-<div id="current-events" data-events='<%= @current_events_json%>' %>'></div>
-
-
-<h2>Past Events</h2>
-<div id="past-events" data-events='<%= @past_events_json%>' %>'></div>
-</div>
-
-
-
-

@@ -213,7 +213,7 @@ function manageTable() {
       headerSort: false,
       formatter: function (cell, formatterParams, onRendered) {
         const rowData = cell.getRow().getData();
-        if (rowData.edit_url == null) {
+        if (rowData.edit_url == '') {
           return `<a href='${rowData.view_url}' class='btn btn-info'>View</a>`;
         } else {
           return `<a href='${rowData.view_url}' class='btn btn-info'>View</a>
@@ -226,6 +226,7 @@ function manageTable() {
   // Initialize Tabulator on the #current-events div if there is data
   if (eventData.length > 0) {
   table_current = new Tabulator("#current-events", {
+    layout:"fitData",
     placeholder: "No current events available",
     data: eventData, // Set data to your events
     columns: columns,
@@ -253,6 +254,7 @@ function manageTable() {
   // Initialize Tabulator on the #past-events div if there is data
   if (pastEventData.length > 0) {
     table_past = new Tabulator("#past-events", {
+      layout:"fitData",
       placeholder: "No past events available",
       data: pastEventData, // Set data to your events
       columns: columns,

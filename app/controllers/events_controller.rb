@@ -38,7 +38,10 @@ class EventsController < ApplicationController
 
   # GET /events/1
   def show
-    @event = Event.find(params[:id])
+    @event = Event.find_by(id: params[:id])
+    if @event.nil?
+      redirect_to events_path, alert: 'Event not found.'
+    end
   end
 
   # GET /events/new
@@ -48,6 +51,11 @@ class EventsController < ApplicationController
 
   # GET /events/1/edit
   def edit
+    # Check if the event has already ended
+    if @event.ending_date < Date.today
+      redirect_to @event, alert: 'You cannot edit an event that has already ended.'
+    end
+
     # Only the organizer can modify the event
     unless current_user == @event.user
       redirect_to @event, alert: 'You are not the organizer of this event.'
@@ -119,7 +127,10 @@ class EventsController < ApplicationController
 
     # Use callbacks to share common setup or constraints between actions.
     def set_event
-      @event = Event.find(params[:id])
+      @event = Event.find_by(id: params[:id])
+      if @event.nil?
+        redirect_to events_path, alert: 'Event not found.'
+      end
     end
 
     # Only allow a list of trusted parameters through.( the fields that you can modify)
@@ -152,8 +163,8 @@ class EventsController < ApplicationController
           cap: event.cap,
           province: event.province,
           country: event.country,
-          view_url: if editable then event_path(event) else '' end,
-          edit_url: edit_event_path(event)
+          view_url: event_path(event),
+          edit_url: if editable then edit_event_path(event) else '' end,
         }
       end.to_json
     end

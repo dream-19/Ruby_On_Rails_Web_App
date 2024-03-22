@@ -1,4 +1,10 @@
 <div class="container mt-5">
+  <% if @event.ending_date < Date.today %>
+    <div class="alert alert-info text-center" role="alert">
+      This event has already ended!
+    </div>
+  <%end %>
+
   <div class="row">
     <!-- Left Column: Event Details -->
     <div class="col-md-4">
@@ -11,7 +17,9 @@
       <%= @event.city %>, <%= @event.province %> (<%= @event.cap %>), <%= @event.country %></p>
       
       <% if @event.user == current_user %>
-        <%= link_to 'Edit', edit_event_path(@event), class: 'btn btn-primary me-2' %>
+        <% if @event.ending_date >= Date.today %>
+          <%= link_to 'Edit', edit_event_path(@event), class: 'btn btn-primary me-2' %>
+        <% end %>
          <%= link_to 'Delete', 'javascript:void(0);', class: 'btn btn-danger ms-2', 'data-bs-toggle': 'modal', 'data-bs-target': "#deleteEvent#{@event.id}"  %>
           <%= render 'modals/delete_event_modal', event: @event %>
       <% end %>
