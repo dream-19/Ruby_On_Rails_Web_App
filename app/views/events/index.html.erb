@@ -1,37 +1,51 @@
 <div class="container mt-5">
   <h1>All Events</h1>
-  
-
   <div class="row">
-    <% @events.each do |event| %>
-      <div class="col-md-4 mb-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title"><%= event.name %></h5>
-            <h6 class="card-text">Event Organizer: <%= event.user.get_name %></h6>
-            <h6 class="card-subtitle mb-2 text-muted">Start: <%= format_date(event.beginning_date) %> at <%= format_time(event.beginning_time) %></h6>
-            <h6 class="card-subtitle mb-2 text-muted">End: <%= format_date(event.ending_date) %> at <%= format_time(event.ending_time) %></h6>
-            <p class="card-text">Participants: <%= event.subscriptions.count %> / <%= event.max_participants %></p>
-            <p class="card-text">Address: <%= event.address %><br/>
-            <%= event.city %>, <%= event.province %> (<%= event.cap %>), <%= event.country %></p>
-          </div>
-          <div class="card-footer">
-            <%= link_to 'View', event_path(event), class: 'btn btn-info' %>
-            <% if event.user == current_user %>
-              <%= link_to 'Edit', edit_event_path(event), class: 'btn btn-primary' %>
-              <%= link_to 'Delete', 'javascript:void(0);', class: 'btn btn-danger ms-2', 'data-bs-toggle': 'modal', 'data-bs-target': "#deleteEvent#{event.id}"  %>
-              <%= render 'modals/delete_event_modal', event: event %>
-            <% end %>
-          </div>
-        </div>
-      </div>
-      
-    <% end %>
+    
+    <!-- Select menù to decide the order of the events -->
+    <div class="col-md-4 mb-3">
+      <%= select_tag :order_by,
+               options_for_select({
+                'Beginning Date (ASC)' => 'beginning_date-asc',
+                'Beginning Date (DESC)' => 'beginning_date-desc',
+                'Beginning Time (ASC)' => 'beginning_time-asc',
+                'Beginning Time (DESC)' => 'beginning_time-desc',
+                'Ending Date (ASC)' => 'ending_date-asc',
+                'Ending Date (DESC)' => 'ending_date-desc',
+                'Ending Time (ASC)' => 'ending_time-asc',
+                'Ending Time (DESC)' => 'ending_time-desc',
+                'Name (ASC)' => 'name-asc',
+                'Name (DESC)' => 'name-desc',
+                'Number of Participants (ASC)' => 'participants-asc',
+                'Number of Participants (DESC)' => 'participants-desc',
+                'City (ASC)' => 'city-asc',
+                'City (DESC)' => 'city-desc',
+                'Organizer (ASC)' => 'organizer-asc',
+                'Organizer (DESC)' => 'organizer-desc'
+               }),
+               onchange: 'updateEventsList(this.value)',
+               class: 'form-select' %>
+    </div>
   </div>
+
+  <div class="row" id ="events-list">
+    <%= render 'events_list', events: @events %>
+  </div>
+
 </div>
+<script>
+  function updateEventsList(orderBy) {
+    fetch(`/events?order_by=${orderBy}`, {
+      headers: {
+        'Accept': 'application/javascript',
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('events-list').innerHTML = html;
 
-
-
-
-
-            
+    })
+    .catch(error => console.error('Error:', error));
+  }
+</script>

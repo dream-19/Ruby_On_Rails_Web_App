@@ -6,9 +6,28 @@ class EventsController < ApplicationController
 
   # GET /events
   def index
-    @events = Event.upcoming
+    if params[:order_by].present? 
+      #order_by is in the form field_name-direction so split it
+      direction = params[:order_by].split('-')[1] # this can be 'asc' or 'desc'
+      params[:order_by] = params[:order_by].split('-')[0]
+
+      if params[:order_by] == 'organizer'
+        @events = Event.upcoming.joins(:user).order('users.name ' + direction)
+      elsif params[:order_by] == 'participants'
+        @events = Event.upcoming.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id)' + direction)
+      else
+      @events =  Event.upcoming.order(params[:order_by] + ' ' + direction) 
+      end
+    else 
+      @events = Event.upcoming.order(beginning_date: :asc)
+    end
+  
+  
+  respond_to do |format|
+    format.html # For regular requests
+    format.js { render partial: 'events_list', locals: { events: @events }, layout: false } # For AJAX requests
+  end
     
-    #.order(params[:sort_by])
   end
 
   def my_events
