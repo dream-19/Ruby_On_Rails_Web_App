@@ -7,7 +7,6 @@ class EventsController < ApplicationController
   # GET /events
   def index
     if params[:order_by].present? 
-      #order_by is in the form field_name-direction so split it
       direction = params[:order_by].split('-')[1] # this can be 'asc' or 'desc'
       params[:order_by] = params[:order_by].split('-')[0]
 
@@ -16,7 +15,25 @@ class EventsController < ApplicationController
       elsif params[:order_by] == 'participants'
         @events = direction == 'asc' ? Event.upcoming.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) ASC' ) : Event.upcoming.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) DESC' )
       else
+        #Normal case with order
       @events =  Event.upcoming.order(params[:order_by] + ' ' + direction) 
+    
+      end
+
+      # Check if search is present
+      if params[:search].present? and params[:search_by].present?
+        # special cases (organizer, date)
+        if params[:search_by] == 'organizer' # organizer can be name + surname
+          #TODO
+          @events = @events.joins(:user).where('users.name LIKE ? AND users.surname LIKE ?', '%' + params[:search] + '%', '%' + params[:search] + '%')
+        elsif params[:search_by] == ('beginning_date' || 'ending_date')
+          #TODO
+          date =params[:search]
+          @events = @events.where(params[:search_by] + ' LIKE ?', date)
+          
+        else
+          @events = @events.where(params[:search_by] + ' LIKE ?', '%' + params[:search] + '%')
+        end
       end
     else 
       @events = Event.upcoming.order(beginning_date: :asc)
@@ -164,6 +181,8 @@ class EventsController < ApplicationController
         redirect_to root_path, alert: 'You must be an organizer to access this section.'
       end
     end
+
+    
 
     # Formats the events as JSON
     def format_events_as_json(events, editable)

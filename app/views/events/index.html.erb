@@ -3,15 +3,44 @@
   <div class="row">
     <!-- search by menù: selection for the field and input field -->
     <div class="col-md-8 mb-3">
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <label for="search_by" class="form-label">Search By:</label>
+        </div>
+        <div class="col-md-9 mb-3">
+          <%= select_tag :search_by,
+                   options_for_select({
+                    'Name' => 'name',
+                    'Organizer' => 'organizer',
+                    'City' => 'city',
+                    'Cap' => 'cap',
+                    'Province' => 'province',
+                    'Country' => 'country',
+                    'Beginning Date' => 'beginning_date',
+                    'Ending Date' => 'ending_date',
+
+                   }),
+                   class: 'form-select',
+                   id: 'search_by' %>
+        </div>
+      </div>
+      <div class="row ">
+        <div class="col-md-3 mb-3">
+          <label for="search" class="form-label">Search:</label>
+        </div>
+        <div class="col-md-9 mb-3">
+          <%= text_field_tag :search, nil, class: 'form-control', id: 'search', oninput: 'updateEventsList()' %>
+        </div>
+      </div>
 
     </div>
     <!-- Select menù to decide the order of the events -->
     <div class="col-md-4 mb-3">
       <div class="row">
-        <div class="col-md-3 mb-3">
-          <label for="order_by" class="form-label">Order By:</label>
+         <p>Order By:</p>
           </div>
-          <div class="col-md-9 mb-3">
+
+          <div class="row mb-3">
           <%= select_tag :order_by,
                    options_for_select({
                     'Beginning Date (ASC)' => 'beginning_date-asc',
@@ -31,7 +60,7 @@
                     'Organizer (ASC)' => 'organizer-asc',
                     'Organizer (DESC)' => 'organizer-desc'
                    }),
-                   onchange: 'updateEventsList(this.value)',
+                   onchange: 'updateEventsList()',
                    class: 'form-select',
                    id: 'order_by' %>
         </div>
@@ -44,8 +73,21 @@
 
 </div>
 <script>
-  function updateEventsList(orderBy) {
-    fetch(`/events?order_by=${orderBy}`, {
+  function updateEventsList() {
+    var orderBy = document.getElementById('order_by').value;
+    var searchBy = document.getElementById('search_by').value;
+    var search = document.getElementById('search').value;
+    console.log(orderBy, searchBy, search);
+
+    var path = '';
+    if (searchBy && search && search.length > 0) {
+      
+
+      path = `/events?order_by=${orderBy}&search_by=${searchBy}&search=${search}`;
+    } else {
+      path = `/events?order_by=${orderBy}`;
+    }
+    fetch(path, {
       headers: {
         'Accept': 'application/javascript',
         'X-Requested-With': 'XMLHttpRequest'
@@ -58,4 +100,5 @@
     })
     .catch(error => console.error('Error:', error));
   }
+
 </script>
