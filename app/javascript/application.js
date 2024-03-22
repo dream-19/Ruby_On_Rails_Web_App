@@ -1,10 +1,12 @@
 // Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
 
+//= require rails-ujs
+//= require tabulator.min
+
 import "@hotwired/turbo-rails";
 import "controllers";
 import "popper";
 import "bootstrap";
-//= require rails-ujs
 
 const username = "helloworld";
 var countryNames = [];
@@ -18,51 +20,8 @@ var region = "";
 var province = "";
 var cap = ""; //I take the first cap
 var countryCode = "";
-
-document.addEventListener("turbo:load", () => {
-  const formsWithLocations = document.querySelectorAll('.form-with-locations');
-  if(formsWithLocations.length > 0) {
-    // Fetch the country (only if it is required by the form)
-    fetchCountries();
-  }
-  //Use event delegation to manage the click event on the country input (also when a form with error is submitted and reloaded with turbo)
-  document.addEventListener("input", (event) => {
-    // Check if the clicked element or any of its parents is the user_country element
-    const isCountrySelect = event.target.matches("#user_country") || event.target.closest("#user_country");
-    if (isCountrySelect) {
-      // Fetch and display country suggestions
-      countryInput = document.getElementById("user_country");
-      countrySuggestions = document.getElementById("countrySuggestions");
-      if (countryInput && countrySuggestions) {
-        countryInput.addEventListener("input", () => countrySuggest());
-      }
-    }
-
-    // Check if the clicked element or any of its parents is the user_city element
-    const isCitySelect = event.target.matches("#user_city") || event.target.closest("#user_city");
-    if (isCitySelect) {
-      // Fetch and display city suggestions (only if country is specified)
-      cityInput = document.getElementById("user_city");
-      citySuggestions = document.getElementById("citySuggestions");
-      if (cityInput && citySuggestions && countryInput) {
-        cityInput.addEventListener("input", () => citySuggest());
-      }
-    }
-  });
-
-  // Add event listeners to all the toggle password icons
-  document.addEventListener("mouseover", (event) => {
-    // Add event listeners to all the toggle password icons
-    const isTogglePasswordIcon = event.target.matches(".toggle-password-icon") || event.target.closest(".toggle-password-icon");
-    if (isTogglePasswordIcon) {
-      document.querySelectorAll(".toggle-password-icon").forEach((el) => {
-        el.addEventListener("click", togglePasswordVisibility);
-      });
-    }
-  });
-  
-});
-
+var table_current = "";
+var table_past = "";
 
 //FUNCTION TO TOGGLE THE PASSWORD VISIBILITY
 function togglePasswordVisibility() {
@@ -95,7 +54,6 @@ function fetchCountries() {
 
 //FUNCTION TO SUGGEST COUNTRIES
 function countrySuggest() {
- 
   const query = countryInput.value;
   if (query.length >= 1 && countryNames.length > 0) {
     // Start suggesting after 1 characters
@@ -220,3 +178,229 @@ function citySuggest() {
     citySuggestions.innerHTML = "";
   }
 }
+
+// Function to manage the Tabulator Table
+function manageTable() {
+  //Check if element with id #current-events exist (past-events is always present in the page, so no need to check it)
+  if (document.getElementById("current-events") == null) {
+    return;
+  }
+
+  //Take the data from the data-events attribute
+  const eventData = JSON.parse(
+    document.getElementById("current-events").getAttribute("data-events")
+  );
+  const pastEventData = JSON.parse(
+    document.getElementById("past-events").getAttribute("data-events")
+  );
+
+  // Define the columns based on your old table structure
+  const columns = [
+    { title: "Name", field: "name", headerFilter:"input" },
+    { title: "From", field: "beginning_date", sorter: dateSorter, headerFilter:"input" }, // Assuming format_date is handled server-side
+    { title: "Time", field: "beginning_time", headerFilter:"input" }, // Assuming format_time is handled server-side
+    { title: "To", field: "ending_date", sorter: dateSorter, headerFilter:"input" },
+    { title: "Time", field: "ending_time", headerFilter:"input" },
+    { title: "People", field: "participants", headerFilter:"input" },
+    { title: "Max", field: "max_participants", headerFilter:"input" },
+    { title: "Address", field: "address", headerFilter:"input" },
+    { title: "City", field: "city", headerFilter:"input" },
+    { title: "Cap", field: "cap", headerFilter:"input" },
+    { title: "Province", field: "province", headerFilter:"input" },
+    { title: "Country", field: "country", headerFilter:"input" },
+    {
+      title: "Actions",
+      headerSort: false,
+      formatter: function (cell, formatterParams, onRendered) {
+        const rowData = cell.getRow().getData();
+        if (rowData.edit_url == null) {
+          return `<a href='${rowData.view_url}' class='btn btn-info'>View</a>`;
+        } else {
+          return `<a href='${rowData.view_url}' class='btn btn-info'>View</a>
+                  <a href='${rowData.edit_url}' class='btn btn-warning'>Edit</a>`;
+        }
+      },
+    },
+  ];
+
+  // Initialize Tabulator on the #current-events div if there is data
+  if (eventData.length > 0) {
+  table_current = new Tabulator("#current-events", {
+    placeholder: "No current events available",
+    data: eventData, // Set data to your events
+    columns: columns,
+    cellVertAlign: "middle", // Vertically align the content in cells
+    cellHozAlign: "center",
+    pagination: "local", // Enable local pagination
+    paginationSize: 10, // Set the number of rows per page
+    paginationSizeSelector:[5, 10, 20, 50],
+    paginationCounter: "rows", //add pagination row counter
+    initialSort: [
+      // Set initial sorting
+      { column: "beginning_date", dir: "asc" },
+    ],
+    
+    rowHeader:{headerSort:false, resizable: false, frozen:true, headerHozAlign:"center", hozAlign:"center", formatter:"rowSelection", titleFormatter:"rowSelection", cellClick:function(e, cell){
+      cell.getRow().toggleSelect();
+    }},
+
+  });
+} else {
+  document.getElementById("current-events").innerHTML = `<div class="alert alert-info" role="alert"> There are no current events available </div>`;
+ 
+}
+
+  // Initialize Tabulator on the #past-events div if there is data
+  if (pastEventData.length > 0) {
+    table_past = new Tabulator("#past-events", {
+      placeholder: "No past events available",
+      data: pastEventData, // Set data to your events
+      columns: columns,
+      cellVertAlign: "middle", // Vertically align the content in cells
+      cellHozAlign: "center", // Horizontally align the content in cells
+      paginationCounter: "rows", //add pagination row counter
+      pagination: "local", // Enable local pagination
+      paginationSize: 10, // Set the number of rows per page
+      paginationSizeSelector:[5, 10, 20, 50],
+      initialSort: [
+        // Set initial sorting
+        { column: "ending_date", dir: "des" },
+      ],
+      rowHeader:{headerSort:false, resizable: false, frozen:true, headerHozAlign:"center", hozAlign:"center", formatter:"rowSelection", titleFormatter:"rowSelection", cellClick:function(e, cell){
+        cell.getRow().toggleSelect();
+      }},
+    });
+  }
+  else{
+    //show bootstrap alert
+    document.getElementById("past-events").innerHTML = `<div class="alert alert-info" role="alert"> No past events available </div>`;
+  }
+}
+
+function dateSorter(a, b, aRow, bRow, column, dir, sorterParams) {
+  // Convert dd-mm-yyyy formatted string to a comparable format
+  // Example: "12-03-2022" becomes "20220312"
+  function formatDate(dateStr) {
+    let parts = dateStr.split("-");
+    return parts[2] + parts[1] + parts[0]; // Reorder to YYYYMMDD
+  }
+
+  let formattedA = formatDate(a);
+  let formattedB = formatDate(b);
+
+  // Perform the comparison
+  if (formattedA < formattedB) {
+    return -1; // a is less than b
+  } else if (formattedA > formattedB) {
+    return 1; // a is greater than b
+  } else {
+    return 0; // a and b are equal
+  }
+}
+
+
+function manageBulkDelete() {
+    console.log(table_current);
+    console.log(table_past);
+    const selectedData = table_current != '' ? table_current.getSelectedData() : [];
+    const selectedDataPast = table_past != '' ? table_past.getSelectedData() : [];
+    const selectedDataAll = selectedData.concat(selectedDataPast);
+    const eventIds = selectedDataAll.map(event => event.id);
+    console.log("selected data id " + eventIds);
+
+
+    if (eventIds.length === 0) {
+      alert('Please select at least one event to delete.');
+      return;
+    }
+
+
+    if (!confirm('Are you sure you want to delete the selected events?')) return;
+
+    
+    fetch('/bulk_destroy', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content // Ensure CSRF token is sent
+        },
+        body: JSON.stringify({ event_ids: eventIds })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+          console.log("SUCCESS");
+            // Reload the table or remove deleted rows from the table view
+            if (table_current != ''){
+              table_current.setData('/events/data?event_type=current');
+            }
+            if (table_past != ''){
+              table_past.setData('/events/data?event_type=past');
+            }
+            console.log("table reloaded");
+            
+        } else {
+            // Handle failure
+            alert('There was an issue deleting the selected events.');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+
+}
+
+
+document.addEventListener("turbo:load", () => {
+  //Tabulator
+  manageTable();
+
+  // Bulk delete for events
+  if (document.getElementById("bulk-delete") != null) {
+    document.getElementById('bulk-delete').addEventListener('click',() => manageBulkDelete()); 
+  }
+
+  const formsWithLocations = document.querySelectorAll(".form-with-locations");
+  if (formsWithLocations.length > 0) {
+    // Fetch the country (only if it is required by the form)
+    fetchCountries();
+  }
+  //Use event delegation to manage the click event on the country input (also when a form with error is submitted and reloaded with turbo)
+  document.addEventListener("input", (event) => {
+    // Check if the clicked element or any of its parents is the user_country element
+    const isCountrySelect =
+      event.target.matches("#user_country") ||
+      event.target.closest("#user_country");
+    if (isCountrySelect) {
+      // Fetch and display country suggestions
+      countryInput = document.getElementById("user_country");
+      countrySuggestions = document.getElementById("countrySuggestions");
+      if (countryInput && countrySuggestions) {
+        countryInput.addEventListener("input", () => countrySuggest());
+      }
+    }
+
+    // Check if the clicked element or any of its parents is the user_city element
+    const isCitySelect =
+      event.target.matches("#user_city") || event.target.closest("#user_city");
+    if (isCitySelect) {
+      // Fetch and display city suggestions (only if country is specified)
+      cityInput = document.getElementById("user_city");
+      citySuggestions = document.getElementById("citySuggestions");
+      if (cityInput && citySuggestions && countryInput) {
+        cityInput.addEventListener("input", () => citySuggest());
+      }
+    }
+  });
+
+  // Add event listeners to all the toggle password icons
+  document.addEventListener("mouseover", (event) => {
+    // Add event listeners to all the toggle password icons
+    const isTogglePasswordIcon =
+      event.target.matches(".toggle-password-icon") ||
+      event.target.closest(".toggle-password-icon");
+    if (isTogglePasswordIcon) {
+      document.querySelectorAll(".toggle-password-icon").forEach((el) => {
+        el.addEventListener("click", togglePasswordVisibility);
+      });
+    }
+  });
+});

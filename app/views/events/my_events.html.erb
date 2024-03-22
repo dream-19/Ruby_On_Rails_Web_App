@@ -1,81 +1,24 @@
+<div class="container-fluid">
 <h1>All Events</h1>
 
-<%= link_to 'Create New Event', new_event_path, class: 'btn btn-success' %>
+<div class="row">
+  <div class="col">
+    <%= link_to 'Create New Event', new_event_path, class: 'btn btn-success' %>
+  </div>
+  <div class="col">
+    <button id="bulk-delete" class="btn btn-danger">Delete Selected</button>
+
+  </div>
+</div>
 
 <h2>Current Events</h2>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Start Date and Time</th>
-      <th>End Date and Time</th>
-      <th>Max Participants</th>
-      <th>Address</th>
-      <th>ZIP Code</th>
-      <th>Province</th>
-      <th>Country</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @current_events.each do |event| %>
-      <tr>
-        <td><%= event.name %></td>
-        <td><%= format_date(event.beginning_date) %> at <%= format_time(event.beginning_time) %></td>
-        <td><%= format_date(event.ending_date) %> at <%= format_time(event.ending_time) %></td>
-        <td><%= event.max_participants %></td>
-        <td><%= event.address %></td>
-        <td><%= event.cap %></td>
-        <td><%= event.province %></td>
-        <td><%= event.country %></td>
-        <td>
-          <%= link_to 'View', event_path(event), class: 'btn btn-info' %>
-          <% if event.user == current_user %>
-            <%= link_to 'Edit', edit_event_path(event), class: 'btn btn-warning' %>
-            <%= link_to 'Delete', 'javascript:void(0);', class: 'btn btn-danger ms-2', 'data-bs-toggle': 'modal', 'data-bs-target': "#deleteEvent#{event.id}" %>
-            <%= render 'modals/delete_event_modal', event: event %>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<div id="current-events" data-events='<%= @current_events_json%>' %>'></div>
+
 
 <h2>Past Events</h2>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Start Date and Time</th>
-      <th>End Date and Time</th>
-      <th>Max Participants</th>
-      <th>Address</th>
-      <th>ZIP Code</th>
-      <th>Province</th>
-      <th>Country</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @past_events.each do |event| %>
-      <tr>
-        <td><%= event.name %></td>
-        <td><%= format_date(event.beginning_date) %> at <%= format_time(event.beginning_time) %></td>
-        <td><%= format_date(event.ending_date) %> at <%= format_time(event.ending_time) %></td>
-        <td><%= event.max_participants %></td>
-        <td><%= event.address %></td>
-        <td><%= event.cap %></td>
-        <td><%= event.province %></td>
-        <td><%= event.country %></td>
-        <td>
-          <%= link_to 'View', event_path(event), class: 'btn btn-info' %>
-          <% if event.user == current_user %>
-            <%= link_to 'Edit', edit_event_path(event), class: 'btn btn-warning' %>
-            <%= link_to 'Delete', 'javascript:void(0);', class: 'btn btn-danger ms-2', 'data-bs-toggle': 'modal', 'data-bs-target': "#deleteEvent#{event.id}" %>
-            <%= render 'modals/delete_event_modal', event: event %>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<div id="past-events" data-events='<%= @past_events_json%>' %>'></div>
+</div>
+
+
+
+

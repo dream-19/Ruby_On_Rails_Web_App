@@ -13,6 +13,10 @@ Rails.application.routes.draw do
   registrations: 'users/registrations'
 }
 
+get 'my_events', to: 'events#my_events'
+post '/bulk_destroy', to: 'events#bulk_destroy' 
+get 'events/data', to: 'events#data', as: :events_data #before resources, otherwise it will be overridden!
 resources :events
-get 'my_events', to: 'events#my_events' 
+
+
 end
