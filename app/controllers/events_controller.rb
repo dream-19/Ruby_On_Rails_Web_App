@@ -12,7 +12,8 @@ class EventsController < ApplicationController
   end
 
   def my_events
-    @events = current_user.events # Assumendo che tu abbia una relazione `has_many :events` in User
+    @current_events = current_user.events.upcoming
+    @past_events = current_user.events.past
     render :my_events
   end
 

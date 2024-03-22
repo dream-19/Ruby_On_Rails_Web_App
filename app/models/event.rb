@@ -9,9 +9,15 @@ class Event < ApplicationRecord
   before_save :apply_camel_case
   validate :validate_time_date
 
+  # Return the events that are upcoming
   def self.upcoming
     where("ending_date >= ?", Date.today)
   end
+
+  # Return the events that are past
+  def self.past 
+    where("ending_date < ?", Date.today)
+  end 
 
   private
 
