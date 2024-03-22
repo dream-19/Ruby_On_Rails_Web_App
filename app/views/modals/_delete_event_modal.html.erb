@@ -1,20 +1,17 @@
+<!-- MODAL -->
 <div class="modal fade" id="deleteEvent<%= event.id %>" tabindex="-1" aria-labelledby="deleteEventLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="deleteEventLabel">Delete</h5>
+        <h5 class="modal-title" id="deleteEventLabel">Delete Event: <%= event.name %></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body text-center">
-          <p> Are you sure you want to delete the event? </p>
-          <p>Deleting the events means also canceling all of the subscriptions</p>
-        
-        
-         <%= link_to "Delete", event, data: { turbo_method: :delete }, class: "btn btn-danger" %>
+        <p> Are you sure you want to delete the event? </p>
+        <p>Deleting the events means also canceling all of the subscriptions</p>
+        <%= link_to "Delete", event, data: { turbo_method: :delete }, class: "btn btn-danger" %>
       </div>
     </div>
   </div>
 </div>
-
-
-            
+<!--  END MODAL-->

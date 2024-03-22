@@ -32,7 +32,8 @@
           <%= link_to 'Visualizza', event_path(event), class: 'btn btn-info' %>
           <% if event.user == current_user %>
             <%= link_to 'Modifica', edit_event_path(event), class: 'btn btn-warning' %>
-            <%= link_to 'Elimina', event_path(event), method: :delete, data: { confirm: 'Sei sicuro di voler eliminare questo evento?' }, class: 'btn btn-danger' %>
+             <%= link_to 'Delete', 'javascript:void(0);', class: 'btn btn-danger ms-2', 'data-bs-toggle': 'modal', 'data-bs-target': "#deleteEvent#{event.id}"  %>
+            <%= render 'modals/delete_event_modal', event: event %>
           <% end %>
         </td>
       </tr>

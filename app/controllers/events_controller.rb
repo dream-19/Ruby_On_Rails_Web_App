@@ -73,7 +73,6 @@ class EventsController < ApplicationController
 
   # DELETE /events/1
   def destroy
-    Rails.logger.debug("CARLA")
     # Only the organizer can destroy the event
     unless current_user == @event.user
       redirect_to @event, alert: 'You are not authorized to destroy this event.'
@@ -81,7 +80,8 @@ class EventsController < ApplicationController
     end
 
     @event.destroy
-    redirect_to events_url, notice: 'Event was successfully destroyed.'
+    # Redirect to my_events_path
+    redirect_to my_events_path, notice: 'Event was successfully destroyed.'
   end
 
   private
