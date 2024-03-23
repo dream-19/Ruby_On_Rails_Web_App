@@ -18,6 +18,7 @@
                     'Country' => 'country',
                     'Beginning Date' => 'beginning_date',
                     'Ending Date' => 'ending_date',
+                    'Date Interval' => 'interval',
 
                    }),
                    onchange: 'updateEventsList()',
@@ -25,12 +26,25 @@
                    id: 'search_by' %>
         </div>
       </div>
-      <div class="row ">
+      <!-- Normal Search Menù -->
+      <div class="row", id="single-search-field">
         <div class="col-md-3 mb-3">
           <label for="search" class="form-label">Search:</label>
         </div>
         <div class="col-md-9 mb-3">
           <%= text_field_tag :search, nil, class: 'form-control', id: 'search', oninput: 'updateEventsList()' %>
+        </div>
+      </div>
+
+      <!-- Date Interval Fields (Initially Hidden) -->
+      <div class="row d-none" id="interval-search-fields">
+        <div class="col-md-6 mb-3">
+          <%= label_tag :from_date, 'From:', class: 'form-label' %>
+          <%= date_field_tag :from_date, nil, class: 'form-control', id: 'from_date', oninput: 'updateEventsList()' %>
+        </div>
+        <div class="col-md-6 mb-3">
+          <%= label_tag :to_date, 'To:', class: 'form-label' %>
+          <%= date_field_tag :to_date, nil, class: 'form-control', id: 'to_date', oninput: 'updateEventsList()' %>
         </div>
       </div>
 
@@ -75,19 +89,35 @@
 </div>
 <script>
   function updateEventsList() {
+
+   
     var orderBy = document.getElementById('order_by').value;
     var searchBy = document.getElementById('search_by').value;
     var search = document.getElementById('search').value;
+    var useInterval = searchBy === 'interval';
     console.log(orderBy, searchBy, search);
 
-    var path = '';
-    if (searchBy && search && search.length > 0) {
-      
+    var path = `/events?order_by=${orderBy}`;
 
-      path = `/events?order_by=${orderBy}&search_by=${searchBy}&search=${search}`;
+    console.log(useInterval);
+    if (useInterval) {
+      var fromDate = document.getElementById('from_date').value;
+      var toDate = document.getElementById('to_date').value;
+      // strip spaces
+      fromDate = fromDate.replace(/\s/g, '');
+      toDate = toDate.replace(/\s/g, '');
+      if (fromDate || toDate) {
+        path += `&search_by=${searchBy}&from_date=${fromDate}&to_date=${toDate}`;
+      }
     } else {
-      path = `/events?order_by=${orderBy}`;
+      var search = document.getElementById('search').value;
+      search = search.replace(/\s/g, '');
+      if (search) {
+        path += `&search_by=${searchBy}&search=${search}`;
+      }
     }
+
+
     fetch(path, {
       headers: {
         'Accept': 'application/javascript',
@@ -101,5 +131,12 @@
     })
     .catch(error => console.error('Error:', error));
   }
+
+  document.getElementById('search_by').addEventListener('change', function() {
+  var searchBy = this.value;
+  var isInterval = searchBy === 'interval';
+  document.getElementById('single-search-field').classList.toggle('d-none', isInterval);
+  document.getElementById('interval-search-fields').classList.toggle('d-none', !isInterval);
+});
 
 </script>

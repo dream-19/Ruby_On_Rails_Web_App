@@ -6,6 +6,7 @@ class EventsController < ApplicationController
 
   # GET /events
   def index
+    begin
     if params[:order_by].present? 
       direction = params[:order_by].split('-')[1] # this can be 'asc' or 'desc'
       params[:order_by] = params[:order_by].split('-')[0]
@@ -20,17 +21,28 @@ class EventsController < ApplicationController
     
       end
 
-      # Check if search is present
-      if params[:search].present? and params[:search_by].present? && !params[:search].strip.empty?
+      # Check if search is present (normal search or interval search)
+      if params[:search_by].present? and (params[:search].present? || params[:from_date].present? || params[:to_date].present? ) 
         # special cases (organizer, date)
         if params[:search_by] == 'organizer' # organizer can be name + surname
           @events = @events.joins(:user).where('CONCAT(users.name,\' \',users.surname) LIKE ?', '%' + params[:search] + '%')
          elsif params[:search_by] == ('beginning_date' || 'ending_date')
           #TODO
-         
           date = iso_date(params[:search])
           @events = @events.where(params[:search_by] + ' LIKE ?','%' + date + '%')
           
+         elsif params[:search_by] == 'interval'
+          from_date = params[:from_date]
+          to_date = params[:to_date]
+          
+          if from_date.present? && to_date.present?
+            @events = @events.where('beginning_date >= ? AND ending_date <= ?', from_date, to_date)
+          elsif from_date.present?
+            @events = @events.where('beginning_date >= ?', from_date)
+          else 
+            @events = @events.where('ending_date <= ?', to_date)
+          end
+
         else
           @events = @events.where(params[:search_by] + ' LIKE ?', '%' + params[:search] + '%')
         end
@@ -40,10 +52,20 @@ class EventsController < ApplicationController
     end
   
   
+  rescue ActiveRecord::StatementInvalid => e
+    Rails.logger.error "Failed to fetch events: #{e.message}"
+    flash[:error] = "There was a problem fetching the events."
+    
+    # Redirect or set @events to a safe default
+    @events = Event.upcoming.order(beginning_date: :asc)
+  end
+
   respond_to do |format|
     format.html # For regular requests
     format.js { render partial: 'events_list', locals: { events: @events }, layout: false } # For AJAX requests
   end
+
+  
     
   end
 
@@ -184,7 +206,7 @@ class EventsController < ApplicationController
 
     #Format date to iso
     def iso_date(date)
-      # Return early if date is nil or not a string
+      # Return early if date is nil or not a string or not a date
       return date unless date.is_a?(String)
       
       Rails.logger.debug("date: #{date}")
