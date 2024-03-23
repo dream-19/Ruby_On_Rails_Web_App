@@ -10,7 +10,7 @@
         <div class="col-md-9 mb-3">
           <%= select_tag :search_by,
                    options_for_select({
-                    'Name' => 'name',
+                    'Event Name' => 'name',
                     'Organizer' => 'organizer',
                     'City' => 'city',
                     'Cap' => 'cap',
@@ -20,6 +20,7 @@
                     'Ending Date' => 'ending_date',
 
                    }),
+                   onchange: 'updateEventsList()',
                    class: 'form-select',
                    id: 'search_by' %>
         </div>
@@ -36,7 +37,7 @@
     </div>
     <!-- Select menù to decide the order of the events -->
     <div class="col-md-4 mb-3">
-      <div class="row">
+      <div class="row mb-3">
          <p>Order By:</p>
           </div>
 
