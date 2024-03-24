@@ -125,10 +125,6 @@ class EventsController < ApplicationController
   def create
     @event = current_user.events.build(event_params)
     if @event.save
-      images = params[:event][:photos]
-      puts params.inspect
-      Rails.logger.debug("images: #{images}")
-      
       # Reindirizzamento in caso di successo
       redirect_to @event, notice: 'Event was successfully created.'
       
@@ -149,12 +145,17 @@ class EventsController < ApplicationController
     end
 
     # Check if the number of participants hasn't been lowered too much
-    if event_params[:max_participants].to_i <  @event.subscriptions.count
+    if event_params[:max_participants].to_i < @event.subscriptions.count
       redirect_to edit_event_path(@event), alert: 'The number of participants cannot be lowered below the current number of attendees: ' + @event.subscriptions.count.to_s
       return
     end
-    @event.subscriptions.count
-    if @event.update(event_params)
+
+    
+
+      # Update event with new attributes excluding direct photo assignments if necessary
+    if @event.update(event_params.except(:photos))
+        # Attach new photos without replacing existing ones
+        attach_new_photos if params[:event][:photos].present?
       redirect_to @event, notice: 'Event was successfully updated.'
     else
       render my_events_path
@@ -185,7 +186,26 @@ class EventsController < ApplicationController
     end
   end
 
+  # delete photo with id
+  def delete_photo
+    id = params[:photo_id]
+    photo = ActiveStorage::Attachment.find_by(id: id)
+    if photo.present? && photo.record.user == current_user
+      photo.purge
+      render json: { success: true }
+    else
+      render json: { success: false }, status: :unprocessable_entity
+    end
+  end
+
   private
+
+  # Attach new photo if presents
+  def attach_new_photos
+      params[:event][:photos].each do |photo|
+        @event.photos.attach(photo)
+    end
+  end
 
     # Use callbacks to share common setup or constraints between actions.
     def set_event

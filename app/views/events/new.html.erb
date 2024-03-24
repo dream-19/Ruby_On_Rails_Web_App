@@ -3,7 +3,7 @@
     <div class="col-lg-10">
       <div class="card shadow-lg p-4">
         <h2>New Event</h2>
-        <%= form_for @event, html: { class: "form-horizontal form-with-locations", multipart: true } do |f| %>
+        <%= form_for @event, html: { class: "form-horizontal form-with-locations form-with-photos", multipart: true } do |f| %>
           <div class="row">
             <div class="col-md-10 mb-3">
               <%= render "common_fields_form/name_field", f: f, resource: @event, required: true, label: "Event Name" %>
@@ -91,7 +91,7 @@
         
         //add the delete option
         const deleteButton = document.createElement('button');
-        deleteButton.className = 'btn btn-outline-secondary photo-delete';
+        deleteButton.className = 'btn btn-outline-danger photo-delete';
         deleteButton.id = 'photo-delete-' + id_counter;
         deleteButton.type = 'button';
         deleteButton.innerHTML = '<i class="bi bi-x-lg"></i>';

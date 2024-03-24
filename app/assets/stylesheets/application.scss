@@ -14,39 +14,24 @@
  *= require_self
  */
 
- @import "bootstrap";
- @import "tabulator.min";
+@import "bootstrap";
+@import "tabulator.min";
 
-
- // css for every country selection menù
- .suggestions {
-    max-height: 400px; /* Adjust based on your needs */
-    overflow-y: auto; /* Makes the list scrollable */
+// css for every country selection menù
+.suggestions {
+  max-height: 400px; /* Adjust based on your needs */
+  overflow-y: auto; /* Makes the list scrollable */
 }
-  
+
 .list-group-item:hover {
-    background-color: #007bff; /* Bootstrap's primary blue color */
-    color: white; /* Change text color to white on hover for better readability */
+  background-color: #007bff; /* Bootstrap's primary blue color */
+  color: white; /* Change text color to white on hover for better readability */
 }
 
 .asterisk {
-    color: red;
+  color: red;
 }
 
-
-// x icon color
-.bi-file-x{
-    color:red !important;
+.input-group-photo {
+  align-items: center;
 }
-
-
-  
-  
-  
-
-  .input-group-photo {
-    align-items: center;
-  }
-  
- 
-  
