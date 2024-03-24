@@ -1,0 +1,12 @@
+<%= f.label :photos, "Photos (max 3)", class: 'form-label' %>
+<div id="photos-input-container" class="input-group">
+  <!-- Added with js -->
+</div>
+<% if resource.errors[:photos].present? %>
+  <div class="invalid-feedback d-block">
+    <% resource.errors.full_messages_for(:photos).each do |message| %>
+      <%= message %><br>
+    <% end %>
+  </div>
+<% end %>
+<button type="button" id="add-photo-button" class="btn btn-secondary">Add Another Photo</button>
