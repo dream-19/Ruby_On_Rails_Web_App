@@ -8,6 +8,8 @@ import "controllers";
 import "popper";
 import "bootstrap";
 
+
+// Variables to manage locations
 const username = "helloworld";
 var countryNames = [];
 var countryInfos = [];
@@ -22,6 +24,138 @@ var cap = ""; //I take the first cap
 var countryCode = "";
 var table_current = "";
 var table_past = "";
+
+// variables to manage photos
+var photoInputCount = 0;
+var maxPhotos = 3; //max number of photos
+var id_counter = 0;
+
+
+//FUNCTIONS TO MANAGE PHOTOS
+
+  // Function to update the image preview
+  function updateImagePreview(input, previewContainerId) {
+    console.log("updateImagePreview");
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        let previewContainer = document.getElementById(previewContainerId);
+        previewContainer.innerHTML = ''; // Clear existing content
+        let img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.maxWidth = '100px'; // Set the preview size here
+        img.style.maxHeight = '100px';
+        previewContainer.appendChild(img);
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  // Delete the entire input group
+  function deleteElement(element) {
+    const elementId = element.id;
+    const inputId = elementId.replace('photo-delete-', 'input-');
+
+    const inputElement = document.getElementById(inputId);
+    console.log("delete " +inputElement);
+    if (inputElement) {
+      inputElement.remove();
+      photoInputCount--;
+      checkVisibility();
+    }
+  }
+
+  //Function to check if 'add photo' button must be hidden
+  function checkVisibility(){
+    if (photoInputCount < maxPhotos) {
+        document.getElementById('add-photo-button').style.display = 'block';
+      }
+    else{
+      document.getElementById('add-photo-button').style.display = 'none';
+    }
+  }
+
+  //function to delete a photo
+  function delete_single_photo(photoId){
+    if (confirm('Are you sure you want to delete this photo?')) {
+      fetch('/delete_photo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content // Ensure CSRF token is sent
+            },
+            body: JSON.stringify({ photo_id : photoId })
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                console.log("SUCCESS");
+                photoInputCount--;
+                checkVisibility();
+
+                document.getElementById(`existing-input-${photoId}`).remove();
+
+
+              } else {
+                  // Handle failure
+                  alert('Try Again');
+              }
+          })
+        .catch(error => console.error('Error:', error));
+    }
+  }
+
+  // function to add the element to add photos
+  function add_element_photo(){
+    if (photoInputCount < maxPhotos) {
+        photoInputCount++;
+        id_counter++;
+
+        //add the new input group
+        let inputGroup = document.createElement('div');
+        inputGroup.setAttribute('class', 'input-group mb-3 input-group-photo');
+        inputGroup.setAttribute('id', 'input-' + id_counter);
+
+        // add the input file
+        let newInput = document.createElement('input');
+        newInput.setAttribute('type', 'file');
+        newInput.setAttribute('name', 'event[photos][]');
+        newInput.setAttribute('id', 'photo-input-' + photoInputCount);
+        newInput.setAttribute('class', 'photo-input form-control');
+        newInput.setAttribute('accept', 'image/png,image/jpeg,image/jpg');
+        newInput.addEventListener('change', function(event) {
+          updateImagePreview(event.target, previewContainer.id);
+        });
+
+        //add the delete option
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-outline-danger photo-delete';
+        deleteButton.id = 'photo-delete-' + id_counter;
+        deleteButton.type = 'button';
+        deleteButton.innerHTML = '<i class="bi bi-x-lg"></i>';
+        deleteButton.addEventListener('click', function() {
+          deleteElement(inputGroup);
+        });
+
+        // Create a container for the image preview
+        let previewContainer = document.createElement('div');
+        previewContainer.className = 'image-preview-container d-flex justify-content-center align-items-center me-2';
+        previewContainer.id = 'preview-' + id_counter;
+
+
+        //append child
+        inputGroup.appendChild(previewContainer);
+        inputGroup.appendChild(newInput);
+        inputGroup.appendChild(deleteButton);
+
+        document.getElementById('photos-input-container').appendChild(inputGroup);
+
+      }
+
+       //check the value of photoInputCount, when it reaches 3 the button add another photo is hidden
+      checkVisibility();
+  }
+
 
 //FUNCTION TO TOGGLE THE PASSWORD VISIBILITY
 function togglePasswordVisibility() {
@@ -351,7 +485,54 @@ function manageBulkDelete() {
 }
 
 
+//SETTING UP EVENT LISTENERS FOR THE PHOTO MANAGEMENT
+function setUpEventListenersPhotos() {
+
+  //manage form with photos
+  const formsWithPhotos = document.querySelectorAll(".form-with-photos");
+  if (formsWithPhotos.length > 0 ){
+    // delete button for existing photos (send delete requests to Rails server)
+    document.querySelectorAll('.photo-delete-existing').forEach(button => {
+      button.addEventListener('click', function() {
+        const photoId = this.getAttribute('data-photo-id');
+        console.log("deleting photo with id: "+ photoId);
+        delete_single_photo(photoId);
+        });
+    });
+
+    //Count how many photo are already present
+    var existingPhotos = document.querySelectorAll('.input-group-photo').length;
+    photoInputCount = existingPhotos; // Initialize with the number of already displayed photos
+    //id_counter = existingPhotos;
+
+
+    // When we click 'add photo' a field to add the photo is added
+    document.getElementById('add-photo-button').addEventListener('click', function() {
+      add_element_photo();
+    });
+
+    //First element automatically added (if needed)
+    if (photoInputCount < maxPhotos && id_counter == 0 ){
+      document.getElementById('add-photo-button').click();
+    }
+
+  }
+
+}
+
+
+
+//Render after form fail :)
+document.addEventListener("turbo:render",() => {
+  console.log("render called");
+  setUpEventListenersPhotos();
+});
+
+
 document.addEventListener("turbo:load", () => {
+  console.log("load called");
+  setUpEventListenersPhotos();
+
   //Tabulator
   manageTable();
 

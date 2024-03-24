@@ -150,15 +150,14 @@ class EventsController < ApplicationController
       return
     end
 
-    
-
       # Update event with new attributes excluding direct photo assignments if necessary
     if @event.update(event_params.except(:photos))
         # Attach new photos without replacing existing ones
         attach_new_photos if params[:event][:photos].present?
       redirect_to @event, notice: 'Event was successfully updated.'
     else
-      render my_events_path
+      # Manage errors
+      render :edit, status: :unprocessable_entity
     end
   end
 
