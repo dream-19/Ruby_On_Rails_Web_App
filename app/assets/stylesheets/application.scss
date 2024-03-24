@@ -35,3 +35,24 @@
 .input-group-photo {
   align-items: center;
 }
+
+
+// carousel style
+/* Adjust the size of the carousel */
+#eventPhotosCarousel {
+  max-width: 100%; /* Adjust based on your layout. 100% means it will take the full width of its container */
+}
+
+/* Adjust the height of images within the carousel. */
+.carousel-item img {
+  max-height: 400px; /* Set a max-height for the images */
+  object-fit: cover; /* This makes sure the images cover the area nicely */
+  width: auto; /* Adjust width automatically */
+  margin: 0 auto; /* Center the images if they are smaller than the container */
+}
+
+
+
+.carousel-control-prev, .carousel-control-next {
+  width: 4%; /* Adjust control size */
+}

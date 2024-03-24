@@ -77,6 +77,7 @@ var id_counter = 0;
 
   //function to delete a photo
   function delete_single_photo(photoId){
+    console.log("function delete single called");
     if (confirm('Are you sure you want to delete this photo?')) {
       fetch('/delete_photo', {
             method: 'POST',
