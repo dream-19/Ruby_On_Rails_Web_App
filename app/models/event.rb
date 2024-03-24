@@ -8,6 +8,15 @@ class Event < ApplicationRecord
 
   before_save :apply_camel_case
   validate :validate_time_date
+  validate :photos_validation
+
+  # Relationship
+  belongs_to :user
+  has_many_attached :photos
+  # An event can have many users subscribe to it
+  has_many :subscriptions, dependent: :destroy
+  # Through subscriptions, an event can have many subscribers (users)
+  has_many :subscribers, through: :subscriptions, source: :user
 
   # Return the events that are upcoming
   def self.upcoming
@@ -20,6 +29,16 @@ class Event < ApplicationRecord
   end 
 
   private
+
+  #Validate the photos: the format and the number of photos (max 3)
+  def photos_validation
+    errors.add(:photos, "You can upload up to 3 photos.") if photos.size > 3
+    #check content type
+    photos.each do |photo|
+      errors.add(:photos, "must be a JPEG/JPG or PNG") unless photo.content_type.in?(%('image/jpeg image/png image/jpg'))
+    end
+
+  end
 
   # Validate the time format and date 
   # The time format must be in the 'HH:MM:SS' format
@@ -65,11 +84,5 @@ class Event < ApplicationRecord
     str.split.map(&:capitalize).join(' ')
   end
 
-  belongs_to :user
-
-  # An event can have many users subscribe to it
-  has_many :subscriptions, dependent: :destroy
- 
-  # Through subscriptions, an event can have many subscribers (users)
-  has_many :subscribers, through: :subscriptions, source: :user
+  
 end

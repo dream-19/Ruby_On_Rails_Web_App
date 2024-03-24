@@ -125,6 +125,10 @@ class EventsController < ApplicationController
   def create
     @event = current_user.events.build(event_params)
     if @event.save
+      images = params[:event][:photos]
+      puts params.inspect
+      Rails.logger.debug("images: #{images}")
+      
       # Reindirizzamento in caso di successo
       redirect_to @event, notice: 'Event was successfully created.'
       
@@ -193,7 +197,7 @@ class EventsController < ApplicationController
 
     # Only allow a list of trusted parameters through.( the fields that you can modify)
     def event_params
-      params.require(:event).permit(:name, :beginning_time, :beginning_date, :ending_time, :ending_date, :max_participants, :address, :cap, :province, :city, :country, :description)
+      params.require(:event).permit(:name, :beginning_time, :beginning_date, :ending_time, :ending_date, :max_participants, :address, :cap, :province, :city, :country, :description, photos: [])
     end
 
   

@@ -3,7 +3,7 @@
     <div class="col-lg-10">
       <div class="card shadow-lg p-4">
         <h2>New Event</h2>
-        <%= form_for @event, html: { class: "form-horizontal form-with-locations" } do |f| %>
+        <%= form_for @event, html: { class: "form-horizontal form-with-locations", multipart: true } do |f| %>
           <div class="row">
             <div class="col-md-10 mb-3">
               <%= render "common_fields_form/name_field", f: f, resource: @event, required: true, label: "Event Name" %>
@@ -15,7 +15,6 @@
           <div class="mb-3">
             <%= render "common_fields_form/description_field", f: f, resource: @event %>
           </div>
-
           <div class="row">
             <div class="col-md-3 mb-3">
               <%= render "common_fields_form/beginning_date_field", f: f, resource: @event, required: true  %>
@@ -47,6 +46,29 @@
           <div class="mb-3">
             <%= render "common_fields_form/address_field", f: f, resource: @event, required: true  %>
           </div>
+          <!-- photo field -->
+          <!-- Photo field -->
+          <div class="mb-3">
+            <%= f.label :photos, "Photos (max 3)", class: 'form-label' %>
+            <div id="photos-input-container" class="input-group">
+              <div class="input-group mb-3" id="input-1">
+                <input type="file" name="event[photos][]" id="photo-input-1" class="form-control" direct_upload: true accept="image/png,image/jpeg,image/jpg">
+                <button class="btn btn-outline-secondary photo-delete" type="button" id="photo-delete-1">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+            </div>
+            <% if @event.errors[:photos].present? %>
+              <div class="invalid-feedback d-block">
+                <% @event.errors.full_messages_for(:photos).each do |message| %>
+                  <%= message %><br>
+                <% end %>
+              </div>
+            <% end %>
+            <button type="button" id="add-photo-button" class="btn btn-secondary">Add Another Photo</button>
+          </div>
+          <!-- End photo field -->
+          <!-- end photo field -->
           <%= render "common_fields_form/display_errors", f: f, resource: @event, required: true  %>
           <div class="actions d-grid gap-2">
             <%= f.submit "Create Event", class: "btn btn-primary" %>
@@ -56,3 +78,79 @@
     </div>
   </div>
 </div>
+
+
+<script>
+  var photoInputCount = 0;
+  const maxPhotos = 3; // Maximum number of photos
+  var id_counter = 1;
+
+  document.addEventListener("DOMContentLoaded", function() {
+    photoInputCount = 1;
+
+    document.getElementById('add-photo-button').addEventListener('click', function() {
+      if (photoInputCount < maxPhotos) {
+        photoInputCount++;
+        id_counter++;
+
+        //add the new input
+        let inputGroup = document.createElement('div');
+        inputGroup.setAttribute('class', 'input-group mb-3');
+        inputGroup.setAttribute('id', 'input-' + id_counter);
+      
+
+        let newInput = document.createElement('input');
+        newInput.setAttribute('type', 'file');
+        newInput.setAttribute('name', 'event[photos][]');
+        newInput.setAttribute('id', 'photo-input-' + photoInputCount);
+        newInput.setAttribute('class', 'photo-input form-control');
+        newInput.setAttribute('accept', 'image/png,image/jpeg,image/jpg');
+        
+        //add the delete option
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-outline-secondary photo-delete';
+        deleteButton.id = 'photo-delete-' + id_counter;
+        deleteButton.type = 'button';
+        deleteButton.innerHTML = '<i class="bi bi-x-lg"></i>';
+        deleteButton.addEventListener('click', function() {
+          deleteElement(inputGroup);
+        });
+
+        //append child
+        inputGroup.appendChild(newInput);
+        inputGroup.appendChild(deleteButton);
+        document.getElementById('photos-input-container').appendChild(inputGroup);
+
+      }
+
+       //check the value of photoInputCount, when it reaches 3 the button add another photo is hidden
+      if(photoInputCount == maxPhotos){
+        document.getElementById('add-photo-button').style.display = 'none';
+      }
+    });
+
+    //add an event listener to every element with the class photo-delete
+    document.querySelectorAll('.photo-delete').forEach(function(element) {
+          element.addEventListener('click',() => deleteElement(element));
+    });
+
+
+
+  });
+
+  function deleteElement(element) {
+    const elementId = element.id;
+    const inputId = elementId.replace('photo-delete-', 'input-');
+
+    const inputElement = document.getElementById(inputId);
+    console.log("delete " +inputElement);
+    if (inputElement) {
+      inputElement.remove();
+      photoInputCount--;
+      if (photoInputCount < maxPhotos) {
+        document.getElementById('add-photo-button').style.display = 'block';
+      }
+    }
+  }
+
+</script>

@@ -8,6 +8,9 @@
   <div class="row">
     <!-- Left Column: Event Details -->
     <div class="col-md-4">
+      <% @event.photos.each do |photo| %>
+          <%= image_tag photo %>
+        <% end %>
       <h3><%= @event.name %></h3>
       <p><strong>Event Organizer:</strong> <%= @event.user.get_name %></p>
       <p><strong>Start:</strong> <%= format_date(@event.beginning_date) %> at <%= format_time(@event.beginning_time) %></p>
