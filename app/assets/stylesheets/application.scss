@@ -39,7 +39,7 @@
 
 // carousel style
 /* Adjust the size of the carousel */
-#eventPhotosCarousel {
+.carousel {
   max-width: 100%; /* Adjust based on your layout. 100% means it will take the full width of its container */
 }
 
@@ -51,8 +51,16 @@
   margin: 0 auto; /* Center the images if they are smaller than the container */
 }
 
-
-
 .carousel-control-prev, .carousel-control-next {
   width: 4%; /* Adjust control size */
+}
+
+
+
+
+/* Ensure images cover the area */
+.carousel-item-fixed img {
+  height: 200px; /* Fixed height */
+  width: 100%; /* Full width */
+  object-fit: cover; /* Covers the area, may crop images */
 }

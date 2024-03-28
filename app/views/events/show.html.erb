@@ -7,39 +7,12 @@
 
   <div class="row g-4">
     <!-- Left Column: Event Photos -->
-    <div class="col-lg-7">
-      <% if @event.photos.attached? %>
-        <div id="eventPhotosCarousel" class="carousel slide" >
-          <!-- Carousel Indicators -->
-          <div class="carousel-indicators">
-            <% @event.photos.each_with_index do |photo, index| %>
-              <button type="button" data-bs-target="#eventPhotosCarousel" data-bs-slide-to="<%= index %>" class="<%= 'active' if index.zero? %>"></button>
-            <% end %>
-          </div>
-          <!-- Photos -->
-          <div class="carousel-inner rounded">
-            <% @event.photos.each_with_index do |photo, index| %>
-              <div class="carousel-item <%= 'active' if index.zero? %>">
-                <%= image_tag photo, class: 'd-block w-100 rounded' %>
-              </div>
-            <% end %>
-          </div>
-          <% if @event.photos.count > 1 %>
-            <button class="carousel-control-prev" type="button" data-bs-target="#eventPhotosCarousel" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#eventPhotosCarousel" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-          <% end %>
-        </div>
-      <% end %>
+    <div class="col-md-6">
+       <%= render 'carousel', event: @event, fixed: false %>
     </div>
 
     <!-- Right Column: Details -->
-    <div class="col-lg-5">
+    <div class="col-md-6">
       <div class="p-3 shadow-sm rounded bg-white">
         <h2 class="mb-3"><%= @event.name %></h2>
         <p class="mb-2"><strong>Event Organizer:</strong> <%= @event.user.get_name %></p>
@@ -48,6 +21,10 @@
         <p class="mb-2"><strong>Participants:</strong> <%= @event.subscriptions.count %> / <%= @event.max_participants %></p>
         <p class="mb-3"><strong>Address:</strong> <%= @event.address %></p>
         <p class="mb-3"><strong>City:</strong> <%= @event.city %>, <%= @event.province %> (<%= @event.cap %>), <%= @event.country %></p>
+        <% if @event.description != "" %>
+          <p class="mb-3"><strong>Description:</strong> <%= @event.description %></p>
+        <%end%>
+        <hr/>
         
         <div class="d-flex justify-content-between align-items-center mt-4">
           <% if @event.user == current_user %>

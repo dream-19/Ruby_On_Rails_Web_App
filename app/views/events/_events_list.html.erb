@@ -1,9 +1,10 @@
 
 <% @events.each do |event| %>
-  <div class="col-md-4 mb-4">
+  <div class="col-md-3 mb-3">
     <div class="card">
       <div class="card-body">
         <h5 class="card-title"><%= event.name %></h5>
+        <%= render 'carousel', event: event, fixed: true %>
         <h6 class="card-text">Event Organizer: <%= event.user.get_name %></h6>
         <h6 class="card-subtitle mb-2 text-muted">Start: <%= format_date(event.beginning_date) %> at <%= format_time(event.beginning_time) %></h6>
         <h6 class="card-subtitle mb-2 text-muted">End: <%= format_date(event.ending_date) %> at <%= format_time(event.ending_time) %></h6>
