@@ -1,8 +1,10 @@
 class EventsController < ApplicationController
   #check Authentication
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :my_events]
-  before_action :check_organizer_role, only: [:new, :create, :edit, :update, :destroy, :my_events]
   before_action :set_event, only: [:show, :edit, :update, :destroy]
+  # Check if the user in an organizer to access this functions
+  before_action :check_organizer_role, only: [:new, :create, :edit, :update, :destroy, :my_events, :bulk_destroy, :delete_photo, :data]
+  before_action :check_owner, only: [:edit, :update, :destroy]
 
   # GET /events
   def index
@@ -114,11 +116,6 @@ class EventsController < ApplicationController
       redirect_to @event, alert: 'You cannot edit an event that has already ended.'
     end
 
-    # Only the organizer can modify the event
-    unless current_user == @event.user
-      redirect_to @event, alert: 'You are not the organizer of this event.'
-    end
-
   end
 
   # POST /events
@@ -138,9 +135,9 @@ class EventsController < ApplicationController
 
   # PATCH/PUT /events/1
   def update
-    # Ensure only the organizer can update the event
-    unless current_user == @event.user
-      redirect_to @event, alert: 'You are not authorized to update this event.'
+    # Check if the event has already ended
+    if @event.ending_date < Date.today
+      redirect_to @event, alert: 'You cannot edit an event that has already ended.'
       return
     end
 
@@ -163,12 +160,6 @@ class EventsController < ApplicationController
 
   # DELETE /events/1
   def destroy
-    # Only the organizer can destroy the event
-    unless current_user == @event.user
-      redirect_to @event, alert: 'You are not authorized to destroy this event.'
-      return
-    end
-
     @event.destroy
     # Redirect to my_events_path
     redirect_to my_events_path, notice: 'Event was successfully destroyed.'
@@ -198,6 +189,13 @@ class EventsController < ApplicationController
   end
 
   private
+
+  # Check if the current user is the owner of the event
+  def check_owner
+    unless current_user == @event.user
+      redirect_to @event, alert: 'You are not the organizer of this event.'
+    end
+  end
 
   # Attach new photo if presents
   def attach_new_photos
