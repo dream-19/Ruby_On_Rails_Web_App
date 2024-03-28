@@ -6,10 +6,15 @@
 <%else%>
   <% @events.each do |event| %>
     <div class="col-md-3 mb-3">
-      <div class="card  <%= 'ongoing-event' if event.ongoing? %>"> 
-         <% if event.ongoing? %>
-        <div class="badge bg-success position-absolute" style="top: 10px; right: 10px;">Ongoing</div>
-      <% end %>       
+      <div class="card  <%= 'ongoing-event' if event.ongoing? %>">
+      <div class="card-header d-flex justify-content-end">
+        <% if event.ongoing? %>
+          <div class="badge bg-success me-2">Ongoing</div>
+        <% end %>
+        <% if user_signed_in? && current_user.subscribed_events.include?(event) %>
+          <div class="badge bg-primary me-2">Subscribed</div>
+        <% end %>
+      </div>
         <div class="card-body">
           <h5 class="card-title"><%= event.name %></h5>
           <%= render 'carousel', event: event, fixed: true %>
@@ -20,17 +25,26 @@
           <p class="card-text">Address: <%= event.address %><br/>
             <%= event.city %>, <%= event.province %> (<%= event.cap %>), <%= event.country %></p>
         </div>
-        <div class="card-footer">
+        <div class="card-footer d-flex justify-content-start align-items-center">
           <%= link_to 'View', event_path(event), class: 'btn btn-info' %>
+          <!-- Owner of the events -->
           <% if event.user == current_user %>
-            <%= link_to 'Edit', edit_event_path(event), class: 'btn btn-primary' %>
-            <%= link_to 'Delete', 'javascript:void(0);', class: 'btn btn-danger ms-2', 'data-bs-toggle': 'modal', 'data-bs-target': "#deleteEvent#{event.id}"  %>
-            <%= render 'modals/delete_event_modal', event: event %>
+            <%= link_to 'Edit', edit_event_path(event), class: 'btn btn-primary ms-2' %>
+          <% end %>
+          <!-- Normal user -->
+          <% if user_signed_in? && current_user.normal? %>
+            <div class="ms-auto">
+              <%= button_to 'Subscribe', event_subscriptions_path(event), method: :post, class: 'btn btn-primary ms-2' %>
+            </div>
+          <% end %>
+          <% if event.user == current_user %>
+            <div class="ms-auto">
+              <%= link_to 'Delete', 'javascript:void(0);', class: 'btn btn-danger', 'data-bs-toggle': 'modal', 'data-bs-target': "#deleteEvent#{event.id}"  %>
+              <%= render 'modals/delete_event_modal', event: event %>
+            </div>
           <% end %>
         </div>
       </div>
     </div>
   <% end %>
 <%end %>
-
-

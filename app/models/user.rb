@@ -28,6 +28,11 @@ class User < ApplicationRecord
     self.type == UserRoles::USER_ORGANIZER || self.type == UserRoles::COMPANY_ORGANIZER
   end
 
+  #chek if the user is a normal user
+  def normal?
+    self.type == UserRoles::USER_NORMAL
+  end
+
   def get_name
     name = ''
     if self.type == UserRoles::COMPANY_ORGANIZER
@@ -52,6 +57,14 @@ class User < ApplicationRecord
 
   def to_title_case(str)
     str.split.map(&:capitalize).join(' ')
+  end
+
+  protected
+  
+  def date_of_birth_cannot_be_in_the_future
+    if date_of_birth.present? && date_of_birth > Date.today
+      errors.add(:date_of_birth, "can't be in the future")
+    end
   end
 
 end

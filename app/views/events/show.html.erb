@@ -5,6 +5,12 @@
     </div>
   <% end %>
 
+   <% if user_signed_in? && current_user.subscribed_events.include?(@event) %>
+    <div class="alert alert-info text-center" role="alert">
+      You are subscribed to this event!
+      </div>
+    <% end %>
+
   <div class="row g-4">
     <!-- Left Column: Event Photos -->
     <div class="col-md-6">
@@ -27,6 +33,16 @@
         <hr/>
         
         <div class="d-flex justify-content-between align-items-center mt-4">
+          <!-- Subscribe to the events -->
+           <% if user_signed_in?%>
+           <% if current_user.normal? %>
+            <%= button_to 'Subscribe', event_subscriptions_path(@event), method: :post, class: 'btn btn-primary' %>
+            <% end %>
+          <%else %>
+          <!-- log in to subscribe -->
+             <%= link_to "Sign in to Subscribe", new_user_session_path, class: 'btn btn-outline-primary' %>
+          <% end %>
+
           <% if @event.user == current_user %>
             <% if @event.ending_date >= Date.today %>
               <%= link_to 'Edit', edit_event_path(@event), class: 'btn btn-outline-primary' %>
