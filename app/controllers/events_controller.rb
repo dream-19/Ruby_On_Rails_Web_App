@@ -8,7 +8,7 @@ class EventsController < ApplicationController
 
   # GET /events
   def index
-    pagination_par = 5
+    pagination_par = 28 #28 x page
     begin
       events = Event.upcoming.page(params[:page]).per(pagination_par)
     if params[:order_by].present? 
