@@ -77,3 +77,6 @@ end
 gem "bootstrap"
 gem "sassc-rails"
 gem 'htmlbeautifier'
+gem 'kaminari'  #pagination
+
+gem 'jquery-rails'

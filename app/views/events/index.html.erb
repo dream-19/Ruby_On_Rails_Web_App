@@ -91,27 +91,39 @@
 </div>
 
 
+  <!-- Error alert  -->
   <div class="row">
     <div id="error-message" class="alert alert-danger d-none" role="alert">
       An error occurred. Please try again.
     </div>
   </div>
+
   <!-- Event container -->
   <div class="row" id ="events-list">
     <%= render 'events_list', events: @events %>
   </div>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-end" id="pagination">
+ <%= paginate @events%>
+</div>
+
+
 </div>
 <script>
   function updateEventsList() {
-    var orderBy = document.getElementById('order_by').value;
+    var orderByValue = document.getElementById('order_by').value.split('-');
+    var orderBy = orderByValue[0]; // The attribute to sort by
+    var direction = orderByValue[1]; // The direction of sort
     var searchBy = document.getElementById('search_by').value;
     var search = document.getElementById('search').value;
     var useInterval = searchBy === 'interval';
+    console.log("request:");
     console.log(orderBy, searchBy, search);
     
     var showOngoing = document.getElementById('ongoing-events').checked;
 
-    var path = `/events?on_going=${showOngoing}&order_by=${orderBy}`;
+    var path = `/events?on_going=${showOngoing}&order_by=${orderBy}&direction=${direction}`;
 
     if (useInterval) {
       var fromDate = document.getElementById('from_date').value;
@@ -157,6 +169,8 @@
 
 
   document.addEventListener('DOMContentLoaded', function() {
+      const queryParams = new URLSearchParams(window.location.search);
+     
 
   document.getElementById('search_by').addEventListener('change', function() {
   var searchBy = this.value;

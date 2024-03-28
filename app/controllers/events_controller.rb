@@ -8,20 +8,20 @@ class EventsController < ApplicationController
 
   # GET /events
   def index
+    pagination_par = 5
     begin
-      events = Event.upcoming;
+      events = Event.upcoming.page(params[:page]).per(pagination_par)
     if params[:order_by].present? 
 
       # Check if the user wants to see only ongoing events
       if params[:on_going].present?
         if params[:on_going] == "true"
-          events = Event.ongoing
+          events = Event.ongoing.page(params[:page]).per(pagination_par) 
         end
       end
 
-      direction = params[:order_by].split('-')[1] # this can be 'asc' or 'desc'
-      params[:order_by] = params[:order_by].split('-')[0]
-
+      direction = %w[asc desc].include?(params[:direction]) ? params[:direction] : 'asc'
+  
       if params[:order_by] == 'organizer'
         @events = events.joins(:user).order('users.name ' +  direction)
       elsif params[:order_by] == 'participants'
@@ -68,15 +68,15 @@ class EventsController < ApplicationController
     flash[:error] = "There was a problem fetching the events."
     
     # Redirect or set @events to a safe default
-    @events = events.order(beginning_date: :asc)
+    @events = Event.order(beginning_date: :asc).page(params[:page]).per(pagination_par) 
   end
 
+
+  # Respond to
   respond_to do |format|
     format.html # For regular requests
     format.js { render partial: 'events_list', locals: { events: @events }, layout: false } # For AJAX requests
   end
-
-  
     
   end
 
