@@ -9,17 +9,26 @@ class EventsController < ApplicationController
   # GET /events
   def index
     begin
+      events = Event.upcoming;
     if params[:order_by].present? 
+
+      # Check if the user wants to see only ongoing events
+      if params[:on_going].present?
+        if params[:on_going] == "true"
+          events = Event.ongoing
+        end
+      end
+
       direction = params[:order_by].split('-')[1] # this can be 'asc' or 'desc'
       params[:order_by] = params[:order_by].split('-')[0]
 
       if params[:order_by] == 'organizer'
-        @events = Event.upcoming.joins(:user).order('users.name ' +  direction)
+        @events = events.joins(:user).order('users.name ' +  direction)
       elsif params[:order_by] == 'participants'
-        @events = direction == 'asc' ? Event.upcoming.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) ASC' ) : Event.upcoming.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) DESC' )
+        @events = direction == 'asc' ? events.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) ASC' ) : events.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) DESC' )
       else
         #Normal case with order
-      @events =  Event.upcoming.order(params[:order_by] + ' ' + direction) 
+      @events =  events.order(params[:order_by] + ' ' + direction) 
     
       end
 
@@ -50,7 +59,7 @@ class EventsController < ApplicationController
         end
       end
     else 
-      @events = Event.upcoming.order(beginning_date: :asc)
+      @events = events.order(beginning_date: :asc)
     end
   
   
@@ -59,7 +68,7 @@ class EventsController < ApplicationController
     flash[:error] = "There was a problem fetching the events."
     
     # Redirect or set @events to a safe default
-    @events = Event.upcoming.order(beginning_date: :asc)
+    @events = events.order(beginning_date: :asc)
   end
 
   respond_to do |format|

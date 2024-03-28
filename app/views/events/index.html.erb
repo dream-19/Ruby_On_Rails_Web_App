@@ -1,5 +1,5 @@
 <div class="container mt-5">
-  <h1>All Events</h1>
+  <h1 class="text-center">All Events</h1>
   <div class="row">
     <!-- search by menù: selection for the field and input field -->
     <div class="col-md-8 mb-3">
@@ -78,6 +78,19 @@
       </div>
     </div>
   </div>
+  <!-- show a check for 'ongoing events' -->
+  <div class="row justify-content-center">
+  <div class="d-flex justify-content-center mt-3 mb-3"> <!-- Ensure the container is flex and centers its children -->
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="" id="ongoing-events" onchange="updateEventsList()">
+      <label class="form-check-label" for="ongoing-events">
+        Show only ongoing events
+      </label>
+    </div>
+  </div>
+</div>
+
+
   <div class="row">
     <div id="error-message" class="alert alert-danger d-none" role="alert">
       An error occurred. Please try again.
@@ -90,17 +103,16 @@
 </div>
 <script>
   function updateEventsList() {
-
-
     var orderBy = document.getElementById('order_by').value;
     var searchBy = document.getElementById('search_by').value;
     var search = document.getElementById('search').value;
     var useInterval = searchBy === 'interval';
     console.log(orderBy, searchBy, search);
+    
+    var showOngoing = document.getElementById('ongoing-events').checked;
 
-    var path = `/events?order_by=${orderBy}`;
+    var path = `/events?on_going=${showOngoing}&order_by=${orderBy}`;
 
-    console.log(useInterval);
     if (useInterval) {
       var fromDate = document.getElementById('from_date').value;
       var toDate = document.getElementById('to_date').value;

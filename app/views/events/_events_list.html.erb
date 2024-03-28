@@ -6,7 +6,10 @@
 <%else%>
   <% @events.each do |event| %>
     <div class="col-md-3 mb-3">
-      <div class="card">        
+      <div class="card  <%= 'ongoing-event' if event.ongoing? %>"> 
+         <% if event.ongoing? %>
+        <div class="badge bg-success position-absolute" style="top: 10px; right: 10px;">Ongoing</div>
+      <% end %>       
         <div class="card-body">
           <h5 class="card-title"><%= event.name %></h5>
           <%= render 'carousel', event: event, fixed: true %>

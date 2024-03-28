@@ -18,12 +18,22 @@ class Event < ApplicationRecord
   # Through subscriptions, an event can have many subscribers (users)
   has_many :subscribers, through: :subscriptions, source: :user
 
-  # Return the events that are upcoming
+  # Return the events that are ongoing (current)
+  def self.ongoing
+    where("beginning_date <= ? AND ending_date >= ?", Date.today, Date.today)
+  end
+
+  # Check if the event is ongoing
+  def ongoing?
+    beginning_date <= Date.today && ending_date >= Date.today
+  end
+
+  # Return the events that are upcoming (current and future)
   def self.upcoming
     where("ending_date >= ?", Date.today)
   end
 
-  # Return the events that are past
+  # Return the events that are passed
   def self.past 
     where("ending_date < ?", Date.today)
   end 

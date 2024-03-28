@@ -64,3 +64,8 @@
   width: 100%; /* Full width */
   object-fit: cover; /* Covers the area, may crop images */
 }
+
+/* ongoing event border */
+.ongoing-event {
+  border: 1px solid green; /* Adjust color and thickness as desired */
+}
