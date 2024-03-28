@@ -9,7 +9,7 @@ import "popper";
 import "bootstrap";
 
 // Variables to manage locations
-const username = "helloworld";
+const username = "helloworld"; 
 var countryNames = [];
 var countryInfos = [];
 var countryInput = "";

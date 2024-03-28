@@ -13,6 +13,7 @@
   <div class="row">
     <div class="col-md-12">
       <h2>Current Events</h2>
+      <h4> Total: <%= @current_events.count %> </h4>
       <div id="current-events" data-events='<%= @current_events_json %>'></div>
     </div>
   </div>
@@ -20,6 +21,7 @@
   <div class="row mt-5">
     <div class="col-md-12">
       <h2>Past Events</h2>
+      <h4> Total: <%= @past_events.count %> </h4>
       <div id="past-events" data-events='<%= @past_events_json %>'></div>
     </div>
   </div>

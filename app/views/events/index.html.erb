@@ -35,7 +35,6 @@
           <%= text_field_tag :search, nil, class: 'form-control', id: 'search', oninput: 'updateEventsList()' %>
         </div>
       </div>
-
       <!-- Date Interval Fields (Initially Hidden) -->
       <div class="row d-none" id="interval-search-fields">
         <div class="col-md-6 mb-3">
@@ -47,16 +46,14 @@
           <%= date_field_tag :to_date, nil, class: 'form-control', id: 'to_date', oninput: 'updateEventsList()' %>
         </div>
       </div>
-
     </div>
     <!-- Select menù to decide the order of the events -->
     <div class="col-md-4 mb-3">
       <div class="row mb-3">
-         <p>Order By:</p>
-          </div>
-
-          <div class="row mb-3">
-          <%= select_tag :order_by,
+        <p>Order By:</p>
+      </div>
+      <div class="row mb-3">
+        <%= select_tag :order_by,
                    options_for_select({
                     'Beginning Date (ASC)' => 'beginning_date-asc',
                     'Beginning Date (DESC)' => 'beginning_date-desc',
@@ -78,19 +75,23 @@
                    onchange: 'updateEventsList()',
                    class: 'form-select',
                    id: 'order_by' %>
-        </div>
       </div>
+    </div>
   </div>
-
+  <div class="row">
+    <div id="error-message" class="alert alert-danger d-none" role="alert">
+      An error occurred. Please try again.
+    </div>
+  </div>
+  <!-- Event container -->
   <div class="row" id ="events-list">
     <%= render 'events_list', events: @events %>
   </div>
-
 </div>
 <script>
   function updateEventsList() {
 
-   
+
     var orderBy = document.getElementById('order_by').value;
     var searchBy = document.getElementById('search_by').value;
     var search = document.getElementById('search').value;
@@ -124,19 +125,32 @@
         'X-Requested-With': 'XMLHttpRequest'
       }
     })
-    .then(response => response.text())
+    .then(response => {
+      if (!response.ok) { // Check if the response status code is not OK (200-299)
+        throw new Error('Network response was not ok'); // This will be caught by the catch block
+      }
+      return response.text(); // Continue processing the response if it's OK
+    })
     .then(html => {
+       document.getElementById('error-message').classList.add('d-none');
       document.getElementById('events-list').innerHTML = html;
 
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+      console.error('Error:', error);
+      document.getElementById('error-message').classList.remove('d-none');
+    });
+
   }
+
+
+  document.addEventListener('DOMContentLoaded', function() {
 
   document.getElementById('search_by').addEventListener('change', function() {
   var searchBy = this.value;
   var isInterval = searchBy === 'interval';
   document.getElementById('single-search-field').classList.toggle('d-none', isInterval);
   document.getElementById('interval-search-fields').classList.toggle('d-none', !isInterval);
-});
-
+  });
+  });
 </script>
