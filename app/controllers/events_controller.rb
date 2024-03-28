@@ -81,9 +81,15 @@ class EventsController < ApplicationController
   end
 
   def my_events
-    @current_events = current_user.events.upcoming
+    #ONGOING
+    @current_events = current_user.events.ongoing
     @current_events_json = format_events_as_json(@current_events, true) #true for edit
+
+    #FUTURE
+    @future_events = current_user.events.future
+    @future_events_json = format_events_as_json(@future_events, true) #true for edit
     
+    #PAST
     @past_events = current_user.events.past
     @past_events_json = format_events_as_json(@past_events, false) #false for no edit
     
@@ -94,8 +100,11 @@ class EventsController < ApplicationController
   def data
     case params[:event_type]
     when 'current'
-      @current_events = current_user.events.upcoming.order(beginning_date: :asc)
+      @current_events = current_user.events.ongoing.order(beginning_date: :asc)
       events_data = format_events_as_json(@current_events,true)
+    when 'future'
+      @future_events = current_user.events.future
+      events_data = format_events_as_json(@future_events, true) #true for edit
     when 'past'
       @past_events = current_user.events.past.order(ending_date: :desc)
       events_data = format_events_as_json(@past_events, false)

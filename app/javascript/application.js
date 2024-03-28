@@ -23,6 +23,7 @@ var cap = ""; //I take the first cap
 var countryCode = "";
 var table_current = "";
 var table_past = "";
+var table_future = "";
 
 // variables to manage photos
 var photoInputCount = 0;
@@ -313,10 +314,16 @@ function manageTable() {
     return;
   }
 
+
   //Take the data from the data-events attribute
   const eventData = JSON.parse(
     document.getElementById("current-events").getAttribute("data-events")
   );
+
+  const futureData = JSON.parse(
+    document.getElementById("future-events").getAttribute("data-events")
+  );
+
   const pastEventData = JSON.parse(
     document.getElementById("past-events").getAttribute("data-events")
   );
@@ -397,6 +404,44 @@ function manageTable() {
     ).innerHTML = `<div class="alert alert-info" role="alert"> There are no current events available </div>`;
   }
 
+  //Initialize Tabulatore on the #future-events div if there is data
+  if (futureData.length > 0) {
+    table_future = new Tabulator("#future-events", {
+      layout: "fitData",
+      placeholder: "No future events available",
+      data: futureData, // Set data to your events
+      columns: columns,
+      cellVertAlign: "middle", // Vertically align the content in cells
+      cellHozAlign: "center",
+      pagination: "local", // Enable local pagination
+      paginationSize: 10, // Set the number of rows per page
+      paginationSizeSelector: [5, 10, 20, 50],
+      paginationCounter: "rows", //add pagination row counter
+      initialSort: [
+        // Set initial sorting
+        { column: "beginning_date", dir: "asc" },
+      ],
+
+      rowHeader: {
+        headerSort: false,
+        resizable: false,
+        frozen: true,
+        headerHozAlign: "center",
+        hozAlign: "center",
+        formatter: "rowSelection",
+        titleFormatter: "rowSelection",
+        cellClick: function (e, cell) {
+          cell.getRow().toggleSelect();
+        },
+      },
+    });
+  } else {
+    document.getElementById(
+      "current-events"
+    ).innerHTML = `<div class="alert alert-info" role="alert"> There are no future events available </div>`;
+  }
+
+
   // Initialize Tabulator on the #past-events div if there is data
   if (pastEventData.length > 0) {
     table_past = new Tabulator("#past-events", {
@@ -456,13 +501,14 @@ function dateSorter(a, b, aRow, bRow, column, dir, sorterParams) {
   }
 }
 
+// Function to manage the multiple deletion of events
 function manageBulkDelete() {
-  console.log(table_current);
-  console.log(table_past);
+
   const selectedData =
     table_current != "" ? table_current.getSelectedData() : [];
   const selectedDataPast = table_past != "" ? table_past.getSelectedData() : [];
-  const selectedDataAll = selectedData.concat(selectedDataPast);
+  const selectedDataFuture = table_future != "" ? table_future.getSelectedData() : [];
+  const selectedDataAll = selectedData.concat(selectedDataPast.concat(selectedDataFuture));
   const eventIds = selectedDataAll.map((event) => event.id);
   console.log("selected data id " + eventIds);
 
@@ -489,6 +535,10 @@ function manageBulkDelete() {
         if (table_current != "") {
           table_current.setData("/events/data?event_type=current");
         }
+        if (table_future != ""){
+          table_future.setData("/events/data?event_type=future");
+        }
+
         if (table_past != "") {
           table_past.setData("/events/data?event_type=past");
         }

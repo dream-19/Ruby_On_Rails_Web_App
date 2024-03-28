@@ -28,6 +28,11 @@ class Event < ApplicationRecord
     beginning_date <= Date.today && ending_date >= Date.today
   end
 
+  # Return the events that are future (future)
+  def self.future
+    where("beginning_date > ?", Date.today)
+  end
+
   # Return the events that are upcoming (current and future)
   def self.upcoming
     where("ending_date >= ?", Date.today)

@@ -1,6 +1,7 @@
 <div class="container-fluid mt-4">
   <h1 class="mb-4">My Events</h1>
 
+  <!-- Action Available -->
   <div class="row mb-3">
     <div class="col text-start">
       <%= link_to 'Create New Event', new_event_path, class: 'btn btn-success' %>
@@ -10,13 +11,23 @@
     </div>
   </div>
 
+  <!--  Tables -->
   <div class="row">
     <div class="col-md-12">
-      <h2>Current Events</h2>
+      <h2>Ongoing Events</h2>
       <h4> Total: <%= @current_events.count %> </h4>
       <div id="current-events" data-events='<%= @current_events_json %>'></div>
     </div>
   </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <h2> Future Events</h2>
+      <h4> Total: <%= @future_events.count %> </h4>
+      <div id="future-events" data-events='<%= @future_events_json %>'></div>
+    </div>
+  </div>
+
 
   <div class="row mt-5">
     <div class="col-md-12">
