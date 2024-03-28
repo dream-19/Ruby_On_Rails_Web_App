@@ -8,7 +8,6 @@ import "controllers";
 import "popper";
 import "bootstrap";
 
-
 // Variables to manage locations
 const username = "helloworld";
 var countryNames = [];
@@ -30,133 +29,126 @@ var photoInputCount = 0;
 var maxPhotos = 3; //max number of photos
 var id_counter = 0;
 
+/* -------------- FUNCTIONS -------------------- */
 
-//FUNCTIONS TO MANAGE PHOTOS
+// Function to update the image preview
+function updateImagePreview(input, previewContainerId) {
+  console.log("updateImagePreview");
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      let previewContainer = document.getElementById(previewContainerId);
+      previewContainer.innerHTML = ""; // Clear existing content
+      let img = document.createElement("img");
+      img.src = e.target.result;
+      img.style.maxWidth = "100px"; // Set the preview size here
+      img.style.maxHeight = "100px";
+      previewContainer.appendChild(img);
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
 
-  // Function to update the image preview
-  function updateImagePreview(input, previewContainerId) {
-    console.log("updateImagePreview");
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        let previewContainer = document.getElementById(previewContainerId);
-        previewContainer.innerHTML = ''; // Clear existing content
-        let img = document.createElement('img');
-        img.src = e.target.result;
-        img.style.maxWidth = '100px'; // Set the preview size here
-        img.style.maxHeight = '100px';
-        previewContainer.appendChild(img);
-      };
-      reader.readAsDataURL(input.files[0]);
-    }
+// Delete the entire input group
+function deleteElement(element) {
+  const elementId = element.id;
+  const inputId = elementId.replace("photo-delete-", "input-");
+
+  const inputElement = document.getElementById(inputId);
+  console.log("delete " + inputElement);
+  if (inputElement) {
+    inputElement.remove();
+    photoInputCount--;
+    checkVisibility();
+  }
+}
+
+//Function to check if 'add photo' button must be hidden
+function checkVisibility() {
+  if (photoInputCount < maxPhotos) {
+    document.getElementById("add-photo-button").style.display = "block";
+  } else {
+    document.getElementById("add-photo-button").style.display = "none";
+  }
+}
+
+//function to delete a photo
+function delete_single_photo(photoId) {
+  if (confirm("Are you sure you want to delete this photo?")) {
+    fetch("/delete_photo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('[name="csrf-token"]').content, // Ensure CSRF token is sent
+      },
+      body: JSON.stringify({ photo_id: photoId }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          console.log("SUCCESS");
+          photoInputCount--;
+          checkVisibility();
+
+          document.getElementById(`existing-input-${photoId}`).remove();
+        } else {
+          // Handle failure
+          alert("Try Again");
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+  }
+}
+
+// function to add the element to add photos
+function add_element_photo() {
+  if (photoInputCount < maxPhotos) {
+    photoInputCount++;
+    id_counter++;
+
+    //add the new input group
+    let inputGroup = document.createElement("div");
+    inputGroup.setAttribute("class", "input-group mb-3 input-group-photo");
+    inputGroup.setAttribute("id", "input-" + id_counter);
+
+    // add the input file
+    let newInput = document.createElement("input");
+    newInput.setAttribute("type", "file");
+    newInput.setAttribute("name", "event[photos][]");
+    newInput.setAttribute("id", "photo-input-" + photoInputCount);
+    newInput.setAttribute("class", "photo-input form-control");
+    newInput.setAttribute("accept", "image/png,image/jpeg,image/jpg");
+    newInput.addEventListener("change", function (event) {
+      updateImagePreview(event.target, previewContainer.id);
+    });
+
+    //add the delete option
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "btn btn-outline-danger photo-delete";
+    deleteButton.id = "photo-delete-" + id_counter;
+    deleteButton.type = "button";
+    deleteButton.innerHTML = '<i class="bi bi-x-lg"></i>';
+    deleteButton.addEventListener("click", function () {
+      deleteElement(inputGroup);
+    });
+
+    // Create a container for the image preview
+    let previewContainer = document.createElement("div");
+    previewContainer.className =
+      "image-preview-container d-flex justify-content-center align-items-center me-2";
+    previewContainer.id = "preview-" + id_counter;
+
+    //append child
+    inputGroup.appendChild(previewContainer);
+    inputGroup.appendChild(newInput);
+    inputGroup.appendChild(deleteButton);
+
+    document.getElementById("photos-input-container").appendChild(inputGroup);
   }
 
-  // Delete the entire input group
-  function deleteElement(element) {
-    const elementId = element.id;
-    const inputId = elementId.replace('photo-delete-', 'input-');
-
-    const inputElement = document.getElementById(inputId);
-    console.log("delete " +inputElement);
-    if (inputElement) {
-      inputElement.remove();
-      photoInputCount--;
-      checkVisibility();
-    }
-  }
-
-  //Function to check if 'add photo' button must be hidden
-  function checkVisibility(){
-    if (photoInputCount < maxPhotos) {
-        document.getElementById('add-photo-button').style.display = 'block';
-      }
-    else{
-      document.getElementById('add-photo-button').style.display = 'none';
-    }
-  }
-
-  //function to delete a photo
-  function delete_single_photo(photoId){
-    console.log("function delete single called");
-    if (confirm('Are you sure you want to delete this photo?')) {
-      fetch('/delete_photo', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content // Ensure CSRF token is sent
-            },
-            body: JSON.stringify({ photo_id : photoId })
-          })
-          .then(response => response.json())
-          .then(data => {
-              if (data.success) {
-                console.log("SUCCESS");
-                photoInputCount--;
-                checkVisibility();
-
-                document.getElementById(`existing-input-${photoId}`).remove();
-
-
-              } else {
-                  // Handle failure
-                  alert('Try Again');
-              }
-          })
-        .catch(error => console.error('Error:', error));
-    }
-  }
-
-  // function to add the element to add photos
-  function add_element_photo(){
-    if (photoInputCount < maxPhotos) {
-        photoInputCount++;
-        id_counter++;
-
-        //add the new input group
-        let inputGroup = document.createElement('div');
-        inputGroup.setAttribute('class', 'input-group mb-3 input-group-photo');
-        inputGroup.setAttribute('id', 'input-' + id_counter);
-
-        // add the input file
-        let newInput = document.createElement('input');
-        newInput.setAttribute('type', 'file');
-        newInput.setAttribute('name', 'event[photos][]');
-        newInput.setAttribute('id', 'photo-input-' + photoInputCount);
-        newInput.setAttribute('class', 'photo-input form-control');
-        newInput.setAttribute('accept', 'image/png,image/jpeg,image/jpg');
-        newInput.addEventListener('change', function(event) {
-          updateImagePreview(event.target, previewContainer.id);
-        });
-
-        //add the delete option
-        const deleteButton = document.createElement('button');
-        deleteButton.className = 'btn btn-outline-danger photo-delete';
-        deleteButton.id = 'photo-delete-' + id_counter;
-        deleteButton.type = 'button';
-        deleteButton.innerHTML = '<i class="bi bi-x-lg"></i>';
-        deleteButton.addEventListener('click', function() {
-          deleteElement(inputGroup);
-        });
-
-        // Create a container for the image preview
-        let previewContainer = document.createElement('div');
-        previewContainer.className = 'image-preview-container d-flex justify-content-center align-items-center me-2';
-        previewContainer.id = 'preview-' + id_counter;
-
-
-        //append child
-        inputGroup.appendChild(previewContainer);
-        inputGroup.appendChild(newInput);
-        inputGroup.appendChild(deleteButton);
-
-        document.getElementById('photos-input-container').appendChild(inputGroup);
-
-      }
-
-       //check the value of photoInputCount, when it reaches 3 the button add another photo is hidden
-      checkVisibility();
-  }
-
+  //check the value of photoInputCount, when it reaches 3 the button add another photo is hidden
+  checkVisibility();
+}
 
 //FUNCTION TO TOGGLE THE PASSWORD VISIBILITY
 function togglePasswordVisibility() {
@@ -331,24 +323,34 @@ function manageTable() {
 
   // Define the columns based on your old table structure
   const columns = [
-    { title: "Name", field: "name", headerFilter:"input" },
-    { title: "From", field: "beginning_date", sorter: dateSorter, headerFilter:"input" }, // Assuming format_date is handled server-side
-    { title: "Time", field: "beginning_time", headerFilter:"input" }, // Assuming format_time is handled server-side
-    { title: "To", field: "ending_date", sorter: dateSorter, headerFilter:"input" },
-    { title: "Time", field: "ending_time", headerFilter:"input" },
-    { title: "People", field: "participants", headerFilter:"input" },
-    { title: "Max", field: "max_participants", headerFilter:"input" },
-    { title: "Address", field: "address", headerFilter:"input" },
-    { title: "City", field: "city", headerFilter:"input" },
-    { title: "Cap", field: "cap", headerFilter:"input" },
-    { title: "Province", field: "province", headerFilter:"input" },
-    { title: "Country", field: "country", headerFilter:"input" },
+    { title: "Name", field: "name", headerFilter: "input" },
+    {
+      title: "From",
+      field: "beginning_date",
+      sorter: dateSorter,
+      headerFilter: "input",
+    }, // Assuming format_date is handled server-side
+    { title: "Time", field: "beginning_time", headerFilter: "input" }, // Assuming format_time is handled server-side
+    {
+      title: "To",
+      field: "ending_date",
+      sorter: dateSorter,
+      headerFilter: "input",
+    },
+    { title: "Time", field: "ending_time", headerFilter: "input" },
+    { title: "People", field: "participants", headerFilter: "input" },
+    { title: "Max", field: "max_participants", headerFilter: "input" },
+    { title: "Address", field: "address", headerFilter: "input" },
+    { title: "City", field: "city", headerFilter: "input" },
+    { title: "Cap", field: "cap", headerFilter: "input" },
+    { title: "Province", field: "province", headerFilter: "input" },
+    { title: "Country", field: "country", headerFilter: "input" },
     {
       title: "Actions",
       headerSort: false,
       formatter: function (cell, formatterParams, onRendered) {
         const rowData = cell.getRow().getData();
-        if (rowData.edit_url == '') {
+        if (rowData.edit_url == "") {
           return `<a href='${rowData.view_url}' class='btn btn-info'>View</a>`;
         } else {
           return `<a href='${rowData.view_url}' class='btn btn-info'>View</a>
@@ -360,36 +362,45 @@ function manageTable() {
 
   // Initialize Tabulator on the #current-events div if there is data
   if (eventData.length > 0) {
-  table_current = new Tabulator("#current-events", {
-    layout:"fitData",
-    placeholder: "No current events available",
-    data: eventData, // Set data to your events
-    columns: columns,
-    cellVertAlign: "middle", // Vertically align the content in cells
-    cellHozAlign: "center",
-    pagination: "local", // Enable local pagination
-    paginationSize: 10, // Set the number of rows per page
-    paginationSizeSelector:[5, 10, 20, 50],
-    paginationCounter: "rows", //add pagination row counter
-    initialSort: [
-      // Set initial sorting
-      { column: "beginning_date", dir: "asc" },
-    ],
-    
-    rowHeader:{headerSort:false, resizable: false, frozen:true, headerHozAlign:"center", hozAlign:"center", formatter:"rowSelection", titleFormatter:"rowSelection", cellClick:function(e, cell){
-      cell.getRow().toggleSelect();
-    }},
+    table_current = new Tabulator("#current-events", {
+      layout: "fitData",
+      placeholder: "No current events available",
+      data: eventData, // Set data to your events
+      columns: columns,
+      cellVertAlign: "middle", // Vertically align the content in cells
+      cellHozAlign: "center",
+      pagination: "local", // Enable local pagination
+      paginationSize: 10, // Set the number of rows per page
+      paginationSizeSelector: [5, 10, 20, 50],
+      paginationCounter: "rows", //add pagination row counter
+      initialSort: [
+        // Set initial sorting
+        { column: "beginning_date", dir: "asc" },
+      ],
 
-  });
-} else {
-  document.getElementById("current-events").innerHTML = `<div class="alert alert-info" role="alert"> There are no current events available </div>`;
- 
-}
+      rowHeader: {
+        headerSort: false,
+        resizable: false,
+        frozen: true,
+        headerHozAlign: "center",
+        hozAlign: "center",
+        formatter: "rowSelection",
+        titleFormatter: "rowSelection",
+        cellClick: function (e, cell) {
+          cell.getRow().toggleSelect();
+        },
+      },
+    });
+  } else {
+    document.getElementById(
+      "current-events"
+    ).innerHTML = `<div class="alert alert-info" role="alert"> There are no current events available </div>`;
+  }
 
   // Initialize Tabulator on the #past-events div if there is data
   if (pastEventData.length > 0) {
     table_past = new Tabulator("#past-events", {
-      layout:"fitData",
+      layout: "fitData",
       placeholder: "No past events available",
       data: pastEventData, // Set data to your events
       columns: columns,
@@ -398,19 +409,29 @@ function manageTable() {
       paginationCounter: "rows", //add pagination row counter
       pagination: "local", // Enable local pagination
       paginationSize: 10, // Set the number of rows per page
-      paginationSizeSelector:[5, 10, 20, 50],
+      paginationSizeSelector: [5, 10, 20, 50],
       initialSort: [
         // Set initial sorting
         { column: "ending_date", dir: "des" },
       ],
-      rowHeader:{headerSort:false, resizable: false, frozen:true, headerHozAlign:"center", hozAlign:"center", formatter:"rowSelection", titleFormatter:"rowSelection", cellClick:function(e, cell){
-        cell.getRow().toggleSelect();
-      }},
+      rowHeader: {
+        headerSort: false,
+        resizable: false,
+        frozen: true,
+        headerHozAlign: "center",
+        hozAlign: "center",
+        formatter: "rowSelection",
+        titleFormatter: "rowSelection",
+        cellClick: function (e, cell) {
+          cell.getRow().toggleSelect();
+        },
+      },
     });
-  }
-  else{
+  } else {
     //show bootstrap alert
-    document.getElementById("past-events").innerHTML = `<div class="alert alert-info" role="alert"> No past events available </div>`;
+    document.getElementById(
+      "past-events"
+    ).innerHTML = `<div class="alert alert-info" role="alert"> No past events available </div>`;
   }
 }
 
@@ -435,156 +456,150 @@ function dateSorter(a, b, aRow, bRow, column, dir, sorterParams) {
   }
 }
 
-
 function manageBulkDelete() {
-    console.log(table_current);
-    console.log(table_past);
-    const selectedData = table_current != '' ? table_current.getSelectedData() : [];
-    const selectedDataPast = table_past != '' ? table_past.getSelectedData() : [];
-    const selectedDataAll = selectedData.concat(selectedDataPast);
-    const eventIds = selectedDataAll.map(event => event.id);
-    console.log("selected data id " + eventIds);
+  console.log(table_current);
+  console.log(table_past);
+  const selectedData =
+    table_current != "" ? table_current.getSelectedData() : [];
+  const selectedDataPast = table_past != "" ? table_past.getSelectedData() : [];
+  const selectedDataAll = selectedData.concat(selectedDataPast);
+  const eventIds = selectedDataAll.map((event) => event.id);
+  console.log("selected data id " + eventIds);
 
+  if (eventIds.length === 0) {
+    alert("Please select at least one event to delete.");
+    return;
+  }
 
-    if (eventIds.length === 0) {
-      alert('Please select at least one event to delete.');
-      return;
-    }
+  if (!confirm("Are you sure you want to delete the selected events?")) return;
 
-
-    if (!confirm('Are you sure you want to delete the selected events?')) return;
-
-    
-    fetch('/bulk_destroy', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content // Ensure CSRF token is sent
-        },
-        body: JSON.stringify({ event_ids: eventIds })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-          console.log("SUCCESS");
-            // Reload the table or remove deleted rows from the table view
-            if (table_current != ''){
-              table_current.setData('/events/data?event_type=current');
-            }
-            if (table_past != ''){
-              table_past.setData('/events/data?event_type=past');
-            }
-            console.log("table reloaded");
-            
-        } else {
-            // Handle failure
-            alert('There was an issue deleting the selected events.');
+  fetch("/bulk_destroy", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRF-Token": document.querySelector('[name="csrf-token"]').content, // Ensure CSRF token is sent
+    },
+    body: JSON.stringify({ event_ids: eventIds }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        console.log("SUCCESS");
+        // Reload the table or remove deleted rows from the table view
+        if (table_current != "") {
+          table_current.setData("/events/data?event_type=current");
         }
+        if (table_past != "") {
+          table_past.setData("/events/data?event_type=past");
+        }
+        console.log("table reloaded");
+      } else {
+        // Handle failure
+        alert("There was an issue deleting the selected events.");
+      }
     })
-    .catch(error => console.error('Error:', error));
-
+    .catch((error) => console.error("Error:", error));
 }
-
 
 //SETTING UP EVENT LISTENERS FOR THE PHOTO MANAGEMENT
 function setUpEventListenersPhotos() {
-
+  id_counter = 0;
   //manage form with photos
   const formsWithPhotos = document.querySelectorAll(".form-with-photos");
-  if (formsWithPhotos.length > 0 ){
+  if (formsWithPhotos.length > 0) {
     // delete button for existing photos (send delete requests to Rails server)
-    document.querySelectorAll('.photo-delete-existing').forEach(button => {
-      button.addEventListener('click', function() {
-        const photoId = this.getAttribute('data-photo-id');
-        console.log("deleting photo with id: "+ photoId);
+    document.querySelectorAll(".photo-delete-existing").forEach((button) => {
+      button.removeEventListener("click", delete_single_photo); // Remove existing event listeners
+      button.addEventListener("click", function () {
+        const photoId = this.getAttribute("data-photo-id");
+        console.log("deleting photo with id: " + photoId);
         delete_single_photo(photoId);
-        });
+      });
     });
 
     //Count how many photo are already present
-    var existingPhotos = document.querySelectorAll('.input-group-photo').length;
+    var existingPhotos = document.querySelectorAll(".input-group-photo").length;
     photoInputCount = existingPhotos; // Initialize with the number of already displayed photos
     //id_counter = existingPhotos;
 
-
     // When we click 'add photo' a field to add the photo is added
-    document.getElementById('add-photo-button').addEventListener('click', function() {
-      add_element_photo();
-    });
+    document
+      .getElementById("add-photo-button")
+      .removeEventListener("click", add_element_photo); // Remove existing event listeners
+    document
+      .getElementById("add-photo-button")
+      .addEventListener("click", () => add_element_photo());
 
     //First element automatically added (if needed)
-    if (photoInputCount < maxPhotos && id_counter == 0 ){
-      document.getElementById('add-photo-button').click();
+    if (photoInputCount < maxPhotos && id_counter == 0) {
+      document.getElementById("add-photo-button").click();
     }
-
   }
-
 }
 
-
-
-//Render after form fail :)
-document.addEventListener("turbo:render",() => {
-  console.log("render called");
-  setUpEventListenersPhotos();
-});
-
-
-document.addEventListener("turbo:load", () => {
-  console.log("load called");
-  setUpEventListenersPhotos();
-
+//Setting up event listeners to manage events
+function setUpEventListeners() {
   //Tabulator
   manageTable();
 
   // Bulk delete for events
   if (document.getElementById("bulk-delete") != null) {
-    document.getElementById('bulk-delete').addEventListener('click',() => manageBulkDelete()); 
+    document
+      .getElementById("bulk-delete")
+      .removeEventListener("click", manageBulkDelete); // Remove existing event listeners
+    document
+      .getElementById("bulk-delete")
+      .addEventListener("click", () => manageBulkDelete());
   }
+}
 
+//setting up event listeners for the location management
+function setUpLocationListeners() {
   const formsWithLocations = document.querySelectorAll(".form-with-locations");
   if (formsWithLocations.length > 0) {
     // Fetch the country (only if it is required by the form)
     fetchCountries();
+
+    // Fetch and display country suggestions
+    countryInput = document.getElementById("user_country");
+    countrySuggestions = document.getElementById("countrySuggestions");
+    if (countryInput && countrySuggestions) {
+      countryInput.addEventListener("input", () => countrySuggest());
+    }
+
+    // Fetch and display city suggestions (only if country is specified)
+    cityInput = document.getElementById("user_city");
+    citySuggestions = document.getElementById("citySuggestions");
+    if (cityInput && citySuggestions && countryInput) {
+      cityInput.addEventListener("input", () => citySuggest());
+    }
   }
-  //Use event delegation to manage the click event on the country input (also when a form with error is submitted and reloaded with turbo)
-  document.addEventListener("input", (event) => {
-    // Check if the clicked element or any of its parents is the user_country element
-    const isCountrySelect =
-      event.target.matches("#user_country") ||
-      event.target.closest("#user_country");
-    if (isCountrySelect) {
-      // Fetch and display country suggestions
-      countryInput = document.getElementById("user_country");
-      countrySuggestions = document.getElementById("countrySuggestions");
-      if (countryInput && countrySuggestions) {
-        countryInput.addEventListener("input", () => countrySuggest());
-      }
-    }
 
-    // Check if the clicked element or any of its parents is the user_city element
-    const isCitySelect =
-      event.target.matches("#user_city") || event.target.closest("#user_city");
-    if (isCitySelect) {
-      // Fetch and display city suggestions (only if country is specified)
-      cityInput = document.getElementById("user_city");
-      citySuggestions = document.getElementById("citySuggestions");
-      if (cityInput && citySuggestions && countryInput) {
-        cityInput.addEventListener("input", () => citySuggest());
-      }
-    }
+  // password toggle
+  document.querySelectorAll(".toggle-password-icon").forEach((el) => {
+    el.addEventListener("click", togglePasswordVisibility);
   });
+}
 
-  // Add event listeners to all the toggle password icons
-  document.addEventListener("mouseover", (event) => {
-    // Add event listeners to all the toggle password icons
-    const isTogglePasswordIcon =
-      event.target.matches(".toggle-password-icon") ||
-      event.target.closest(".toggle-password-icon");
-    if (isTogglePasswordIcon) {
-      document.querySelectorAll(".toggle-password-icon").forEach((el) => {
-        el.addEventListener("click", togglePasswordVisibility);
-      });
-    }
-  });
+/* -------------- LOAD THE PAGE-------------------- */
+
+// Variable to manage the loading of the page
+var loading = 0;
+
+// Render is called every time I change the page (and even if the form fails!)
+document.addEventListener("turbo:render", () => {
+  loading++;
+  setUpEventListenersPhotos();
+  setUpEventListeners();
+  setUpLocationListeners();
+});
+
+// Load is called only the first time I load the page
+document.addEventListener("turbo:load", () => {
+  if (loading == 0) { // Only run the setup once
+    setUpEventListenersPhotos();
+    setUpEventListeners();
+    setUpLocationListeners();
+    loading++;
+  }
 });
