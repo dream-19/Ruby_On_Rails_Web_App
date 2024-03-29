@@ -1,0 +1,12 @@
+<!-- only the normal user (signed in) can subscribe/unsubscribe from an event -->
+<% if user_signed_in? && current_user.normal? %>
+  
+    <% if !current_user.subscribed?(event)%>
+      <%= button_to 'Subscribe', event_subscriptions_path(event), method: :post, class: 'btn btn-primary ms-2' %>
+    <% else%>
+      <% subscription = current_user.subscriptions.find_by(event: event) %>
+      <%= link_to 'Unsubscribe', 'javascript:void(0);', class: 'btn btn-danger', 'data-bs-toggle': 'modal', 'data-bs-target': "#deleteSubscription#{event.id}"  %>
+      <%= render 'modals/delete_subscription_modal', subscription: subscription, event: event %>
+    <% end %>
+
+<% end %>

@@ -10,8 +10,13 @@
       <div class="card-header d-flex justify-content-end">
         <% if event.ongoing? %>
           <div class="badge bg-success me-2">Ongoing</div>
+        <%else %>
+          <div class="badge bg-secondary me-2">Future event</div>
         <% end %>
-        <% if user_signed_in? && current_user.subscribed_events.include?(event) %>
+        <% if event.full?%>
+        <div class="badge bg-warning me-2">Full</div>
+        <%end %>
+        <% if user_signed_in? && current_user.subscribed?(event) %>
           <div class="badge bg-primary me-2">Subscribed</div>
         <% end %>
       </div>
@@ -32,11 +37,10 @@
             <%= link_to 'Edit', edit_event_path(event), class: 'btn btn-primary ms-2' %>
           <% end %>
           <!-- Normal user -->
-          <% if user_signed_in? && current_user.normal? %>
-            <div class="ms-auto">
-              <%= button_to 'Subscribe', event_subscriptions_path(event), method: :post, class: 'btn btn-primary ms-2' %>
+          <div class="ms-auto">
+            <%= render 'subscriptions/subscribe_button', event: event%>
             </div>
-          <% end %>
+          <!-- Organizer of the event -->
           <% if event.user == current_user %>
             <div class="ms-auto">
               <%= link_to 'Delete', 'javascript:void(0);', class: 'btn btn-danger', 'data-bs-toggle': 'modal', 'data-bs-target': "#deleteEvent#{event.id}"  %>

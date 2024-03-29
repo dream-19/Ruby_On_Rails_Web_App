@@ -1,15 +1,23 @@
 <div class="container my-5 py-4">
+
+  <!-- Display an alert (event ended, subscribed, event full, sign in to subscribe) -->
   <% if @event.ending_date < Date.today %>
     <div class="alert alert-info text-center" role="alert">
       This event has already ended!
     </div>
-  <% end %>
-
-   <% if user_signed_in? && current_user.subscribed_events.include?(@event) %>
+   <% elsif user_signed_in? && current_user.subscribed?(@event) %>
     <div class="alert alert-info text-center" role="alert">
       You are subscribed to this event!
       </div>
-    <% end %>
+  <% elsif @event.full? %>
+    <div class="alert alert-warning text-center" role="alert">
+      This event is full!
+    </div>
+  <% elsif !user_signed_in? %>
+    <div class="alert alert-info text-center" role="alert">
+      Sign in to subscribe to the event!
+    </div>
+  <% end %>
 
   <div class="row g-4">
     <!-- Left Column: Event Photos -->
@@ -35,9 +43,7 @@
         <div class="d-flex justify-content-between align-items-center mt-4">
           <!-- Subscribe to the events -->
            <% if user_signed_in?%>
-           <% if current_user.normal? %>
-            <%= button_to 'Subscribe', event_subscriptions_path(@event), method: :post, class: 'btn btn-primary' %>
-            <% end %>
+            <%= render 'subscriptions/subscribe_button', event: @event%>
           <%else %>
           <!-- log in to subscribe -->
              <%= link_to "Sign in to Subscribe", new_user_session_path, class: 'btn btn-outline-primary' %>

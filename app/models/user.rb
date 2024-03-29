@@ -15,11 +15,11 @@ class User < ApplicationRecord
   # Users can have many subscriptions to events (only normal user)
   has_many :subscriptions, dependent: :destroy
   # Through subscriptions, users can subscribe to many events (only normal user)
-  has_many :subscribed_events, through: :subscriptions, source: :event
+  has_many :events, through: :subscriptions
 
   # An organizer can create many events (and the events has a foreign key 'user_id')
   # when and organizer deletes its account all the events created by him will be deleted
-  has_many :events, foreign_key: "user_id", dependent: :destroy
+  #has_many :events, foreign_key: "user_id", dependent: :destroy
 
   before_save :apply_camel_case
 
@@ -41,6 +41,11 @@ class User < ApplicationRecord
       name = self.name + ' ' + self.surname
     end
     return name
+  end
+
+  #Check if the user is subscribed to an event
+  def subscribed?(event)
+    self.events.include?(event)
   end
 
   private

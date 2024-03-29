@@ -28,6 +28,11 @@ class Event < ApplicationRecord
     beginning_date <= Date.today && ending_date >= Date.today
   end
 
+  # Cehck if the event is passed
+  def past?
+    ending_date < Date.today
+  end
+
   # Return the events that are future (future)
   def self.future
     where("beginning_date > ?", Date.today)
@@ -42,6 +47,11 @@ class Event < ApplicationRecord
   def self.past 
     where("ending_date < ?", Date.today)
   end 
+
+  #check if an event is at full capacity
+  def full?
+    subscribers.count >= max_participants
+  end
 
   private
 
