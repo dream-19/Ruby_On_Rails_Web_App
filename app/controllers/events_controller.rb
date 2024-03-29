@@ -117,6 +117,11 @@ class EventsController < ApplicationController
   # GET /events/1
   def show
     @event = Event.find_by(id: params[:id])
+    #if the user is the organizer of the event get also the subscribtions
+    if current_user == @event.user
+      @subscriptions = @event.subscriptions
+    end
+
     if @event.nil?
       redirect_to events_path, alert: 'Event not found.'
     end
@@ -238,7 +243,7 @@ class EventsController < ApplicationController
   
     # Checks if the current user is logged in and is an organizer
     def check_organizer_role
-      unless current_user&.user_organizer?
+      unless current_user&.organizer?
         redirect_to root_path, alert: 'You must be an organizer to access this section.'
       end
     end

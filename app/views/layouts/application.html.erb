@@ -7,8 +7,6 @@
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   </head>
   <body>
@@ -23,7 +21,6 @@
           <ul class="navbar-nav ms-auto">
             <!-- USER SIGNED IN-->
             <% if user_signed_in? %>
-              
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Ciao <%= current_user.get_name %>!</a>
@@ -35,18 +32,25 @@
                     <% end %>
                   </a>
                 </li>
-                <% if current_user.type != UserRoles::USER_NORMAL %>
+                <% if current_user.organizer? %>
                   <li>
                     <a class="dropdown-item" href="#">
                       <%= link_to my_events_path, class: 'nav-link' do %>
                         <i class="bi bi-calendar"></i> My Events
                       <% end %>
-                      
+                    </a>
+                  </li>
+                <% end %>
+                <% if current_user.normal? %>
+                  <li>
+                    <a class="dropdown-item" href="#">
+                      <%= link_to my_subscriptions_path, class: 'nav-link' do %>
+                        <i class="bi bi-journal-check"></i> My Subscriptions
+                      <% end %>
                     </a>
                   </li>
                 <% end %>
                 <li>
-                 
                   <a class="dropdown-item" href="#">
                     <%= link_to root_path , class: 'nav-link' do %>
                       <i class="bi bi-house"></i> Home

@@ -3,6 +3,11 @@ class SubscriptionsController < ApplicationController
         before_action :check_user, only: [:create]
         before_action :check_overlaps, only: [:create]
 
+
+    def my_subscriptions
+        @subscriptions = current_user.subscriptions
+    end
+
     def create
         event = Event.find(params[:event_id]) # Find the event that the user wants to subscribe to
         subscription_date = Date.current

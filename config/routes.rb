@@ -16,7 +16,8 @@ Rails.application.routes.draw do
 get 'my_events', to: 'events#my_events'
 post '/bulk_destroy', to: 'events#bulk_destroy' 
 post '/delete_photo', to: 'events#delete_photo'
-get 'events/data', to: 'events#data', as: :events_data #before resources, otherwise it will be overridden!
+get 'events/data', to: 'events#data', as: :events_data # before resources, otherwise it will be overridden!
+get 'my_subscriptions', to: 'subscriptions#my_subscriptions' 
 resources :events do
   resources :subscriptions, only: [:create, :destroy] # subscription is nested inside events
 end

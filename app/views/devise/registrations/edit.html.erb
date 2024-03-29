@@ -3,13 +3,13 @@
     <div class="col-lg-8">
       <div class="card shadow-lg p-4">
         <% if current_user.type == UserRoles::USER_NORMAL %>
-          <h2 class="text-center mb-4">Edit <%= resource_name.to_s.humanize %> (user account)</h2>
+          <h2 class=" mb-4">Edit <%= resource_name.to_s.humanize %> (user account)</h2>
           <%= render 'forms_partials/form_user_normal_edit', resource: resource, resource_name: resource_name %>
         <% elsif current_user.type== UserRoles::COMPANY_ORGANIZER %>
-          <h2 class="text-center mb-4">Edit <%= resource_name.to_s.humanize %> (company organizer account)</h2>
+          <h2 class="mb-4">Edit <%= resource_name.to_s.humanize %> (company organizer account)</h2>
           <%= render 'forms_partials/form_company_organizer_edit', resource: resource, resource_name: resource_name %>
         <% elsif current_user.type == UserRoles::USER_ORGANIZER %>
-          <h2 class="text-center mb-4">Edit <%= resource_name.to_s.humanize %> (organizer account)</h2>
+          <h2 class="mb-4">Edit <%= resource_name.to_s.humanize %> (organizer account)</h2>
           <%= render 'forms_partials/form_user_organizer_edit', resource: resource, resource_name: resource_name %>
         <% else %>
           <!-- Impossible -->

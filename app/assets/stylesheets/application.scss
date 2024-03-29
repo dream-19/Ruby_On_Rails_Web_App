@@ -17,6 +17,13 @@
 @import "bootstrap";
 @import "tabulator.min";
 
+
+// h1,h2,h3 all in center
+h1, h2, h3 {
+  text-align: center;
+}
+
+// css for the alerts
 .alert-fixed {
   position: fixed;
   top: 0;

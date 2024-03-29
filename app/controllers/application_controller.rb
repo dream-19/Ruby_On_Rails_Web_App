@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
 
     # If I am an organizer I am redirected to the organizer page to manage my events
     def after_sign_in_path_for(resource)
-      if current_user.user_organizer?
+      if current_user.organizer?
         my_events_path
       else
         super

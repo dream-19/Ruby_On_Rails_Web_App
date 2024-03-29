@@ -63,4 +63,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Display the subscriptions (if user is signed in and is the owner) -->
+  <% if user_signed_in? && current_user == @event.user %>
+    <%= render 'subscriptions/event_subscriptions_list', event: @event, subscriptions: @subscriptions%>
+    <% end %>
 </div>

@@ -24,7 +24,7 @@ class User < ApplicationRecord
   before_save :apply_camel_case
 
   #Method to check if the user is an organizer
-  def user_organizer?
+  def organizer?
     self.type == UserRoles::USER_ORGANIZER || self.type == UserRoles::COMPANY_ORGANIZER
   end
 
