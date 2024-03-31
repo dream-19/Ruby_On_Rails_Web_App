@@ -1,0 +1,45 @@
+<!-- View to display the subscriptions (of a normal user) -->
+<div class="container-fluid my-2 py-2" >
+  <div class="row">
+    <div class="col-md-12">
+      <h2 class="mb-3">My Subscriptions</h2>
+    </div>
+  </div>
+  <!-- if you have no subscriptions -->
+  <% if current_user.subscriptions.empty? %>
+    <div class="alert alert-info text-center" role="alert">
+      You have no subscriptions!
+    </div>
+  <% else %>
+    <!-- Action Available -->
+    <div class="row mb-3">
+      <div class="col text-end">
+        <button id="bulk-delete-user-sub" class="btn btn-danger">Unsubscribe</button>
+      </div>
+    </div>
+    <!--  Tables -->
+    <div class="row">
+      <div class="col">
+        <h2>Ongoing Events</h2>
+        <h4 id="current-count"> Total: <%= @current_sub.count %> </h4>
+        <div id="current-sub" data-events='<%= @current_sub_json %>'></div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col">
+        <h2> Future Events</h2>
+        <h4 id="future-count"> Total: <%= @future_sub.count %></h4>
+        <div id="future-sub" data-events='<%= @future_sub_json %>'></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h2> Past Events</h2>
+        <h4> Total: <%= @past_sub.count %> </h4>
+        <div id="past-sub" data-events='<%= @past_sub_json %>'></div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<%= render 'modals/delete_multiple_subscriptions_modal'%>

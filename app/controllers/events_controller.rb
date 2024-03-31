@@ -80,6 +80,21 @@ class EventsController < ApplicationController
     
   end
 
+  # GET /events/my_events_user (events subscribed by the current user)
+  def my_events_user 
+    @current_sub = current_user.subscribed_events.ongoing
+    @current_sub_json = format_events_as_json(@current_sub, false) #false for no edit
+
+    @future_sub = current_user.subscribed_events.future
+    @future_sub_json = format_events_as_json(@future_sub, false) 
+
+    @past_sub = current_user.subscribed_events.past
+    @past_sub_json = format_events_as_json(@past_sub, false) 
+
+    render :my_subscriptions
+  end
+
+  # GET /events/my_events (events created by the current user)
   def my_events
     #ONGOING
     @current_events = current_user.created_events.ongoing
@@ -283,14 +298,12 @@ class EventsController < ApplicationController
     def format_events_as_json(events, editable)
       events.map do |event|
         {
-          id: event.id,
+          #if che current user is an organizer we take the event is, otherwise we need the subscription id
+          id: current_user.organizer? ? event.id : current_user.subscriptions.find_by(event_id: event.id).id,
           name: event.name,
-          beginning_date: helpers.format_date(event.beginning_date),
-          beginning_time: helpers.format_time(event.beginning_time),
-          ending_date: helpers.format_date(event.ending_date),
-          ending_time: helpers.format_time(event.ending_time),
-          participants: event.subscriptions.count,
-          max_participants: event.max_participants,
+          beginning_date: helpers.format_date_with_time(event.beginning_date, event.beginning_time),
+          ending_date: helpers.format_date_with_time(event.ending_date, event.ending_time),
+          participants: event.subscriptions.count.to_s + '/' + event.max_participants.to_s,
           address: event.address,
           city: event.city,
           cap: event.cap,

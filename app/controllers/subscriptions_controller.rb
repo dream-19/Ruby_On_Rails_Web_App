@@ -4,10 +4,6 @@ class SubscriptionsController < ApplicationController
         before_action :check_overlaps, only: [:create]
 
 
-    def my_subscriptions
-        @subscriptions = current_user.subscriptions
-    end
-
     def create
         event = Event.find(params[:event_id]) # Find the event that the user wants to subscribe to
         subscription = current_user.subscriptions.build(event: event) # Create a new subscription
@@ -35,22 +31,24 @@ class SubscriptionsController < ApplicationController
         redirect_back(fallback_location: events_path) 
     end
 
-    # BULK destroy: multiple subscriptions (made by the event owner)
+    # BULK destroy: multiple subscriptions (made by the event owner or the user who subscribed to the event)
+    # This method is called when the user clicks on the "Unsubscribe" button in the "My Subscriptions" page
+    # or when the event owner wants to remove the subscriptions of multiple users
     def bulk_destroy_sub
         sub_ids = params[:sub_ids]
         sub_ids.each do |sub_id|
-            subscription = Subscription.find(sub_id)
+            subscription = Subscription.find_by(id: sub_id)
             if subscription.nil?
-                flash[:alert] = "Subscription not found."
-                render json: { success: false }, status: :unprocessable_entity
+                message = "Subscription not found."
+                render json: { success: false, message: message }, status: :not_found
                 return
             end
             event = subscription.event
-            if current_user == event.user
+            if current_user == event.user || current_user == subscription.user
                 subscription.destroy
             else 
-                flash[:alert] = "You are not authorized to unsubscribe from this event."
-                render json: { success: false }, status: :unprocessable_entity
+                message = "You are not authorized to unsubscribe from this event."
+                render json: { success: false, message: message }, status: :unauthorized
                 return
             end
         end 

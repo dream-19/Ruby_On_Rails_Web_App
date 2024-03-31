@@ -26,6 +26,9 @@ var table_current = "";
 var table_past = "";
 var table_future = "";
 var table_sub = "";
+var table_current_sub = "";
+var table_past_sub = "";
+var table_future_sub = "";
 
 // variables to manage photos
 var photoInputCount = 0;
@@ -336,19 +339,16 @@ function manageTable() {
     {
       title: "From",
       field: "beginning_date",
-      sorter: dateSorter,
+      sorter: dateTimeSorter,
       headerFilter: "input",
     }, // Assuming format_date is handled server-side
-    { title: "Time", field: "beginning_time", headerFilter: "input" }, // Assuming format_time is handled server-side
     {
       title: "To",
       field: "ending_date",
-      sorter: dateSorter,
+      sorter: dateTimeSorter,
       headerFilter: "input",
     },
-    { title: "Time", field: "ending_time", headerFilter: "input" },
-    { title: "People", field: "participants", headerFilter: "input" },
-    { title: "Max", field: "max_participants", headerFilter: "input" },
+    { title: "People", field: "participants",sorter:peopleSorter, headerFilter: "input" },
     { title: "Address", field: "address", headerFilter: "input" },
     { title: "City", field: "city", headerFilter: "input" },
     { title: "Cap", field: "cap", headerFilter: "input" },
@@ -444,6 +444,8 @@ function manageTable() {
   }
 
 
+
+
   // Initialize Tabulator on the #past-events div if there is data
   if (pastEventData.length > 0) {
     table_past = new Tabulator("#past-events", {
@@ -468,6 +470,174 @@ function manageTable() {
     document.getElementById(
       "past-events"
     ).innerHTML = `<div class="alert alert-info" role="alert"> No past events available </div>`;
+  }
+}
+
+// Function to manage the Tabulator Table
+function manageTableSubscriptionsUser() {
+  //Check if element with id #current-sub exist (otherwise we are not in the right page)
+  if (document.getElementById("current-sub") == null) {
+    return;
+  }
+
+  //Take the data from the data-events attribute
+  let eventData = JSON.parse(
+    document.getElementById("current-sub").getAttribute("data-events")
+  );
+  eventData = eventData == null ? [] : eventData;
+  
+
+  let futureData = JSON.parse(
+    document.getElementById("future-sub").getAttribute("data-events")
+  );
+  futureData = futureData == null ? [] : futureData;
+
+  let pastEventData = JSON.parse(
+    document.getElementById("past-sub").getAttribute("data-events")
+  );
+  pastEventData = pastEventData == null ? [] : pastEventData;
+
+  // Define the columns
+  const columns = [
+    { title: "Name", field: "name", headerFilter: "input" },
+    { 
+      title: "From", 
+      field: "beginning_date", 
+      sorter: dateTimeSorter,
+      headerFilter: "input",
+    },
+    { 
+      title: "To", 
+      field: "ending_date", 
+      sorter: dateTimeSorter,
+      headerFilter: "input",
+    },
+    { 
+      title: "People", 
+      field: "participants", 
+      
+      headerFilter: "input",
+      sorter: peopleSorter,
+    },
+    { title: "Address", field: "address", headerFilter: "input" },
+    { title: "City", field: "city", headerFilter: "input" },
+    { title: "Cap", field: "cap", headerFilter: "input" },
+    { title: "Province", field: "province", headerFilter: "input" },
+    { title: "Country", field: "country", headerFilter: "input" },
+    {
+      title: "Actions",
+      headerSort: false,
+      formatter: function (cell, formatterParams, onRendered) {
+        const rowData = cell.getRow().getData();
+        if (rowData.edit_url == "") {
+          return `<a href='${rowData.view_url}' class='btn btn-info'>View</a>`;
+        } else {
+          return `<a href='${rowData.view_url}' class='btn btn-info'>View</a>
+                  <a href='${rowData.edit_url}' class='btn btn-warning'>Edit</a>`;
+        }
+      },
+    },
+  ];
+
+  // Initialize Tabulator on the #current-events div if there is data
+  if (eventData != null && eventData.length > 0) {
+    table_current_sub = new Tabulator("#current-sub", {
+      layout: "fitData",
+      placeholder: "No current events available",
+      data: eventData, // Set data to your events
+      columns: columns,
+      cellVertAlign: "middle", // Vertically align the content in cells
+      cellHozAlign: "center",
+      pagination: "local", // Enable local pagination
+      paginationSize: 10, // Set the number of rows per page
+      paginationSizeSelector: [5, 10, 20, 50],
+      paginationCounter: "rows", //add pagination row counter
+      initialSort: [
+        // Set initial sorting
+        { column: "beginning_date", dir: "asc" },
+      ],
+
+      rowHeader: {
+        headerSort: false,
+        resizable: false,
+        frozen: true,
+        headerHozAlign: "center",
+        hozAlign: "center",
+        formatter: "rowSelection",
+        titleFormatter: "rowSelection",
+        cellClick: function (e, cell) {
+          cell.getRow().toggleSelect();
+        },
+      },
+    });
+  } else {
+    if (document.getElementById("current-sub") != null){
+      document.getElementById( "current-sub").innerHTML = `<div class="alert alert-info" role="alert"> There are no current events available </div>`;
+    }
+  }
+
+  //Initialize Tabulatore on the #future-events div if there is data
+  if (futureData!= null && futureData.length > 0) {
+    table_future_sub = new Tabulator("#future-sub", {
+      layout: "fitData",
+      placeholder: "No future events available",
+      data: futureData, // Set data to your events
+      columns: columns,
+      cellVertAlign: "middle", // Vertically align the content in cells
+      cellHozAlign: "center",
+      pagination: "local", // Enable local pagination
+      paginationSize: 10, // Set the number of rows per page
+      paginationSizeSelector: [5, 10, 20, 50],
+      paginationCounter: "rows", //add pagination row counter
+      initialSort: [
+        // Set initial sorting
+        { column: "beginning_date", dir: "asc" },
+      ],
+
+      rowHeader: {
+        headerSort: false,
+        resizable: false,
+        frozen: true,
+        headerHozAlign: "center",
+        hozAlign: "center",
+        formatter: "rowSelection",
+        titleFormatter: "rowSelection",
+        cellClick: function (e, cell) {
+          cell.getRow().toggleSelect();
+        },
+      },
+    });
+  } else {
+    if (document.getElementById("future-sub") != null){
+      document.getElementById( "future-sub").innerHTML = `<div class="alert alert-info" role="alert"> There are no future events available </div>`;
+    }
+  }
+
+
+  // Initialize Tabulator on the #past-events div if there is data
+  if (pastEventData != null && pastEventData.length > 0) {
+    table_past_sub = new Tabulator("#past-sub", {
+      layout: "fitData",
+      placeholder: "No past events available",
+      data: pastEventData, // Set data to your events
+      columns: columns,
+      cellVertAlign: "middle", // Vertically align the content in cells
+      cellHozAlign: "center", // Horizontally align the content in cells
+      paginationCounter: "rows", //add pagination row counter
+      pagination: "local", // Enable local pagination
+      paginationSize: 10, // Set the number of rows per page
+      paginationSizeSelector: [5, 10, 20, 50],
+      initialSort: [
+        // Set initial sorting
+        { column: "ending_date", dir: "des" },
+      ],
+      
+    });
+  } else {
+    //show bootstrap alert
+    if (document.getElementById("past-sub") != null){
+      document.getElementById( "past-sub").innerHTML = `<div class="alert alert-info" role="alert"> There are no past events available </div>`;
+    }
   }
 }
 
@@ -575,6 +745,7 @@ function dateSorter(a, b, aRow, bRow, column, dir, sorterParams) {
 
 //datetime sorter (the datetime is in format dd-mm-yyyy HH:mm)
 function dateTimeSorter(a, b, aRow, bRow, column, dir, sorterParams) {
+  console.log(a);
   // Convert datetime strings to comparable format
   // Example: "12-03-2022 10:30" becomes "2022-03-12T10:30:00"
   function formatDateTime(dateTimeStr) {
@@ -593,6 +764,27 @@ function dateTimeSorter(a, b, aRow, bRow, column, dir, sorterParams) {
   if (formattedA < formattedB) {
     return -1; // a is less than b
   } else if (formattedA > formattedB) {
+    return 1; // a is greater than b
+  } else {
+    return 0; // a is equal to b
+  }
+}
+
+// Sorter for the people column (participants/max participants)
+function peopleSorter(a, b, aRow, bRow, column, dir, sorterParams) {
+  console.log("a: " + a + " b: " + b);
+  // Extract the number of participants and max participants
+  let [aParticipants, aMaxParticipants] = a.split("/");
+  let [bParticipants, bMaxParticipants] = b.split("/");
+
+  // Convert the extracted values to integers
+  aParticipants = parseInt(aParticipants);
+  bParticipants = parseInt(bParticipants);
+
+  // Perform the comparison
+  if (aParticipants < bParticipants) {
+    return -1; // a is less than b
+  } else if (aParticipants > bParticipants) {
     return 1; // a is greater than b
   } else {
     return 0; // a is equal to b
@@ -654,12 +846,22 @@ function manageBulkDelete() {
 });
 }
 
-// Manage bulk delete for subscriptions
-function manageBulkDeleteSub() {
+// Manage bulk delete for subscriptions (type = user or owner)
+function manageBulkDeleteSub(type) {
+
+  let path = '';
+  if (type == 'owner') {
+    path = "/bulk_destroy_sub";
+  } else {
+    path = "/bulk_destroy_sub";
+  }
 
   const selectedData = table_sub != "" ? table_sub.getSelectedData() : [];
+  const selectedDataUser = table_current_sub != "" ? table_current_sub.getSelectedData() : [];
+  const selectedDataFuture = table_future_sub != "" ? table_future_sub.getSelectedData() : [];
+  let selectedDataAll = selectedData.concat(selectedDataUser.concat(selectedDataFuture));
 
-  const subIds = selectedData.map((sub) => sub.id);
+  const subIds = selectedDataAll.map((sub) => sub.id);
   console.log("selected data id " + subIds);
 
   if (subIds.length === 0) {
@@ -674,7 +876,7 @@ function manageBulkDeleteSub() {
    document.getElementById('confirmDeletion').onclick = function() {
      deleteModal.hide();
      console.log("deleting");
-     fetch("/bulk_destroy_sub", {
+     fetch(path, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -689,8 +891,11 @@ function manageBulkDeleteSub() {
           // Reload the entire page (yes, I need to update the counters)
           window.location.reload(); // Reload the page to reflect the changes
         } else {
-          // Handle failure
-          alert("There was an issue deleting the selected subscriptions.");
+          if (data.message != null) {
+            alert("There was an issue deleting the selected subscriptions: " + data.message);
+          }else{
+            alert("There was an issue deleting the selected subscriptions.");
+          }
         }
       })
       .catch((error) => console.error("Error:", error));
@@ -740,6 +945,7 @@ function setUpEventListeners() {
   //Tabulator
   manageTable(); //tables for the list of events (owner side)
   manageTableSubscriptions(); //tables for the list of subscriptions to an event (owner side)
+  manageTableSubscriptionsUser(); //tables for the list of events subscribed by the user (user side)
 
   // Bulk delete for events
   if (document.getElementById("bulk-delete") != null) {
@@ -751,14 +957,24 @@ function setUpEventListeners() {
       .addEventListener("click", () => manageBulkDelete());
   }
 
-  //Bulk delete for subscriptions
+  //Bulk delete for subscriptions (owner side)
   if (document.getElementById("bulk-delete-sub") != null) {
     document
       .getElementById("bulk-delete-sub")
       .removeEventListener("click", manageBulkDeleteSub); // Remove existing event listeners
     document
       .getElementById("bulk-delete-sub")
-      .addEventListener("click", () => manageBulkDeleteSub());
+      .addEventListener("click", () => manageBulkDeleteSub('owner'));
+  }
+
+  //Bulk delete for subscriptions (user side)
+  if (document.getElementById("bulk-delete-user-sub") != null) {
+    document
+      .getElementById("bulk-delete-user-sub")
+      .removeEventListener("click", manageBulkDeleteSub); // Remove existing event listeners
+    document
+      .getElementById("bulk-delete-user-sub")
+      .addEventListener("click", () => manageBulkDeleteSub('user'));
   }
 }
 

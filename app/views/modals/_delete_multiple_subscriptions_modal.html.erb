@@ -7,7 +7,12 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        Are you sure you want to delete the selected subscriptions? A notification will be sent to inform the user.
+        Are you sure you want to delete the selected subscriptions? 
+        <% if current_user.normal? %>
+          A notification will be sent to inform the owner of the event
+        <% else %>
+         A notification will be sent to inform the user.
+         <% end %>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Go Back</button>
