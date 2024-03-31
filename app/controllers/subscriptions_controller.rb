@@ -91,8 +91,7 @@ class SubscriptionsController < ApplicationController
         event_end = DateTime.parse("#{event.ending_date} #{event.ending_time}")
 
         # Check if the user is already subscribed to an event that overlaps with the new event
-        if current_user.events.any? do |e|
-            Rails.logger.debug("CLARITA2")
+        if current_user.subscribed_events.any? do |e|
             subscribed_event_start = DateTime.parse("#{e.beginning_date} #{e.beginning_time}")
             subscribed_event_end = DateTime.parse("#{e.ending_date} #{e.ending_time}")
 

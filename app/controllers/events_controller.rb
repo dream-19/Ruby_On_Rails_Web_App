@@ -82,15 +82,15 @@ class EventsController < ApplicationController
 
   def my_events
     #ONGOING
-    @current_events = current_user.events.ongoing
+    @current_events = current_user.created_events.ongoing
     @current_events_json = format_events_as_json(@current_events, true) #true for edit
 
     #FUTURE
-    @future_events = current_user.events.future
+    @future_events = current_user.created_events.future
     @future_events_json = format_events_as_json(@future_events, true) #true for edit
     
     #PAST
-    @past_events = current_user.events.past
+    @past_events = current_user.created_events.past
     @past_events_json = format_events_as_json(@past_events, false) #false for no edit
     
     render :my_events
@@ -100,13 +100,13 @@ class EventsController < ApplicationController
   def data
     case params[:event_type]
     when 'current'
-      @current_events = current_user.events.ongoing.order(beginning_date: :asc)
+      @current_events = current_user.created_events.ongoing.order(beginning_date: :asc)
       events_data = format_events_as_json(@current_events,true)
     when 'future'
-      @future_events = current_user.events.future
+      @future_events = current_use.created_events.future
       events_data = format_events_as_json(@future_events, true) #true for edit
     when 'past'
-      @past_events = current_user.events.past.order(ending_date: :desc)
+      @past_events = current_user.created_events.past.order(ending_date: :desc)
       events_data = format_events_as_json(@past_events, false)
     else
       events_data = [].to_json
@@ -144,7 +144,7 @@ class EventsController < ApplicationController
 
   # POST /events
   def create
-    @event = current_user.events.build(event_params)
+    @event = current_user.created_events.build(event_params)
     if @event.save
       # Reindirizzamento in caso di successo
       redirect_to @event, notice: 'Event was successfully created.'
@@ -193,7 +193,7 @@ class EventsController < ApplicationController
   def bulk_destroy
     event_ids = params[:event_ids]
     if event_ids.present?
-      current_user.events.where(id: event_ids, user_id: current_user.id).destroy_all
+      current_user.created_events.where(id: event_ids, user_id: current_user.id).destroy_all
       render json: { success: true }
     else
       render json: { success: false }, status: :unprocessable_entity
