@@ -103,7 +103,7 @@ class EventsController < ApplicationController
       @current_events = current_user.created_events.ongoing.order(beginning_date: :asc)
       events_data = format_events_as_json(@current_events,true)
     when 'future'
-      @future_events = current_use.created_events.future
+      @future_events = current_user.created_events.future
       events_data = format_events_as_json(@future_events, true) #true for edit
     when 'past'
       @past_events = current_user.created_events.past.order(ending_date: :desc)

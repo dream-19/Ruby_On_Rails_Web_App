@@ -15,7 +15,7 @@
   <div class="row">
     <div class="col-md-12">
       <h2>Ongoing Events</h2>
-      <h4> Total: <%= @current_events.count %> </h4>
+      <h4 id="current-count"> Total: <%= @current_events.count %> </h4>
       <div id="current-events" data-events='<%= @current_events_json %>'></div>
     </div>
   </div>
@@ -23,7 +23,7 @@
   <div class="row mt-5">
     <div class="col-md-12">
       <h2> Future Events</h2>
-      <h4> Total: <%= @future_events.count %> </h4>
+      <h4 id="future-count"> Total: <%= @future_events.count %></h4>
       <div id="future-events" data-events='<%= @future_events_json %>'></div>
     </div>
   </div>

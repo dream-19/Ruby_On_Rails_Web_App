@@ -461,18 +461,7 @@ function manageTable() {
         // Set initial sorting
         { column: "ending_date", dir: "des" },
       ],
-      rowHeader: {
-        headerSort: false,
-        resizable: false,
-        frozen: true,
-        headerHozAlign: "center",
-        hozAlign: "center",
-        formatter: "rowSelection",
-        titleFormatter: "rowSelection",
-        cellClick: function (e, cell) {
-          cell.getRow().toggleSelect();
-        },
-      },
+      
     });
   } else {
     //show bootstrap alert
@@ -642,10 +631,16 @@ function manageBulkDelete() {
         console.log("SUCCESS");
         // Reload the table or remove deleted rows from the table view
         if (table_current != "") {
-          table_current.setData("/events/data?event_type=current");
+          table_current.setData("/events/data?event_type=current").then(() => {
+            // Update the total of current events
+            document.getElementById("current-count").innerHTML ="Total: "+ table_current.getDataCount();
+          });
         }
-        if (table_future != ""){
-          table_future.setData("/events/data?event_type=future");
+        if (table_future != "") {
+          table_future.setData("/events/data?event_type=future").then(() => {
+            // Update the total of future events
+            document.getElementById("future-count").innerHTML ="Total: "+ table_future.getDataCount();
+          });
         }
 
         if (table_past != "") {
@@ -656,8 +651,7 @@ function manageBulkDelete() {
         // Handle failure
         alert("There was an issue deleting the selected events.");
       }
-    })
-    .catch((error) => console.error("Error:", error));
+});
 }
 
 // Manage bulk delete for subscriptions
