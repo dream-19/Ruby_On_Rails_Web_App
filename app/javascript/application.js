@@ -25,6 +25,7 @@ var countryCode = "";
 var table_current = "";
 var table_past = "";
 var table_future = "";
+var table_sub = "";
 
 // variables to manage photos
 var photoInputCount = 0;
@@ -481,6 +482,87 @@ function manageTable() {
   }
 }
 
+// Function to manage tabulator 2
+function manageTableSubscriptions(){
+ 
+  //check if element is present in the page
+  if (document.getElementById("events-subscriptions") == null) {
+
+    return;
+  }
+
+  //Take the data from the data-events attribute
+  const subData = JSON.parse(
+    document.getElementById("events-subscriptions").getAttribute("data-events")
+  );
+
+  let past_event = document.getElementById("events-subscriptions").getAttribute("past-event");
+
+  // Define the columns based on your old table structure
+  const columns = [
+    { title: "Name", field: "user_name", headerFilter: "input" },
+    { title: "Surname", field: "user_surname", headerFilter: "input" },
+    { title: "Email", field: "user_email", headerFilter: "input" },
+    { title: "Address", field: "user_address", headerFilter: "input" },
+    {
+      title: "DoB",
+      field: "user_date_of_birth",
+      sorter: dateSorter,
+      headerFilter: "input",
+    },
+    { 
+      title: "Full Address", 
+      field: "full_address", 
+      headerFilter: "input",
+      formatter: function(cell, formatterParams, onRendered) {
+        const rowData = cell.getRow().getData();
+        return rowData.user_cap + ", " + rowData.user_province + ", " + rowData.user_city + ", " + rowData.user_country;
+      }
+    },
+    { title: "Subscriptions Date", field: "subscription_created_at", sorter:dateTimeSorter, headerFilter: "input" }, // TODO: sorter datetime
+    
+  ];
+
+    past_event = past_event == "true" ? "true" : "false";
+    // Initialize Tabulator if there is data
+    if (subData != null && subData.length > 0) {
+      table_sub = new Tabulator("#events-subscriptions", {
+        layout: "fitData",
+        placeholder: "No subscritpions available",
+        data: subData, // Set data to your events
+        columns: columns,
+        cellVertAlign: "middle", // Vertically align the content in cells
+        cellHozAlign: "center",
+        pagination: "local", // Enable local pagination
+        paginationSize: 25, // Set the number of rows per page
+        paginationSizeSelector: [10, 15, 25, 50],
+        paginationCounter: "rows", //add pagination row counter
+        initialSort: [
+          // Set initial sorting
+          { column: "subscription_created_at", dir: "desc" },
+        ],
+        
+        rowHeader: {
+          headerSort: false,
+          resizable: false,
+          frozen: true,
+          headerHozAlign: "center",
+          hozAlign: "center",
+          formatter: past_event == "true" ? "plaintext" : "rowSelection",
+          titleFormatter: past_event == "true" ? "plaintext" : "rowSelection",
+          cellClick: function (e, cell) {
+            cell.getRow().toggleSelect();
+          },
+        },
+      });
+    } else {
+      document.getElementById(
+        "events-subscriptions"
+      ).innerHTML = `<div class="alert alert-info" role="alert"> There are no subscriptions available </div>`;
+    }
+
+}
+
 function dateSorter(a, b, aRow, bRow, column, dir, sorterParams) {
   // Convert dd-mm-yyyy formatted string to a comparable format
   // Example: "12-03-2022" becomes "20220312"
@@ -499,6 +581,32 @@ function dateSorter(a, b, aRow, bRow, column, dir, sorterParams) {
     return 1; // a is greater than b
   } else {
     return 0; // a and b are equal
+  }
+}
+
+//datetime sorter (the datetime is in format dd-mm-yyyy HH:mm)
+function dateTimeSorter(a, b, aRow, bRow, column, dir, sorterParams) {
+  // Convert datetime strings to comparable format
+  // Example: "12-03-2022 10:30" becomes "2022-03-12T10:30:00"
+  function formatDateTime(dateTimeStr) {
+    let parts = dateTimeStr.split(" ");
+    let dateParts = parts[0].split("-");
+    let timeParts = parts[1].split(":");
+    let formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+    let formattedTime = `${timeParts[0]}:${timeParts[1]}:00`;
+    return `${formattedDate}T${formattedTime}`;
+  }
+
+  let formattedA = formatDateTime(a);
+  let formattedB = formatDateTime(b);
+
+  // Perform the comparison
+  if (formattedA < formattedB) {
+    return -1; // a is less than b
+  } else if (formattedA > formattedB) {
+    return 1; // a is greater than b
+  } else {
+    return 0; // a is equal to b
   }
 }
 
@@ -552,6 +660,51 @@ function manageBulkDelete() {
     .catch((error) => console.error("Error:", error));
 }
 
+// Manage bulk delete for subscriptions
+function manageBulkDeleteSub() {
+
+  const selectedData = table_sub != "" ? table_sub.getSelectedData() : [];
+
+  const subIds = selectedData.map((sub) => sub.id);
+  console.log("selected data id " + subIds);
+
+  if (subIds.length === 0) {
+    alert("Please select at least one subscription to delete.");
+    return;
+  }
+
+   // Trigger the modal
+   var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+   deleteModal.show();
+ 
+   document.getElementById('confirmDeletion').onclick = function() {
+     deleteModal.hide();
+     console.log("deleting");
+     fetch("/bulk_destroy_sub", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('[name="csrf-token"]').content, // Ensure CSRF token is sent
+      },
+      body: JSON.stringify({ sub_ids: subIds }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          console.log("SUCCESS");
+          // Reload the entire page (yes, I need to update the counters)
+          window.location.reload(); // Reload the page to reflect the changes
+        } else {
+          // Handle failure
+          alert("There was an issue deleting the selected subscriptions.");
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+   };
+  
+
+}
+
 //SETTING UP EVENT LISTENERS FOR THE PHOTO MANAGEMENT
 function setUpEventListenersPhotos() {
   id_counter = 0;
@@ -588,10 +741,11 @@ function setUpEventListenersPhotos() {
   }
 }
 
-//Setting up event listeners to manage events
+//Setting up event listeners to manage events (tabulator included)
 function setUpEventListeners() {
   //Tabulator
-  manageTable();
+  manageTable(); //tables for the list of events (owner side)
+  manageTableSubscriptions(); //tables for the list of subscriptions to an event (owner side)
 
   // Bulk delete for events
   if (document.getElementById("bulk-delete") != null) {
@@ -601,6 +755,16 @@ function setUpEventListeners() {
     document
       .getElementById("bulk-delete")
       .addEventListener("click", () => manageBulkDelete());
+  }
+
+  //Bulk delete for subscriptions
+  if (document.getElementById("bulk-delete-sub") != null) {
+    document
+      .getElementById("bulk-delete-sub")
+      .removeEventListener("click", manageBulkDeleteSub); // Remove existing event listeners
+    document
+      .getElementById("bulk-delete-sub")
+      .addEventListener("click", () => manageBulkDeleteSub());
   }
 }
 

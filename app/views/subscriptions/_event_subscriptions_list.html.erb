@@ -1,2 +1,16 @@
 <!-- Partial to show the subscriptions to an event (for the event owner) -->
-<h1>Subscriptions</h1>
+<div class="row mt-5">
+    <div class="col-md-12">
+      <h2 >Subscriptions</h2>
+      <h4>Total: <%= event.subscriptions.count %> / <%= event.max_participants %></h4>
+      <% unless event.past?%>
+       <div class="row mb-3">
+            <div class="col text-end">
+            <button id="bulk-delete-sub" class="btn btn-danger">Delete Selected</button>
+            </div>
+        </div>
+        <% end %>
+      <div id="events-subscriptions" data-events='<%= subscriptions_json %>' past-event = '<%= event.past? %>'></div>
+    </div>
+</div>
+  <%= render 'modals/delete_multiple_subscriptions_modal'%>

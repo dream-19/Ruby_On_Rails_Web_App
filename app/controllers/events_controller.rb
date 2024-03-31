@@ -120,6 +120,7 @@ class EventsController < ApplicationController
     #if the user is the organizer of the event get also the subscribtions
     if current_user == @event.user
       @subscriptions = @event.subscriptions
+      @subscriptions_json = format_subscriptions_as_json(@subscriptions)
     end
 
     if @event.nil?
@@ -297,6 +298,26 @@ class EventsController < ApplicationController
           country: event.country,
           view_url: event_path(event),
           edit_url: if editable then edit_event_path(event) else '' end,
+        }
+      end.to_json
+    end
+
+    # Formats the subscriptions as JSON
+    def format_subscriptions_as_json(subscribtions)
+      subscribtions.map do |subscription|
+        {
+          id: subscription.id,
+          user_id: subscription.user_id,
+          user_name: subscription.user.name,
+          user_surname: subscription.user.surname,
+          user_email: subscription.user.email,
+          user_address: subscription.user.address,
+          user_cap: subscription.user.cap,
+          user_province: subscription.user.province,
+          user_city: subscription.user.city,
+          user_country: subscription.user.country,
+          user_date_of_birth: helpers.format_date(subscription.user.date_of_birth),
+          subscription_created_at: helpers.format_datetime(subscription.created_at)
         }
       end.to_json
     end

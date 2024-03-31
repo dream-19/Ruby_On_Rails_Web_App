@@ -38,6 +38,29 @@ class SubscriptionsController < ApplicationController
         redirect_back(fallback_location: events_path) 
     end
 
+    # BULK destroy: multiple subscriptions (made by the event owner)
+    def bulk_destroy_sub
+        sub_ids = params[:sub_ids]
+        sub_ids.each do |sub_id|
+            subscription = Subscription.find(sub_id)
+            if subscription.nil?
+                flash[:alert] = "Subscription not found."
+                render json: { success: false }, status: :unprocessable_entity
+                return
+            end
+            event = subscription.event
+            if current_user == event.user
+                subscription.destroy
+            else 
+                flash[:alert] = "You are not authorized to unsubscribe from this event."
+                render json: { success: false }, status: :unprocessable_entity
+                return
+            end
+        end 
+        flash[:notice] = "Subscritpions Deleted Successfully."
+        render json: { success: true }
+    end
+
     private
 
     #When the user try to subscribe to an event:
