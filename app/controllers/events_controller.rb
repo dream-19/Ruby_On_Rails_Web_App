@@ -151,7 +151,8 @@ class EventsController < ApplicationController
   # GET /events/1/edit
   def edit
     # Check if the event has already ended
-    if @event.ending_date < Date.today
+    Rails.logger.debug("cristiano")
+    if @event.past?
       redirect_to @event, alert: 'You cannot edit an event that has already ended.'
     end
 

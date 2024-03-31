@@ -1,6 +1,6 @@
 <div class="container my-5 py-4">
   <!-- Display an alert (event ended, subscribed, event full, sign in to subscribe) -->
-  <% if @event.ending_date < Date.today %>
+  <% if @event.past? %>
     <div class="alert alert-info text-center" role="alert">
       This event has already ended!
     </div>
@@ -15,6 +15,10 @@
   <% elsif !user_signed_in? %>
     <div class="alert alert-info text-center" role="alert">
       Sign in to subscribe to the event!
+    </div>
+  <% elsif @event.ongoing? %>
+    <div class="alert alert-info text-center" role="alert">
+      This event is ongoing!
     </div>
   <% end %>
   <div class="row g-4">

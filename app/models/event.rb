@@ -20,33 +20,50 @@ class Event < ApplicationRecord
 
   # Return the events that are ongoing (current)
   def self.ongoing
-    where("beginning_date <= ? AND ending_date >= ?", Date.today, Date.today)
+    now = Time.zone.now
+    where("TIMESTAMP(beginning_date, beginning_time) <= ? AND TIMESTAMP(ending_date, ending_time) >= ?", now, now)
   end
 
-  # Check if the event is ongoing
+  # Check if the event is ongoing for an instance
   def ongoing?
-    beginning_date <= Date.today && ending_date >= Date.today
+    now = Time.zone.now
+    beginning_datetime = DateTime.parse("#{beginning_date} #{beginning_time}")
+    ending_datetime = DateTime.parse("#{ending_date} #{ending_time}")
+    Rails.logger.debug ("DIO PORCO")
+    Rails.logger.debug("raw: #{ending_time}")
+    Rails.logger.debug("ending_datetime: #{ending_datetime}")
+    Rails.logger.debug("now: #{now}")
+    Rails.logger.debug("london: #{Time.zone.now.in_time_zone('London')}")
+    Rails.logger.debug(ending_datetime >= now)
+    beginning_datetime <= now && ending_datetime >= now
+
   end
 
-  # Cehck if the event is passed
+  # Check if the event is past for an instance
   def past?
-    ending_date < Date.today
+    now = Time.zone.now
+    ending_datetime = DateTime.parse("#{ending_date} #{ending_time}")
+    ending_datetime < now
   end
 
   # Return the events that are future (future)
   def self.future
-    where("beginning_date > ?", Date.today)
+    now = Time.zone.now
+    where("TIMESTAMP(beginning_date, beginning_time) > ?", now)
   end
 
   # Return the events that are upcoming (current and future)
   def self.upcoming
-    where("ending_date >= ?", Date.today)
+    now = Time.zone.now
+    where("TIMESTAMP(ending_date, ending_time) >= ?", now)
   end
 
-  # Return the events that are passed
-  def self.past 
-    where("ending_date < ?", Date.today)
-  end 
+  # Return the events that are past
+  def self.past
+    now = Time.zone.now
+    where("TIMESTAMP(ending_date, ending_time) < ?", now)
+  end
+ 
 
   #check if an event is at full capacity
   def full?
@@ -91,6 +108,7 @@ class Event < ApplicationRecord
         errors.add(:beginning_date, 'must be before the ending date') if beginning_date > ending_date
         if beginning_time.present? && ending_time.present?
           errors.add(:beginning_time, 'must be before the ending time') if beginning_date == ending_date && beginning_time >= ending_time
+          #errors.add(:ending_time, 'cannot be a past event ') if (ending_date == Date.today && ending_time < Time.zone.now)
         end 
       end
     end
