@@ -19,7 +19,7 @@ class User < ApplicationRecord
 
   # An organizer can create many events (and the events has a foreign key 'user_id')
   # when and organizer deletes its account all the events created by him will be deleted
-  #has_many :events, foreign_key: "user_id", dependent: :destroy
+  has_many :events, foreign_key: "user_id", dependent: :destroy
 
   before_save :apply_camel_case
 
@@ -45,8 +45,10 @@ class User < ApplicationRecord
 
   #Check if the user is subscribed to an event
   def subscribed?(event)
-    self.events.include?(event)
+    subscriptions.where(event_id: event.id).exists?
   end
+
+  
 
   private
 

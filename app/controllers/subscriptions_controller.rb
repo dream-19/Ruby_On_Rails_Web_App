@@ -10,10 +10,7 @@ class SubscriptionsController < ApplicationController
 
     def create
         event = Event.find(params[:event_id]) # Find the event that the user wants to subscribe to
-        subscription_date = Date.current
-        subscription_time = Time.current.strftime("%H:%M")
-
-        subscription = current_user.subscriptions.build(event: event, subscription_date: subscription_date, subscription_time: subscription_time) # Create a new subscription
+        subscription = current_user.subscriptions.build(event: event) # Create a new subscription
       
         # No need for a successful message (it is already shown in the view)
         unless subscription.save
@@ -88,11 +85,14 @@ class SubscriptionsController < ApplicationController
     end
 
     def check_overlaps
+        Rails.logger.debug("CLARITA")
         event = Event.find(params[:event_id])
         event_start = DateTime.parse("#{event.beginning_date} #{event.beginning_time}")
         event_end = DateTime.parse("#{event.ending_date} #{event.ending_time}")
 
+        # Check if the user is already subscribed to an event that overlaps with the new event
         if current_user.events.any? do |e|
+            Rails.logger.debug("CLARITA2")
             subscribed_event_start = DateTime.parse("#{e.beginning_date} #{e.beginning_time}")
             subscribed_event_end = DateTime.parse("#{e.ending_date} #{e.ending_time}")
 

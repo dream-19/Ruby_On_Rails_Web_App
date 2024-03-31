@@ -439,7 +439,7 @@ function manageTable() {
     });
   } else {
     document.getElementById(
-      "current-events"
+      "future-events"
     ).innerHTML = `<div class="alert alert-info" role="alert"> There are no future events available </div>`;
   }
 

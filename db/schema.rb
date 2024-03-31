@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_24_093408) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_31_110612) do
   create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -61,8 +61,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_24_093408) do
   create_table "subscriptions", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "event_id", null: false
-    t.time "subscription_time", null: false
-    t.date "subscription_date", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["event_id"], name: "index_subscriptions_on_event_id"
