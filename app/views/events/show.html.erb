@@ -20,15 +20,25 @@
     <div class="alert alert-info text-center" role="alert">
       This event is ongoing!
     </div>
+  <% elsif @event.future? %>
+    <div class="alert alert-info text-center" role="alert">
+      This event is in the future!
+    </div>
   <% end %>
   <div class="row g-4">
     <!-- Left Column: Event Photos -->
     <div class="col-md-6">
-      
       <%= render 'carousel', event: @event, fixed: false %>
+      <div class="row justify-content-center">
+        <div class="col-auto">
       <% if @event.future?%>
+        <p class="text-center"><strong>To the start of the event:</strong></p>
         <div id="flipdown" class="flipdown flipdown__theme-dark" data='<%= @event.beginning_date %>' data-min='<%= format_time(@event.beginning_time) %>'></div>
+      <%elsif @event.ongoing?%>
+      <p class="text-center"><strong>To the end of the event:</strong></p>
+        <div id="flipdown" class="flipdown flipdown__theme-dark" data='<%= @event.ending_date %>' data-min='<%= format_time(@event.ending_time) %>'></div>
       <% end %>
+      </div></div>
     </div>
     <!-- Right Column: Details -->
     <div class="col-md-6">

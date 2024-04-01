@@ -1052,13 +1052,6 @@ function setUpTimer() {
     //console.log("Countdown time: " + timestampSeconds);
     var flipdown = new FlipDown(timestampSeconds)
       .start()
-      // Do something when the countdown ends
-      .ifEnded(() => {
-        console.log("The countdown has ended!");
-      });
-
-
-
   }
 }
 

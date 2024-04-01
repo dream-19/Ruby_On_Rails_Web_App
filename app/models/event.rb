@@ -22,14 +22,14 @@ class Event < ApplicationRecord
 
   # Return the events that are ongoing (current)
   def self.ongoing
-    now = Time.zone.now
+    now = get_time_now()
     where("TIMESTAMP(beginning_date, beginning_time) <= ? AND TIMESTAMP(ending_date, ending_time) >= ?", now, now)
   end
 
 
   # Check if the event is ongoing for an instance
   def ongoing?
-    now = Time.zone.now
+    now = Event.get_time_now()
     beginning_datetime = DateTime.parse("#{beginning_date} #{beginning_time}")
     ending_datetime = DateTime.parse("#{ending_date} #{ending_time}")
     beginning_datetime <= now && ending_datetime >= now
@@ -38,33 +38,36 @@ class Event < ApplicationRecord
 
   # Check if the event is past for an instance
   def past?
-    now = Time.zone.now
+    now = Event.get_time_now()
     ending_datetime = DateTime.parse("#{ending_date} #{ending_time}")
     ending_datetime < now
   end
 
   # Check if the event is upcoming for an instance
   def future?
-    now = Time.zone.now
-    beginning_datetime = DateTime.parse("#{beginning_date} #{beginning_time}")
-    beginning_datetime > now
+    now = Event.get_time_now()
+    beginning_string = "#{beginning_date} #{beginning_time}"
+    # Assuming beginning_date is a Date object and beginning_time is a String in 'HH:MM' format
+    beginning_in_time_zone = Time.zone.parse(beginning_string)
+    beginning_in_time_zone > now
+
   end
 
   # Return the events that are future (future)
   def self.future
-    now = Time.zone.now
+    now = get_time_now()
     where("TIMESTAMP(beginning_date, beginning_time) > ?", now)
   end
 
   # Return the events that are upcoming (current and future)
   def self.upcoming
-    now = Time.zone.now
+    now = get_time_now()
     where("TIMESTAMP(ending_date, ending_time) >= ?", now)
   end
 
   # Return the events that are past
   def self.past
-    now = Time.zone.now
+    now = get_time_now()
     where("TIMESTAMP(ending_date, ending_time) < ?", now)
   end
  
@@ -103,6 +106,8 @@ class Event < ApplicationRecord
   # The beginning time must be before the ending time
   # The ending date cannot be before today
   def validate_time_date
+    now = Event.get_time_now()
+    
     formatted_time_beginning = beginning_time.strftime('%H:%M:%S') if beginning_time.present?
     formatted_time_ending = ending_time.strftime('%H:%M:%S') if ending_time.present?
   
@@ -122,8 +127,9 @@ class Event < ApplicationRecord
       if beginning_date.present? 
         errors.add(:beginning_date, 'must be before the ending date') if beginning_date > ending_date
         if beginning_time.present? && ending_time.present?
+          ending_datetime = DateTime.parse("#{ending_date} #{ending_time}")
           errors.add(:beginning_time, 'must be before the ending time') if beginning_date == ending_date && beginning_time >= ending_time
-          #errors.add(:ending_time, 'cannot be a past event ') if (ending_date == Date.today && ending_time < Time.zone.now)
+          errors.add(:ending_time, 'cannot be a past event ') if (ending_datetime < now)
         end 
       end
     end
@@ -140,6 +146,11 @@ class Event < ApplicationRecord
 
   def to_title_case(str)
     str.split.map(&:capitalize).join(' ')
+  end
+
+  def self.get_time_now #class method
+    # if  we are inside DST add +1 hour (workaround for the bug in the time zone library)
+    Time.zone.now.dst? ?  Time.zone.now + 1.hour : Time.zone.now 
   end
 
   
