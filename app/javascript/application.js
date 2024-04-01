@@ -130,7 +130,7 @@ function add_element_photo() {
 
     //add the delete option
     const deleteButton = document.createElement("button");
-    deleteButton.className = "btn btn-outline-danger photo-delete";
+    deleteButton.className = "btn btn-outline-danger photo-delete mb-0";
     deleteButton.id = "photo-delete-" + id_counter;
     deleteButton.type = "button";
     deleteButton.innerHTML = '<i class="bi bi-x-lg"></i>';
@@ -403,7 +403,7 @@ function manageTable() {
   } else {
     document.getElementById(
       "current-events"
-    ).innerHTML = `<div class="alert alert-info" role="alert"> There are no current events available </div>`;
+    ).innerHTML = `<div class="alert alert-secondary" role="alert"> There are no current events available </div>`;
   }
 
   //Initialize Tabulatore on the #future-events div if there is data
@@ -440,7 +440,7 @@ function manageTable() {
   } else {
     document.getElementById(
       "future-events"
-    ).innerHTML = `<div class="alert alert-info" role="alert"> There are no future events available </div>`;
+    ).innerHTML = `<div class="alert alert-secondary" role="alert"> There are no future events available </div>`;
   }
 
 
@@ -572,7 +572,7 @@ function manageTableSubscriptionsUser() {
     });
   } else {
     if (document.getElementById("current-sub") != null){
-      document.getElementById( "current-sub").innerHTML = `<div class="alert alert-info" role="alert"> There are no current events available </div>`;
+      document.getElementById( "current-sub").innerHTML = `<div class="alert alert-secondary" role="alert"> There are no current events available </div>`;
     }
   }
 
@@ -609,7 +609,7 @@ function manageTableSubscriptionsUser() {
     });
   } else {
     if (document.getElementById("future-sub") != null){
-      document.getElementById( "future-sub").innerHTML = `<div class="alert alert-info" role="alert"> There are no future events available </div>`;
+      document.getElementById( "future-sub").innerHTML = `<div class="alert alert-secondary" role="alert"> There are no future events available </div>`;
     }
   }
 
@@ -636,7 +636,7 @@ function manageTableSubscriptionsUser() {
   } else {
     //show bootstrap alert
     if (document.getElementById("past-sub") != null){
-      document.getElementById( "past-sub").innerHTML = `<div class="alert alert-info" role="alert"> There are no past events available </div>`;
+      document.getElementById( "past-sub").innerHTML = `<div class="alert alert-secondary" role="alert"> There are no past events available </div>`;
     }
   }
 }
@@ -721,7 +721,7 @@ function manageTableSubscriptions(){
     } else {
       document.getElementById(
         "events-subscriptions"
-      ).innerHTML = `<div class="alert alert-info" role="alert"> There are no subscriptions available </div>`;
+      ).innerHTML = `<div class="alert alert-secondary" role="alert"> There are no subscriptions available </div>`;
     }
 
 }

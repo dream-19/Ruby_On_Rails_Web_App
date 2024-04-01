@@ -1,11 +1,11 @@
 <div class="container my-5 py-4">
   <!-- Display an alert (event ended, subscribed, event full, sign in to subscribe) -->
   <% if @event.past? %>
-    <div class="alert alert-info text-center" role="alert">
+    <div class="alert alert-secondary text-center" role="alert">
       This event has already ended!
     </div>
   <% elsif user_signed_in? && current_user.subscribed?(@event) %>
-    <div class="alert alert-success text-center" role="alert">
+    <div class="alert alert-primary text-center" role="alert">
       You are subscribed to this event!
     </div>
   <% elsif @event.full? %>

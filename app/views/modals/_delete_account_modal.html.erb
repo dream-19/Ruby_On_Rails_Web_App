@@ -3,7 +3,9 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="deleteModalLabel">Delete your Account</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
       </div>
       <div class="modal-body text-center">
         <% if current_user.type == UserRoles::USER_NORMAL %>
@@ -14,6 +16,7 @@
             deleting the account means that all of the events you created will be deleted as well </p>
         <% end %>
         <%= button_to "Cancel my account", registration_path(resource_name),method: :delete, class: "btn btn-danger" %>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Go Back</button>
       </div>
     </div>
   </div>
