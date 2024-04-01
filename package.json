@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "flipdown": "^0.3.2",
     "tabulator-tables": "^6.0.1"
   }
 }

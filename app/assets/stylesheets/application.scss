@@ -19,6 +19,7 @@
 @import "soft-ui-dashboard";
 @import "nucleo-icons";
 @import "nucleo-svg";
+@import "flipdown.min";
 
 // h1,h2,h3 all in center
 h1, h2, h3,h4 {
@@ -94,3 +95,10 @@ h1, h2, h3,h4 {
   margin-right: 10px;
   
 }
+
+/* flipdown rescale */
+#flipdown {
+  transform: scale(0.55); /* Adjust the scale value as needed */
+  transform-origin: center top; /* This ensures the scaling is centered */
+}
+

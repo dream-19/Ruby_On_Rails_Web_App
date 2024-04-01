@@ -43,6 +43,13 @@ class Event < ApplicationRecord
     ending_datetime < now
   end
 
+  # Check if the event is upcoming for an instance
+  def future?
+    now = Time.zone.now
+    beginning_datetime = DateTime.parse("#{beginning_date} #{beginning_time}")
+    beginning_datetime > now
+  end
+
   # Return the events that are future (future)
   def self.future
     now = Time.zone.now

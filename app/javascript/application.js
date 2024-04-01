@@ -3,6 +3,7 @@
 //= require rails-ujs
 //= require tabulator.min
 //= require jquery
+//= require flipdown.min
 
 import "@hotwired/turbo-rails";
 import "controllers";
@@ -10,7 +11,7 @@ import "popper";
 import "bootstrap";
 
 // Variables to manage locations
-const username = "helloworld"; 
+const username = "helloworld";
 var countryNames = [];
 var countryInfos = [];
 var countryInput = "";
@@ -319,7 +320,6 @@ function manageTable() {
     return;
   }
 
-
   //Take the data from the data-events attribute
   const eventData = JSON.parse(
     document.getElementById("current-events").getAttribute("data-events")
@@ -348,7 +348,12 @@ function manageTable() {
       sorter: dateTimeSorter,
       headerFilter: "input",
     },
-    { title: "People", field: "participants",sorter:peopleSorter, headerFilter: "input" },
+    {
+      title: "People",
+      field: "participants",
+      sorter: peopleSorter,
+      headerFilter: "input",
+    },
     { title: "Address", field: "address", headerFilter: "input" },
     { title: "City", field: "city", headerFilter: "input" },
     { title: "Cap", field: "cap", headerFilter: "input" },
@@ -443,9 +448,6 @@ function manageTable() {
     ).innerHTML = `<div class="alert alert-secondary" role="alert"> There are no future events available </div>`;
   }
 
-
-
-
   // Initialize Tabulator on the #past-events div if there is data
   if (pastEventData.length > 0) {
     table_past = new Tabulator("#past-events", {
@@ -463,7 +465,6 @@ function manageTable() {
         // Set initial sorting
         { column: "ending_date", dir: "des" },
       ],
-      
     });
   } else {
     //show bootstrap alert
@@ -485,7 +486,6 @@ function manageTableSubscriptionsUser() {
     document.getElementById("current-sub").getAttribute("data-events")
   );
   eventData = eventData == null ? [] : eventData;
-  
 
   let futureData = JSON.parse(
     document.getElementById("future-sub").getAttribute("data-events")
@@ -500,22 +500,22 @@ function manageTableSubscriptionsUser() {
   // Define the columns
   const columns = [
     { title: "Name", field: "name", headerFilter: "input" },
-    { 
-      title: "From", 
-      field: "beginning_date", 
+    {
+      title: "From",
+      field: "beginning_date",
       sorter: dateTimeSorter,
       headerFilter: "input",
     },
-    { 
-      title: "To", 
-      field: "ending_date", 
+    {
+      title: "To",
+      field: "ending_date",
       sorter: dateTimeSorter,
       headerFilter: "input",
     },
-    { 
-      title: "People", 
-      field: "participants", 
-      
+    {
+      title: "People",
+      field: "participants",
+
       headerFilter: "input",
       sorter: peopleSorter,
     },
@@ -571,13 +571,15 @@ function manageTableSubscriptionsUser() {
       },
     });
   } else {
-    if (document.getElementById("current-sub") != null){
-      document.getElementById( "current-sub").innerHTML = `<div class="alert alert-secondary" role="alert"> There are no current events available </div>`;
+    if (document.getElementById("current-sub") != null) {
+      document.getElementById(
+        "current-sub"
+      ).innerHTML = `<div class="alert alert-secondary" role="alert"> There are no current events available </div>`;
     }
   }
 
   //Initialize Tabulatore on the #future-events div if there is data
-  if (futureData!= null && futureData.length > 0) {
+  if (futureData != null && futureData.length > 0) {
     table_future_sub = new Tabulator("#future-sub", {
       layout: "fitData",
       placeholder: "No future events available",
@@ -608,11 +610,12 @@ function manageTableSubscriptionsUser() {
       },
     });
   } else {
-    if (document.getElementById("future-sub") != null){
-      document.getElementById( "future-sub").innerHTML = `<div class="alert alert-secondary" role="alert"> There are no future events available </div>`;
+    if (document.getElementById("future-sub") != null) {
+      document.getElementById(
+        "future-sub"
+      ).innerHTML = `<div class="alert alert-secondary" role="alert"> There are no future events available </div>`;
     }
   }
-
 
   // Initialize Tabulator on the #past-events div if there is data
   if (pastEventData != null && pastEventData.length > 0) {
@@ -631,22 +634,21 @@ function manageTableSubscriptionsUser() {
         // Set initial sorting
         { column: "ending_date", dir: "des" },
       ],
-      
     });
   } else {
     //show bootstrap alert
-    if (document.getElementById("past-sub") != null){
-      document.getElementById( "past-sub").innerHTML = `<div class="alert alert-secondary" role="alert"> There are no past events available </div>`;
+    if (document.getElementById("past-sub") != null) {
+      document.getElementById(
+        "past-sub"
+      ).innerHTML = `<div class="alert alert-secondary" role="alert"> There are no past events available </div>`;
     }
   }
 }
 
 // Function to manage tabulator 2
-function manageTableSubscriptions(){
- 
+function manageTableSubscriptions() {
   //check if element is present in the page
   if (document.getElementById("events-subscriptions") == null) {
-
     return;
   }
 
@@ -655,7 +657,9 @@ function manageTableSubscriptions(){
     document.getElementById("events-subscriptions").getAttribute("data-events")
   );
 
-  let past_event = document.getElementById("events-subscriptions").getAttribute("past-event");
+  let past_event = document
+    .getElementById("events-subscriptions")
+    .getAttribute("past-event");
 
   // Define the columns based on your old table structure
   const columns = [
@@ -669,61 +673,65 @@ function manageTableSubscriptions(){
       sorter: dateSorter,
       headerFilter: "input",
     },
-    { 
-      title: "Full Address", 
-      field: "full_address", 
+    {
+      title: "Full Address",
+      field: "full_address",
       headerFilter: "input",
-      formatter: function(cell, formatterParams, onRendered) {
+      formatter: function (cell, formatterParams, onRendered) {
         const rowData = cell.getRow().getData();
         let address = rowData.user_cap == " " ? rowData.user_cap + ", " : "";
-        address += rowData.user_province == " " ? rowData.user_province + ", " : "";
+        address +=
+          rowData.user_province == " " ? rowData.user_province + ", " : "";
         address += rowData.user_city == " " ? rowData.user_city + ", " : "";
         address += rowData.user_country == " " ? rowData.user_country : "";
         return address;
-      }
+      },
     },
-    { title: "Subscriptions Date", field: "subscription_created_at", sorter:dateTimeSorter, headerFilter: "input" }, // TODO: sorter datetime
-    
+    {
+      title: "Subscriptions Date",
+      field: "subscription_created_at",
+      sorter: dateTimeSorter,
+      headerFilter: "input",
+    }, // TODO: sorter datetime
   ];
 
-    past_event = past_event == "true" ? "true" : "false";
-    // Initialize Tabulator if there is data
-    if (subData != null && subData.length > 0) {
-      table_sub = new Tabulator("#events-subscriptions", {
-        layout: "fitData",
-        placeholder: "No subscritpions available",
-        data: subData, // Set data to your events
-        columns: columns,
-        cellVertAlign: "middle", // Vertically align the content in cells
-        cellHozAlign: "center",
-        pagination: "local", // Enable local pagination
-        paginationSize: 25, // Set the number of rows per page
-        paginationSizeSelector: [10, 15, 25, 50],
-        paginationCounter: "rows", //add pagination row counter
-        initialSort: [
-          // Set initial sorting
-          { column: "subscription_created_at", dir: "desc" },
-        ],
-        
-        rowHeader: {
-          headerSort: false,
-          resizable: false,
-          frozen: true,
-          headerHozAlign: "center",
-          hozAlign: "center",
-          formatter: past_event == "true" ? "plaintext" : "rowSelection",
-          titleFormatter: past_event == "true" ? "plaintext" : "rowSelection",
-          cellClick: function (e, cell) {
-            cell.getRow().toggleSelect();
-          },
-        },
-      });
-    } else {
-      document.getElementById(
-        "events-subscriptions"
-      ).innerHTML = `<div class="alert alert-secondary" role="alert"> There are no subscriptions available </div>`;
-    }
+  past_event = past_event == "true" ? "true" : "false";
+  // Initialize Tabulator if there is data
+  if (subData != null && subData.length > 0) {
+    table_sub = new Tabulator("#events-subscriptions", {
+      layout: "fitData",
+      placeholder: "No subscritpions available",
+      data: subData, // Set data to your events
+      columns: columns,
+      cellVertAlign: "middle", // Vertically align the content in cells
+      cellHozAlign: "center",
+      pagination: "local", // Enable local pagination
+      paginationSize: 25, // Set the number of rows per page
+      paginationSizeSelector: [10, 15, 25, 50],
+      paginationCounter: "rows", //add pagination row counter
+      initialSort: [
+        // Set initial sorting
+        { column: "subscription_created_at", dir: "desc" },
+      ],
 
+      rowHeader: {
+        headerSort: false,
+        resizable: false,
+        frozen: true,
+        headerHozAlign: "center",
+        hozAlign: "center",
+        formatter: past_event == "true" ? "plaintext" : "rowSelection",
+        titleFormatter: past_event == "true" ? "plaintext" : "rowSelection",
+        cellClick: function (e, cell) {
+          cell.getRow().toggleSelect();
+        },
+      },
+    });
+  } else {
+    document.getElementById(
+      "events-subscriptions"
+    ).innerHTML = `<div class="alert alert-secondary" role="alert"> There are no subscriptions available </div>`;
+  }
 }
 
 function dateSorter(a, b, aRow, bRow, column, dir, sorterParams) {
@@ -775,7 +783,6 @@ function dateTimeSorter(a, b, aRow, bRow, column, dir, sorterParams) {
 
 // Sorter for the people column (participants/max participants)
 function peopleSorter(a, b, aRow, bRow, column, dir, sorterParams) {
-
   // Extract the number of participants and max participants
   let [aParticipants, aMaxParticipants] = a.split("/");
   let [bParticipants, bMaxParticipants] = b.split("/");
@@ -796,100 +803,113 @@ function peopleSorter(a, b, aRow, bRow, column, dir, sorterParams) {
 
 // Function to manage the multiple deletion of events
 function manageBulkDelete() {
-
   const selectedData =
     table_current != "" ? table_current.getSelectedData() : [];
   const selectedDataPast = table_past != "" ? table_past.getSelectedData() : [];
-  const selectedDataFuture = table_future != "" ? table_future.getSelectedData() : [];
-  const selectedDataAll = selectedData.concat(selectedDataPast.concat(selectedDataFuture));
+  const selectedDataFuture =
+    table_future != "" ? table_future.getSelectedData() : [];
+  const selectedDataAll = selectedData.concat(
+    selectedDataPast.concat(selectedDataFuture)
+  );
   const eventIds = selectedDataAll.map((event) => event.id);
   console.log("selected data id " + eventIds);
 
   if (eventIds.length === 0) {
-  // Trigger the modal
-   var alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
-   alertModal.show();
+    // Trigger the modal
+    var alertModal = new bootstrap.Modal(document.getElementById("alertModal"));
+    alertModal.show();
     return;
   }
 
   // Trigger the modal to delete multiple events
-   // Trigger the modal
-   var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
-   deleteModal.show();
- 
-   document.getElementById('confirmDeletion').onclick = function() {
-     deleteModal.hide();
+  // Trigger the modal
+  var deleteModal = new bootstrap.Modal(
+    document.getElementById("deleteConfirmationModal")
+  );
+  deleteModal.show();
 
-  fetch("/bulk_destroy", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRF-Token": document.querySelector('[name="csrf-token"]').content, // Ensure CSRF token is sent
-    },
-    body: JSON.stringify({ event_ids: eventIds }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.success) {
-        console.log("SUCCESS");
-        // Reload the table or remove deleted rows from the table view
-        if (table_current != "") {
-          table_current.setData("/events/data?event_type=current").then(() => {
-            // Update the total of current events
-            document.getElementById("current-count").innerHTML ="Total: "+ table_current.getDataCount();
-          });
-        }
-        if (table_future != "") {
-          table_future.setData("/events/data?event_type=future").then(() => {
-            // Update the total of future events
-            document.getElementById("future-count").innerHTML ="Total: "+ table_future.getDataCount();
-          });
-        }
+  document.getElementById("confirmDeletion").onclick = function () {
+    deleteModal.hide();
 
-        if (table_past != "") {
-          table_past.setData("/events/data?event_type=past");
+    fetch("/bulk_destroy", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('[name="csrf-token"]').content, // Ensure CSRF token is sent
+      },
+      body: JSON.stringify({ event_ids: eventIds }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          console.log("SUCCESS");
+          // Reload the table or remove deleted rows from the table view
+          if (table_current != "") {
+            table_current
+              .setData("/events/data?event_type=current")
+              .then(() => {
+                // Update the total of current events
+                document.getElementById("current-count").innerHTML =
+                  "Total: " + table_current.getDataCount();
+              });
+          }
+          if (table_future != "") {
+            table_future.setData("/events/data?event_type=future").then(() => {
+              // Update the total of future events
+              document.getElementById("future-count").innerHTML =
+                "Total: " + table_future.getDataCount();
+            });
+          }
+
+          if (table_past != "") {
+            table_past.setData("/events/data?event_type=past");
+          }
+          console.log("table reloaded");
+        } else {
+          // Handle failure
+          alert("There was an issue deleting the selected events.");
         }
-        console.log("table reloaded");
-      } else {
-        // Handle failure
-        alert("There was an issue deleting the selected events.");
-      }
-});
-   };
+      });
+  };
 }
 
 // Manage bulk delete for subscriptions (type = user or owner)
 function manageBulkDeleteSub(type) {
-
-  let path = '';
-  if (type == 'owner') {
+  let path = "";
+  if (type == "owner") {
     path = "/bulk_destroy_sub";
   } else {
     path = "/bulk_destroy_sub";
   }
 
   const selectedData = table_sub != "" ? table_sub.getSelectedData() : [];
-  const selectedDataUser = table_current_sub != "" ? table_current_sub.getSelectedData() : [];
-  const selectedDataFuture = table_future_sub != "" ? table_future_sub.getSelectedData() : [];
-  let selectedDataAll = selectedData.concat(selectedDataUser.concat(selectedDataFuture));
+  const selectedDataUser =
+    table_current_sub != "" ? table_current_sub.getSelectedData() : [];
+  const selectedDataFuture =
+    table_future_sub != "" ? table_future_sub.getSelectedData() : [];
+  let selectedDataAll = selectedData.concat(
+    selectedDataUser.concat(selectedDataFuture)
+  );
 
   const subIds = selectedDataAll.map((sub) => sub.id);
   console.log("selected data id " + subIds);
 
   if (subIds.length === 0) {
-    var alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
-   alertModal.show();
+    var alertModal = new bootstrap.Modal(document.getElementById("alertModal"));
+    alertModal.show();
     return;
   }
 
-   // Trigger the modal
-   var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
-   deleteModal.show();
- 
-   document.getElementById('confirmDeletion').onclick = function() {
-     deleteModal.hide();
-     console.log("deleting");
-     fetch(path, {
+  // Trigger the modal
+  var deleteModal = new bootstrap.Modal(
+    document.getElementById("deleteConfirmationModal")
+  );
+  deleteModal.show();
+
+  document.getElementById("confirmDeletion").onclick = function () {
+    deleteModal.hide();
+    console.log("deleting");
+    fetch(path, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -905,16 +925,17 @@ function manageBulkDeleteSub(type) {
           window.location.reload(); // Reload the page to reflect the changes
         } else {
           if (data.message != null) {
-            alert("There was an issue deleting the selected subscriptions: " + data.message);
-          }else{
+            alert(
+              "There was an issue deleting the selected subscriptions: " +
+                data.message
+            );
+          } else {
             alert("There was an issue deleting the selected subscriptions.");
           }
         }
       })
       .catch((error) => console.error("Error:", error));
-   };
-  
-
+  };
 }
 
 //SETTING UP EVENT LISTENERS FOR THE PHOTO MANAGEMENT
@@ -977,7 +998,7 @@ function setUpEventListeners() {
       .removeEventListener("click", manageBulkDeleteSub); // Remove existing event listeners
     document
       .getElementById("bulk-delete-sub")
-      .addEventListener("click", () => manageBulkDeleteSub('owner'));
+      .addEventListener("click", () => manageBulkDeleteSub("owner"));
   }
 
   //Bulk delete for subscriptions (user side)
@@ -987,7 +1008,7 @@ function setUpEventListeners() {
       .removeEventListener("click", manageBulkDeleteSub); // Remove existing event listeners
     document
       .getElementById("bulk-delete-user-sub")
-      .addEventListener("click", () => manageBulkDeleteSub('user'));
+      .addEventListener("click", () => manageBulkDeleteSub("user"));
   }
 }
 
@@ -1019,6 +1040,28 @@ function setUpLocationListeners() {
   });
 }
 
+//setting up the timer (event show)
+function setUpTimer() {
+  if (document.getElementById("flipdown")) {
+
+    let date = document.getElementById("flipdown").getAttribute("data");
+    let time = document.getElementById("flipdown").getAttribute("data-min");
+    let datetime = `${date}T${time}:00`; // Assuming local time. Add 'Z' for UTC.
+     // Convert the datetime to a Unix timestamp in seconds
+    let timestampSeconds = Math.floor(new Date(datetime).getTime() / 1000);
+    //console.log("Countdown time: " + timestampSeconds);
+    var flipdown = new FlipDown(timestampSeconds)
+      .start()
+      // Do something when the countdown ends
+      .ifEnded(() => {
+        console.log("The countdown has ended!");
+      });
+
+
+
+  }
+}
+
 /* -------------- LOAD THE PAGE-------------------- */
 
 // Variable to manage the loading of the page
@@ -1030,14 +1073,17 @@ document.addEventListener("turbo:render", () => {
   setUpEventListenersPhotos();
   setUpEventListeners();
   setUpLocationListeners();
+  setUpTimer();
 });
 
 // Load is called only the first time I load the page
 document.addEventListener("turbo:load", () => {
-  if (loading == 0) { // Only run the setup once
+  if (loading == 0) {
+    // Only run the setup once
     setUpEventListenersPhotos();
     setUpEventListeners();
     setUpLocationListeners();
+    setUpTimer();
     loading++;
   }
 });

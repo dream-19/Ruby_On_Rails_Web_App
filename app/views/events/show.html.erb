@@ -24,7 +24,11 @@
   <div class="row g-4">
     <!-- Left Column: Event Photos -->
     <div class="col-md-6">
+      
       <%= render 'carousel', event: @event, fixed: false %>
+      <% if @event.future?%>
+        <div id="flipdown" class="flipdown flipdown__theme-dark" data='<%= @event.beginning_date %>' data-min='<%= format_time(@event.beginning_time) %>'></div>
+      <% end %>
     </div>
     <!-- Right Column: Details -->
     <div class="col-md-6">
