@@ -18,23 +18,19 @@ class Event < ApplicationRecord
   # Through subscriptions, an event can have many subscribers (users)
   has_many :subscribers, through: :subscriptions, source: :user
 
+
   # Return the events that are ongoing (current)
   def self.ongoing
     now = Time.zone.now
     where("TIMESTAMP(beginning_date, beginning_time) <= ? AND TIMESTAMP(ending_date, ending_time) >= ?", now, now)
   end
 
+
   # Check if the event is ongoing for an instance
   def ongoing?
     now = Time.zone.now
     beginning_datetime = DateTime.parse("#{beginning_date} #{beginning_time}")
     ending_datetime = DateTime.parse("#{ending_date} #{ending_time}")
-    Rails.logger.debug ("DIO PORCO")
-    Rails.logger.debug("raw: #{ending_time}")
-    Rails.logger.debug("ending_datetime: #{ending_datetime}")
-    Rails.logger.debug("now: #{now}")
-    Rails.logger.debug("london: #{Time.zone.now.in_time_zone('London')}")
-    Rails.logger.debug(ending_datetime >= now)
     beginning_datetime <= now && ending_datetime >= now
 
   end
@@ -69,6 +65,15 @@ class Event < ApplicationRecord
   def full?
     subscribers.count >= max_participants
   end
+
+
+  #SCOPE
+  scope :notfull, -> {
+    left_joins(:subscriptions) # Adjust :participants to match the actual association name.
+      .group('events.id')
+      .having('COUNT(subscriptions.id) < events.max_participants')
+  }
+
 
   private
 

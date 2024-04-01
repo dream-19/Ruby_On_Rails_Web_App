@@ -31,6 +31,7 @@
       <div class="p-3 shadow-sm rounded bg-white">
         <h2 class="mb-3"><%= @event.name %></h2>
         <p class="mb-2"><strong>Event Organizer:</strong> <%= @event.user.get_name %></p>
+        <p class="mb-2"><strong>Email Organizer: </strong> <%= @event.user.email %> (phone: <%= @event.user.phone %> )</p>
         <p class="mb-2"><strong>Start:</strong> <%= format_date(@event.beginning_date) %> at <%= format_time(@event.beginning_time) %></p>
         <p class="mb-2"><strong>End:</strong> <%= format_date(@event.ending_date) %> at <%= format_time(@event.ending_time) %></p>
         <p class="mb-2"><strong>Participants:</strong> <%= @event.subscriptions.count %> / <%= @event.max_participants %></p>

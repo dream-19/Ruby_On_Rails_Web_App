@@ -78,13 +78,26 @@
       </div>
     </div>
   </div>
-  <!-- show a check for 'ongoing events' -->
+  <!-- show a check for 'ongoing events', 'not full', 'my events' -->
   <div class="row justify-content-center">
   <div class="d-flex justify-content-center mt-3 mb-3"> <!-- Ensure the container is flex and centers its children -->
-    <div class="form-check">
+    <div class="form-check me-3">
       <input class="form-check-input" type="checkbox" value="" id="ongoing-events" onchange="updateEventsList()">
       <label class="form-check-label" for="ongoing-events">
         Show only ongoing events
+      </label>
+    </div>
+    <div class="form-check me-3">
+      <input class="form-check-input" type="checkbox" value="" id="not-full-events" onchange="updateEventsList()">
+      <label class="form-check-label" for="not-full-events">
+        Show only not full events
+      </label>
+      
+    </div>
+    <div class="form-check me-3">
+      <input class="form-check-input" type="checkbox" value="" id="my-events" onchange="updateEventsList()">
+      <label class="form-check-label" for="my-events">
+        Show only my events
       </label>
     </div>
   </div>
@@ -121,9 +134,22 @@
     console.log("request:");
     console.log(orderBy, searchBy, search);
     
+    // checks
     var showOngoing = document.getElementById('ongoing-events').checked;
+    var showNotFull = document.getElementById('not-full-events').checked;
+    var showMyEvents = document.getElementById('my-events').checked;
 
-    var path = `/events?on_going=${showOngoing}&order_by=${orderBy}&direction=${direction}`;
+    var path = `/events?order_by=${orderBy}&direction=${direction}`;
+
+    if (showOngoing) {
+      path += '&on_going=true';
+    }
+    if (showNotFull) {
+      path += '&not_full=true';
+    }
+    if (showMyEvents) {
+      path += '&my_events=true';
+    }
 
     if (useInterval) {
       var fromDate = document.getElementById('from_date').value;

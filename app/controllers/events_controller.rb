@@ -10,29 +10,43 @@ class EventsController < ApplicationController
   def index
     pagination_par = 28 #28 x page
     begin
-      events = Event.upcoming.page(params[:page]).per(pagination_par)
+      @events = Event.upcoming
+
     if params[:order_by].present? 
 
-      # Check if the user wants to see only ongoing events
-      if params[:on_going].present?
-        if params[:on_going] == "true"
-          events = Event.ongoing.page(params[:page]).per(pagination_par) 
+      #check if the user want to see only his events
+       if params[:my_events].present?
+        if user_signed_in?
+          @events = current_user.organizer? ? current_user.created_events : current_user.subscribed_events
+          @events = @events.upcoming
+        else
+          @events = Event.none
         end
       end
 
+      #ORDERING
       direction = %w[asc desc].include?(params[:direction]) ? params[:direction] : 'asc'
-  
       if params[:order_by] == 'organizer'
-        @events = events.joins(:user).order('users.name ' +  direction)
+        @events = @events.joins(:user).order('users.name ' +  direction)
       elsif params[:order_by] == 'participants'
-        @events = direction == 'asc' ? events.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) ASC' ) : events.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) DESC' )
+        @events = direction == 'asc' ? @events.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) ASC' ) : @events.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) DESC' )
       else
         #Normal case with order
-      @events =  events.order(params[:order_by] + ' ' + direction) 
-    
+      @events =  @events.order(params[:order_by] + ' ' + direction) 
       end
 
-      # Check if search is present (normal search or interval search)
+      # Check if the user wants to see only ongoing events
+      if params[:on_going].present?
+        @events = @events.ongoing
+      end
+
+      # Check if the user wants to see not fully events
+      if params[:not_full].present?
+        @events = @events.notfull
+      end
+
+      
+      # SEARCH is present (normal search or interval search)
       if params[:search_by].present? and (params[:search].present? || params[:from_date].present? || params[:to_date].present? ) 
         # special cases (organizer, date)
         if params[:search_by] == 'organizer' # organizer can be name + surname
@@ -59,7 +73,7 @@ class EventsController < ApplicationController
         end
       end
     else 
-      @events = events.order(beginning_date: :asc)
+      @events = @events.order(beginning_date: :asc)
     end
   
   
@@ -71,6 +85,7 @@ class EventsController < ApplicationController
     @events = Event.order(beginning_date: :asc).page(params[:page]).per(pagination_par) 
   end
 
+  @events = @events.page(params[:page]).per(pagination_par)
 
   # Respond to
   respond_to do |format|
@@ -151,7 +166,6 @@ class EventsController < ApplicationController
   # GET /events/1/edit
   def edit
     # Check if the event has already ended
-    Rails.logger.debug("cristiano")
     if @event.past?
       redirect_to @event, alert: 'You cannot edit an event that has already ended.'
     end
