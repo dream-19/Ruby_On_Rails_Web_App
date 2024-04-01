@@ -4,7 +4,7 @@
     <span class ="asterisk">*</span>
   <% end %>
 <% end %>
-<%= f.text_field :cap, id: "user_cap", class: "form-control" %>
+<%= f.text_field :cap, id: "user_cap", class: "form-control", placeholder: "Insert cap" %>
 <% if resource.errors[:cap].present? %>
   <div class="invalid-feedback" style="display:block;">
     <% resource.errors.full_messages_for(:cap).each do |message| %>

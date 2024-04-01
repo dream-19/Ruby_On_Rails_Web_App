@@ -4,7 +4,7 @@
     <span class ="asterisk">*</span>
   <% end %>
 <% end %>
-<%= f.text_field :name, autofocus: true, class: "form-control" %>
+<%= f.text_field :name, autofocus: true, class: "form-control",placeholder: "Insert name" %>
 <% if resource.errors[:name].present? %>
   <div class="invalid-feedback" style="display:block;">
     <% resource.errors.full_messages_for(:name).each do |message| %>

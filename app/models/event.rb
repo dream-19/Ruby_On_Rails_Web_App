@@ -6,6 +6,7 @@ class Event < ApplicationRecord
   validates :description, length: { maximum: 500, too_long: "must be at most %{count} characters"  }
   validates :max_participants, numericality: { only_integer: true, greater_than: 0, message: "must be an integer > 0" }
 
+
   before_save :apply_camel_case
   validate :validate_time_date
   validate :photos_validation
@@ -14,7 +15,7 @@ class Event < ApplicationRecord
   belongs_to :user
   has_many_attached :photos
   # An event can have many users subscribe to it
-  has_many :subscriptions, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy #(when an event is deleted all the subscriptions are deleted too)
   # Through subscriptions, an event can have many subscribers (users)
   has_many :subscribers, through: :subscriptions, source: :user
 
@@ -82,7 +83,9 @@ class Event < ApplicationRecord
     errors.add(:photos, "You can upload up to 3 photos.") if photos.size > 3
     #check content type
     photos.each do |photo|
-      errors.add(:photos, "must be a JPEG/JPG or PNG") unless photo.content_type.in?(%('image/jpeg image/png image/jpg'))
+      errors.add(:photos, "must be a JPEG/JPG or PNG or GIF") unless photo.content_type.in?(%('image/jpeg image/png image/jpg image/gif'))
+
+    
     end
 
   end

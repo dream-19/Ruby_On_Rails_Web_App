@@ -4,7 +4,7 @@
     <span class ="asterisk">*</span>
   <% end %>
 <% end %>
-<%= f.email_field :email, autocomplete: "email", class: "form-control" %>
+<%= f.email_field :email, autocomplete: "email", class: "form-control", placeholder: "Insert email" %>
 <% if resource.errors[:email].present? %>
   <div class="invalid-feedback" style="display:block;">
     <% resource.errors.full_messages_for(:email).each do |message| %>

@@ -4,7 +4,7 @@
     <span class ="asterisk">*</span>
   <% end %>
 <% end %>
-<%= f.text_field :province, id: "user_province", class: "form-control", autocomplete: 'off' %>
+<%= f.text_field :province, id: "user_province", class: "form-control", autocomplete: 'off', placeholder: "Insert province" %>
 <% if resource.errors[:province].present? %>
   <div class="invalid-feedback" style="display:block;">
     <% resource.errors.full_messages_for(:province).each do |message| %>

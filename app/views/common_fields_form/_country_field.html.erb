@@ -4,7 +4,7 @@
     <span class ="asterisk">*</span>
   <% end %>
 <% end %>
-<%= f.text_field :country, class: "form-control", id: "user_country", autocomplete: 'off' %>
+<%= f.text_field :country, class: "form-control", id: "user_country", autocomplete: 'off', placeholder: "Insert country" %>
 <div id="countrySuggestions" class="list-group  suggestions"></div>
 <% if resource.errors[:country].present? %>
   <div class="invalid-feedback" style="display:block;">

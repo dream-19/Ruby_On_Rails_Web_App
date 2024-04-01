@@ -4,7 +4,7 @@
     <span class ="asterisk">*</span>
   <% end %>
 <% end %>
-<%= f.text_area  :description, autofocus: true, class: "form-control" %>
+<%= f.text_area  :description, autofocus: true, class: "form-control", placeholder: "Insert a description" %>
 <% if resource.errors[:description].present? %>
   <div class="invalid-feedback" style="display:block;">
     <% resource.errors.full_messages_for(:description).each do |message| %>

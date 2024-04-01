@@ -675,7 +675,11 @@ function manageTableSubscriptions(){
       headerFilter: "input",
       formatter: function(cell, formatterParams, onRendered) {
         const rowData = cell.getRow().getData();
-        return rowData.user_cap + ", " + rowData.user_province + ", " + rowData.user_city + ", " + rowData.user_country;
+        let address = rowData.user_cap == " " ? rowData.user_cap + ", " : "";
+        address += rowData.user_province == " " ? rowData.user_province + ", " : "";
+        address += rowData.user_city == " " ? rowData.user_city + ", " : "";
+        address += rowData.user_country == " " ? rowData.user_country : "";
+        return address;
       }
     },
     { title: "Subscriptions Date", field: "subscription_created_at", sorter:dateTimeSorter, headerFilter: "input" }, // TODO: sorter datetime

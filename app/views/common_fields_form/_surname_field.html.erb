@@ -4,7 +4,7 @@
     <span class ="asterisk">*</span>
   <% end %>
 <% end %>
-<%= f.text_field :surname, class: "form-control" %>
+<%= f.text_field :surname, class: "form-control", placeholder: "Insert surname" %>
 <% if resource.errors[:surname].present? %>
   <div class="invalid-feedback" style="display:block;">
     <% resource.errors.full_messages_for(:surname).each do |message| %>

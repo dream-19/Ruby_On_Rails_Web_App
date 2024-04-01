@@ -13,13 +13,13 @@ class User < ApplicationRecord
 
   #Relationship
   # Users can have many subscriptions to events (only normal user)
-  has_many :subscriptions, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy # (when a user is deleted all the subscriptions are deleted too)
 
   # Through subscriptions, users can subscribe to many events (only normal user)
   has_many :subscribed_events, through: :subscriptions, source: :event
   # An organizer can create many events (and the events has a foreign key 'user_id')
   # when and organizer deletes its account all the events created by him will be deleted
-  has_many :created_events, class_name: 'Event', foreign_key: "user_id", dependent: :destroy
+  has_many :created_events, class_name: 'Event', foreign_key: "user_id", dependent: :destroy #(when an organizer is deleted all the events created by him are deleted too)
 
 
   before_save :apply_camel_case

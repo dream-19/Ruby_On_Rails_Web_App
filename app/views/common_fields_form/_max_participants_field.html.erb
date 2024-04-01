@@ -4,7 +4,7 @@
     <span class ="asterisk">*</span>
   <% end %>
 <% end %>
-<%= f.number_field :max_participants, class: "form-control" %>
+<%= f.number_field :max_participants, class: "form-control", min: 1 %>
 <% if resource.errors[:max_participants].present? %>
   <div class="invalid-feedback" style="display:block;">
     <% resource.errors.full_messages_for(:max_participants).each do |message| %>
