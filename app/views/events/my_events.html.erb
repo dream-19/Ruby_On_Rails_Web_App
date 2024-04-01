@@ -1,39 +1,58 @@
-<div class="container-fluid mt-4">
-  <h1 class="mb-4">My Events</h1>
+<div class="container mt-5">
+  <h1 class="mb-5 text-center">My Events</h1>
 
-  <!-- Action Available -->
-  <div class="row mb-3">
-    <div class="col text-start">
-      <%= link_to 'Create New Event', new_event_path, class: 'btn btn-success' %>
-    </div>
-    <div class="col text-end">
-      <button id="bulk-delete" class="btn btn-danger">Delete Selected</button>
-    </div>
+  <div class="d-flex justify-content-between mb-4">
+    <%= link_to 'Create New Event', new_event_path, class: 'btn btn-success' %>
+    <button id="bulk-delete" class="btn btn-danger">Delete Selected</button>
   </div>
 
-  <!--  Tables -->
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Ongoing Events</h2>
-      <h4 id="current-count"> Total: <%= @current_events.count %> </h4>
-      <div id="current-events" data-events='<%= @current_events_json %>'></div>
+  <!-- Tabs for Event Categories -->
+  <ul class="nav nav-tabs" id="eventTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="ongoing-tab" data-bs-toggle="tab" data-bs-target="#ongoing-events-tab" type="button" role="tab" aria-controls="ongoing-events" aria-selected="true">Ongoing Events</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="future-tab" data-bs-toggle="tab" data-bs-target="#future-events-tab" type="button" role="tab" aria-controls="future-events" aria-selected="false">Future Events</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past-events-tab" type="button" role="tab" aria-controls="past-events" aria-selected="false">Past Events</button>
+    </li>
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content" id="eventTabsContent">
+    <!-- Ongoing Events Tab Pane -->
+    <div class="tab-pane fade show active" id="ongoing-events-tab" role="tabpanel" aria-labelledby="ongoing-tab">
+      <div class="card shadow-sm mt-3">
+        <div class="card-body">
+          <h4 id="current-count" class="card-title">Total: <%= @current_events.count %></h4>
+          <div id="current-events" data-events='<%= @current_events_json %>'></div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="row mt-5">
-    <div class="col-md-12">
-      <h2> Future Events</h2>
-      <h4 id="future-count"> Total: <%= @future_events.count %></h4>
-      <div id="future-events" data-events='<%= @future_events_json %>'></div>
+    <!-- Future Events Tab Pane -->
+    <div class="tab-pane fade" id="future-events-tab" role="tabpanel" aria-labelledby="future-tab">
+      <div class="card shadow-sm mt-3">
+        <div class="card-body">
+          <h4 id="future-count" class="card-title">Total: <%= @future_events.count %></h4>
+          <div id="future-events" data-events='<%= @future_events_json %>'></div>
+        </div>
+      </div>
     </div>
-  </div>
 
-
-  <div class="row mt-5">
-    <div class="col-md-12">
-      <h2>Past Events</h2>
-      <h4> Total: <%= @past_events.count %> </h4>
-      <div id="past-events" data-events='<%= @past_events_json %>'></div>
+    <!-- Past Events Tab Pane -->
+    <div class="tab-pane fade" id="past-events-tab" role="tabpanel" aria-labelledby="past-tab">
+      <div class="card shadow-sm mt-3">
+        <div class="card-body">
+          <h4 class="card-title">Total: <%= @past_events.count %></h4>
+          <div id="past-events" data-events='<%= @past_events_json %>'></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<!-- Modal  -->
+<%= render 'modals/delete_multiple_events_modal' %>
+<%= render 'modals/alert_delete_modal' %>

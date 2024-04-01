@@ -749,7 +749,6 @@ function dateSorter(a, b, aRow, bRow, column, dir, sorterParams) {
 
 //datetime sorter (the datetime is in format dd-mm-yyyy HH:mm)
 function dateTimeSorter(a, b, aRow, bRow, column, dir, sorterParams) {
-  console.log(a);
   // Convert datetime strings to comparable format
   // Example: "12-03-2022 10:30" becomes "2022-03-12T10:30:00"
   function formatDateTime(dateTimeStr) {
@@ -776,7 +775,7 @@ function dateTimeSorter(a, b, aRow, bRow, column, dir, sorterParams) {
 
 // Sorter for the people column (participants/max participants)
 function peopleSorter(a, b, aRow, bRow, column, dir, sorterParams) {
-  console.log("a: " + a + " b: " + b);
+
   // Extract the number of participants and max participants
   let [aParticipants, aMaxParticipants] = a.split("/");
   let [bParticipants, bMaxParticipants] = b.split("/");
@@ -807,11 +806,19 @@ function manageBulkDelete() {
   console.log("selected data id " + eventIds);
 
   if (eventIds.length === 0) {
-    alert("Please select at least one event to delete.");
+  // Trigger the modal
+   var alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
+   alertModal.show();
     return;
   }
 
-  if (!confirm("Are you sure you want to delete the selected events?")) return;
+  // Trigger the modal to delete multiple events
+   // Trigger the modal
+   var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+   deleteModal.show();
+ 
+   document.getElementById('confirmDeletion').onclick = function() {
+     deleteModal.hide();
 
   fetch("/bulk_destroy", {
     method: "POST",
@@ -848,6 +855,7 @@ function manageBulkDelete() {
         alert("There was an issue deleting the selected events.");
       }
 });
+   };
 }
 
 // Manage bulk delete for subscriptions (type = user or owner)
@@ -869,7 +877,8 @@ function manageBulkDeleteSub(type) {
   console.log("selected data id " + subIds);
 
   if (subIds.length === 0) {
-    alert("Please select at least one subscription to delete.");
+    var alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
+   alertModal.show();
     return;
   }
 

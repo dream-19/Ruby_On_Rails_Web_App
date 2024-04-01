@@ -1,45 +1,64 @@
-<!-- View to display the subscriptions (of a normal user) -->
-<div class="container-fluid my-2 py-2" >
-  <div class="row">
-    <div class="col-md-12">
-      <h2 class="mb-3">My Subscriptions</h2>
-    </div>
-  </div>
-  <!-- if you have no subscriptions -->
+<div class="container mt-5">
+  <h1 class="mb-4 text-center">My Subscriptions</h1>
+
   <% if current_user.subscriptions.empty? %>
     <div class="alert alert-info text-center" role="alert">
       You have no subscriptions!
     </div>
   <% else %>
     <!-- Action Available -->
-    <div class="row mb-3">
-      <div class="col text-end">
-        <button id="bulk-delete-user-sub" class="btn btn-danger">Unsubscribe</button>
-      </div>
+    <div class="d-flex justify-content-end mb-3">
+      <button id="bulk-delete-user-sub" class="btn btn-danger">Unsubscribe Selected</button>
     </div>
-    <!--  Tables -->
-    <div class="row">
-      <div class="col">
-        <h2>Ongoing Events</h2>
-        <h4 id="current-count"> Total: <%= @current_sub.count %> </h4>
-        <div id="current-sub" data-events='<%= @current_sub_json %>'></div>
+
+    <!-- Tabs for Subscription Categories -->
+    <ul class="nav nav-tabs" id="subscriptionTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="ongoing-sub-tab" data-bs-toggle="tab" data-bs-target="#ongoing-subscriptions-tab" type="button" role="tab" aria-controls="ongoing-subscriptions" aria-selected="true">Ongoing Events</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="future-sub-tab" data-bs-toggle="tab" data-bs-target="#future-subscriptions-tab" type="button" role="tab" aria-controls="future-subscriptions" aria-selected="false">Future Events</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="past-sub-tab" data-bs-toggle="tab" data-bs-target="#past-subscriptions-tab" type="button" role="tab" aria-controls="past-subscriptions" aria-selected="false">Past Events</button>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="subscriptionTabsContent">
+      <!-- Ongoing Subscriptions Tab Pane -->
+      <div class="tab-pane fade show active" id="ongoing-subscriptions-tab" role="tabpanel" aria-labelledby="ongoing-sub-tab">
+        <div class="card shadow mt-3">
+          <div class="card-body">
+            <h4 id="current-count" class="card-title">Total: <%= @current_sub.count %></h4>
+            <div id="current-sub" data-events='<%= @current_sub_json %>'></div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="row mt-5">
-      <div class="col">
-        <h2> Future Events</h2>
-        <h4 id="future-count"> Total: <%= @future_sub.count %></h4>
-        <div id="future-sub" data-events='<%= @future_sub_json %>'></div>
+
+      <!-- Future Subscriptions Tab Pane -->
+      <div class="tab-pane fade" id="future-subscriptions-tab" role="tabpanel" aria-labelledby="future-sub-tab">
+        <div class="card shadow mt-3">
+          <div class="card-body">
+            <h4 id="future-count" class="card-title">Total: <%= @future_sub.count %></h4>
+            <div id="future-sub" data-events='<%= @future_sub_json %>'></div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <h2> Past Events</h2>
-        <h4> Total: <%= @past_sub.count %> </h4>
-        <div id="past-sub" data-events='<%= @past_sub_json %>'></div>
+
+      <!-- Past Subscriptions Tab Pane -->
+      <div class="tab-pane fade" id="past-subscriptions-tab" role="tabpanel" aria-labelledby="past-sub-tab">
+        <div class="card shadow mt-3">
+          <div class="card-body">
+            <h4 class="card-title">Total: <%= @past_sub.count %></h4>
+            <div id="past-sub" data-events='<%= @past_sub_json %>'></div>
+          </div>
+        </div>
       </div>
     </div>
   <% end %>
 </div>
 
-<%= render 'modals/delete_multiple_subscriptions_modal'%>
+<!-- Modals -->
+<%= render 'modals/delete_multiple_subscriptions_modal' %>
+<%= render 'modals/alert_delete_modal' %>
