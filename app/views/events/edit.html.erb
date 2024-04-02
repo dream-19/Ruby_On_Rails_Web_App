@@ -47,7 +47,8 @@
             <%= render "common_fields_form/address_field", f: f, resource: @event, required: true  %>
           </div>
           <div class="mb-3">
-            <!-- PHOTO -->
+            <!-- PHOTO  -->
+            <!-- already existing -->
             <% @event.photos.each_with_index do |photo, index| %>
               <div class="input-group mb-3 input-group-photo" id="existing-input-<%= photo.id %>">
                 <div class="image-preview-container d-flex justify-content-center align-items-center me-2">
@@ -57,8 +58,10 @@
                 <button class="btn btn-outline-danger photo-delete-existing mb-0" type="button" data-photo-id="<%= photo.id %>">
                   <i class="bi bi-x-lg"></i>
                 </button>
+               <%= render 'modals/delete_photo_modal', photo: photo %>
               </div>
             <% end %>
+            <!-- new photo to add -->
             <%= render "common_fields_form/photo_field", f:f, resource: @event %>
             <!-- END PHOTO -->
           </div>

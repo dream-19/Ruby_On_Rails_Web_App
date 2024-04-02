@@ -81,7 +81,6 @@ function checkVisibility() {
 
 //function to delete a photo
 function delete_single_photo(photoId) {
-  if (confirm("Are you sure you want to delete this photo?")) {
     fetch("/delete_photo", {
       method: "POST",
       headers: {
@@ -104,7 +103,7 @@ function delete_single_photo(photoId) {
         }
       })
       .catch((error) => console.error("Error:", error));
-  }
+  
 }
 
 // function to add the element to add photos
@@ -949,8 +948,17 @@ function setUpEventListenersPhotos() {
       button.removeEventListener("click", delete_single_photo); // Remove existing event listeners
       button.addEventListener("click", function () {
         const photoId = this.getAttribute("data-photo-id");
-        console.log("deleting photo with id: " + photoId);
-        delete_single_photo(photoId);
+        var deleteModal = new bootstrap.Modal(
+          document.getElementById("deletePhoto" + photoId)
+        );
+        deleteModal.show();
+      
+        document.getElementById("deleteConfirm"+photoId).onclick = function () {
+          deleteModal.hide();
+          console.log("deleting photo with id: " + photoId);
+          delete_single_photo(photoId);
+        };
+
       });
     });
 

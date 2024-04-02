@@ -1,16 +1,15 @@
-<!-- Partial to show the subscriptions to an event (for the event owner) -->
-<div class="row mt-5">
-    <div class="col-md-12">
-      <h2 >Subscriptions</h2>
-      <h4>Total: <%= event.subscriptions.count %> / <%= event.max_participants %></h4>
-      <% unless event.past?%>
-       <div class="row mb-3">
-            <div class="col text-end">
-            <button id="bulk-delete-sub" class="btn btn-danger">Delete Selected</button>
-            </div>
+<div class="d-flex justify-content-center mt-5">
+  <div class="card" style="width: 100%;"> <!-- Adjust max-width as needed -->
+    <div class="card-body">
+      <h2 class="card-title">Subscriptions</h2>
+      <h4 class="card-subtitle mb-2 text-muted">Total: <%= event.subscriptions.count %> / <%= event.max_participants %></h4>
+      <% unless event.past? %>
+        <div class="d-flex justify-content-end mb-3">
+          <button id="bulk-delete-sub" class="btn btn-danger">Delete Selected</button>
         </div>
-        <% end %>
-      <div id="events-subscriptions" data-events='<%= subscriptions_json %>' past-event = '<%= event.past? %>'></div>
+      <% end %>
+      <div id="events-subscriptions" data-events='<%= subscriptions_json %>' past-event='<%= event.past? %>'></div>
     </div>
+  </div>
 </div>
-  <%= render 'modals/delete_multiple_subscriptions_modal'%>
+<%= render 'modals/delete_multiple_subscriptions_modal' %>

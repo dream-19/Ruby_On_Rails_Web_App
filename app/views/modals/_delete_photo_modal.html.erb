@@ -1,0 +1,19 @@
+<!-- MODAL -->
+<div class="modal fade" id="deletePhoto<%= photo.id %>" tabindex="-1" aria-labelledby="deletePhotoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deletePhotoLabel">Delete photo: <%= photo.name %></h5>
+        <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <p> Are you sure you want to delete the photo? </p>
+        <button type="button" class="btn btn-danger" id="deleteConfirm<%= photo.id %>">Delete</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Go Back</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--  END MODAL-->

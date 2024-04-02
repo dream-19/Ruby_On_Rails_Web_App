@@ -31,7 +31,9 @@ class EventsController < ApplicationController
       elsif params[:order_by] == 'participants'
         @events = direction == 'asc' ? @events.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) ASC' ) : @events.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) DESC' )
       else
-        #Normal case with order
+      #sanitize input
+      params[:order_by] = Event.column_names.include?(params[:order_by]) ? params[:order_by] : 'beginning_date'
+      #Normal case with order
       @events =  @events.order(params[:order_by] + ' ' + direction) 
       end
 
@@ -50,7 +52,7 @@ class EventsController < ApplicationController
       if params[:search_by].present? and (params[:search].present? || params[:from_date].present? || params[:to_date].present? ) 
         # special cases (organizer, date)
         if params[:search_by] == 'organizer' # organizer can be name + surname
-          @events = @events.joins(:user).where('CONCAT(users.name,\' \',users.surname) LIKE ?', '%' + params[:search] + '%')
+          @events = @events.joins(:user).where('CONCAT(users.name,\' \',users.surname) LIKE ?', '%' + params[:search] + '%') # ? to sanitaze input
          elsif params[:search_by] == ('beginning_date' || 'ending_date')
           #TODO
           date = iso_date(params[:search])
