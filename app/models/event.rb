@@ -19,6 +19,10 @@ class Event < ApplicationRecord
   # Through subscriptions, an event can have many subscribers (users)
   has_many :subscribers, through: :subscriptions, source: :user
 
+  #An event can have many notifications (when an event is deleted the notification aren't deleted! set to null)
+  has_many :notifications, dependent: :nullify
+
+
 
   # Return the events that are ongoing (current)
   def self.ongoing

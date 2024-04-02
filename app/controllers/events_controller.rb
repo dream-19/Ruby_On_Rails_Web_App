@@ -178,6 +178,13 @@ class EventsController < ApplicationController
   def create
     @event = current_user.created_events.build(event_params)
     if @event.save
+
+      # Notify event creation
+      NotificationService.create_notification_create_event(
+            user_organizer: current_user,
+            event: event
+        )
+
       # Reindirizzamento in caso di successo
       redirect_to @event, notice: 'Event was successfully created.'
       
@@ -203,10 +210,123 @@ class EventsController < ApplicationController
       return
     end
 
+    # List of changed attributes
+    changed_attributes = []
+    update_message = ""
+    n_changes = 0
+    event_params.each do |key, value|
+      if  @event.attributes.has_key?(key) && key != 'description' && key != 'photos' 
+        if key == 'name'
+          attr = @event.attributes[key]
+          val = value
+          if attr != val
+            changed_attributes << "Name changed from #{attr} to #{val}"
+            n_changes += 1
+          end
+        elsif key == 'beginning_date' 
+          attr = helpers.format_date(@event.attributes[key])
+          val = helpers.format_date(Date.parse(value))
+          if attr  != val
+            changed_attributes << "Beginning Date changed from #{attr} to #{val}"
+            n_changes += 1
+          end
+
+        elsif key == 'ending_date'
+          attr = helpers.format_date(@event.attributes[key])
+          val = helpers.format_date(Date.parse(value))
+          if attr != val
+            changed_attributes << "Ending Date changed from #{attr} to #{val}"
+            n_changes += 1
+          end
+
+        elsif key == 'beginning_time'
+          attr = helpers.format_time(@event.attributes[key])
+          val = Time.parse(value).strftime("%H:%M")
+          if attr != val
+            changed_attributes << "Beginning Time changed from #{attr} to #{val}"
+            n_changes += 1
+          end
+
+        elsif key == 'ending_time'
+          attr = helpers.format_time(@event.attributes[key])
+          val = Time.parse(value).strftime("%H:%M")
+          if attr != val
+            changed_attributes << "Ending Time changed from #{attr} to #{val}"
+            n_changes += 1
+          end
+
+        elsif key == 'max_participants'
+          attr = @event.attributes[key]
+          val = value.to_i
+          if attr != val
+            changed_attributes << "Max Participants changed from #{attr} to #{val}"
+            n_changes += 1
+          end
+
+        elsif key == 'address'
+          attr = @event.attributes[key]
+          val = value
+          if attr != val
+            changed_attributes << "Address changed from #{attr} to #{val}"
+            n_changes += 1
+          end
+
+        elsif key == 'cap'
+          attr = @event.attributes[key]
+          val = value
+          if attr != val
+            changed_attributes << "Cap changed from #{attr} to #{val}"
+            n_changes += 1
+          end
+
+        elsif key == 'province'
+          attr = @event.attributes[key]
+          val = value
+          if attr != val
+            changed_attributes << "Province changed from #{attr} to #{val}"
+            n_changes += 1
+          end
+
+        elsif key == 'city'
+          attr = @event.attributes[key]
+          val = value
+          if attr != val
+            changed_attributes << "City changed from #{attr} to #{val}"
+            n_changes += 1
+          end
+
+        elsif key == 'country'
+          attr = @event.attributes[key]
+          val = value
+          if attr != val
+            changed_attributes << "Country changed from #{attr} to #{val}"
+            n_changes += 1
+          end
+
+        else 
+          attr = @event.attributes[key]
+          val = value
+          if attr != val
+            n_changes += 1
+          end
+        end
+      end
+    end
+
+    if !changed_attributes.empty?
+      update_message = "Changes: #{changed_attributes.join(", ")}."
+    end
+  
+
       # Update event with new attributes excluding direct photo assignments if necessary
     if @event.update(event_params.except(:photos))
+      # Create notification
+      if n_changes > 0
+       NotificationService.create_notification_update_event(user_organizer: current_user, event: @event, update: update_message)
+      end 
         # Attach new photos without replacing existing ones
         attach_new_photos if params[:event][:photos].present?
+
       redirect_to @event, notice: 'Event was successfully updated.'
     else
       # Manage errors
@@ -216,6 +336,12 @@ class EventsController < ApplicationController
 
   # DELETE /events/1
   def destroy
+    #Create the notification
+    NotificationService.create_notification_delete_event(
+            user_organizer: current_user,
+            event: event,
+        )
+        
     @event.destroy
     # Redirect to my_events_path
     redirect_to my_events_path, notice: 'Event was successfully destroyed.'
@@ -225,7 +351,15 @@ class EventsController < ApplicationController
   def bulk_destroy
     event_ids = params[:event_ids]
     if event_ids.present?
-      current_user.created_events.where(id: event_ids, user_id: current_user.id).destroy_all
+      events = current_user.created_events.where(id: event_ids, user_id: current_user.id)
+      events.each do |event|
+        # Create notification for each event deleted
+        NotificationService.create_notification_delete_event(
+          user_organizer: current_user,
+          event: event
+        )
+      end
+      events.destroy_all
       render json: { success: true }
     else
       render json: { success: false }, status: :unprocessable_entity

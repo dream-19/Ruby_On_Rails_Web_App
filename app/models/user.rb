@@ -21,6 +21,8 @@ class User < ApplicationRecord
   # when and organizer deletes its account all the events created by him will be deleted
   has_many :created_events, class_name: 'Event', foreign_key: "user_id", dependent: :destroy #(when an organizer is deleted all the events created by him are deleted too)
 
+  # A user can have many notifications
+  has_many :notifications, dependent: :destroy
 
   before_save :apply_camel_case
 
