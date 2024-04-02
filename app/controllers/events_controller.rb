@@ -182,7 +182,7 @@ class EventsController < ApplicationController
       # Notify event creation
       NotificationService.create_notification_create_event(
             user_organizer: current_user,
-            event: event
+            event: @event
         )
 
       # Reindirizzamento in caso di successo
@@ -337,10 +337,7 @@ class EventsController < ApplicationController
   # DELETE /events/1
   def destroy
     #Create the notification
-    NotificationService.create_notification_delete_event(
-            user_organizer: current_user,
-            event: event,
-        )
+   
         
     @event.destroy
     # Redirect to my_events_path
@@ -353,11 +350,6 @@ class EventsController < ApplicationController
     if event_ids.present?
       events = current_user.created_events.where(id: event_ids, user_id: current_user.id)
       events.each do |event|
-        # Create notification for each event deleted
-        NotificationService.create_notification_delete_event(
-          user_organizer: current_user,
-          event: event
-        )
       end
       events.destroy_all
       render json: { success: true }

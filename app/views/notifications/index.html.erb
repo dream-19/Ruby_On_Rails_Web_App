@@ -3,14 +3,14 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <button class="btn bg-gradient-primary">
       Unread Notifications
-      <span class="badge rounded-pill bg-light text-dark ms-2"><%= @notifications.unread %></span>
+      <span class="badge rounded-pill bg-light text-dark ms-2"><%= @notifications_unread %></span>
     </button>
-    <%= link_to mark_all_as_read_notifications_path, method: :patch, class: "btn btn-success" do %>
+    <%= link_to mark_all_as_read_notifications_path, method: :patch, class: "btn btn-outline-primary" do %>
       <i class="bi bi-check-circle me-2"></i>Mark All as Read
     <% end %>
     <button class="btn bg-gradient-secondary">
       Read Notifications
-      <span class="badge rounded-pill bg-light text-dark ms-2"><%= @notifications.read %></span>
+      <span class="badge rounded-pill bg-light text-dark ms-2"><%= @notifications_read %></span>
     </button>
   </div>
   <% if @notifications.any? %>
@@ -33,6 +33,9 @@
           <% end %>
         </div>
       <% end %>
+    </div>
+    <div class="d-flex justify-content-center mt-3 mb-3" id="pagination">
+      <%= paginate @notifications %>
     </div>
   <% else %>
     <div class="alert alert-info" role="alert">

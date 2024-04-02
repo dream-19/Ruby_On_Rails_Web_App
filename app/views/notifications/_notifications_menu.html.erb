@@ -1,12 +1,17 @@
 <li class="nav-item dropdown">
   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    <i class="bi bi-bell"></i> Notifications (<%= n_not %>)
+    Notifications 
+    <% if n_not > 0%>
+      <span class="badge rounded-pill bg-danger" ><%= n_not %></span>
+    <%else %>
+      <span class="badge rounded-pill bg-light text-dark" ><%= n_not %></span>
+    <%end %>
   </a>
   <ul class="dropdown-menu dropdown-menu-not " aria-labelledby="navbarDropdown">
-  <% if n_not > 0 %>
-      <li>
-        <%= link_to mark_all_as_read_notifications_path, method: :patch, remote: true, class: 'dropdown-item dropdown-item-not' do %>
-          <i class="dropdown-icon bi bi-check-circle"></i><u>Mark All as Read</u>
+    <% if n_not > 0 %>
+      <li >
+        <%= link_to mark_all_as_read_notifications_path, method: :patch, remote: true, class: 'dropdown-item dropdown-item-not ' do %>
+          <i class="dropdown-icon-not bi bi-check-circle"></i><u> Mark All as Read</u>
         <% end %>
       </li>
       <% notifications.each do |notification| %>

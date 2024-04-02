@@ -6,6 +6,7 @@ class Event < ApplicationRecord
   validates :description, length: { maximum: 500, too_long: "must be at most %{count} characters"  }
   validates :max_participants, numericality: { only_integer: true, greater_than: 0, message: "must be an integer > 0" }
 
+  before_destroy :generate_notifications
 
   before_save :apply_camel_case
   validate :validate_time_date
@@ -150,9 +151,18 @@ class Event < ApplicationRecord
     str.split.map(&:capitalize).join(' ')
   end
 
+  #workaround
   def self.get_time_now #class method
-    # if  we are inside DST add +1 hour (workaround for the bug in the time zone library)
+    # if  we are inside DST add +1 hour
     Time.zone.now.dst? ?  Time.zone.now + 1.hour : Time.zone.now 
+  end
+
+  # Generate notifications for the subscribers of the event (and for the owner)
+  def generate_notifications
+    NotificationService.create_notification_delete_event(
+      user_organizer: user,
+      event: self
+    )
   end
 
   

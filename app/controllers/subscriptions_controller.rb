@@ -13,13 +13,6 @@ class SubscriptionsController < ApplicationController
             flash[:alert] = "There was an issue subscribing to the event: #{subscription.errors.full_messages.join(', ')}"
         end
         
-        # Generate a notification (for the event owner and for the current user)
-        NotificationService.create_notification_subscribe(
-            user: current_user,
-            event: event,
-            user_organizer: event.user
-        )
-
         #if the event has reached full capacity generate notification
         if event.full?
             NotificationService.create_notification_full_capacity(user_organizer: event.user, event: event)
@@ -37,11 +30,6 @@ class SubscriptionsController < ApplicationController
         if current_user == subscription.user || current_user == event.user
             subscription.destroy
             flash[:notice] = "You have unsubscribed from the event: #{event.name}"
-
-            NotificationService.create_notification_unsubscribe(
-            user: current_user,
-            event: event,
-            user_organizer: event.user)
      
         else
             flash[:alert] = "You are not authorized to unsubscribe from this event."
@@ -65,17 +53,6 @@ class SubscriptionsController < ApplicationController
             event = subscription.event
             if current_user == event.user || current_user == subscription.user
                 subscription.destroy
-                if current_user != event.user
-                    NotificationService.create_notification_unsubscribe(
-                        user: current_user,
-                        event: event,
-                        user_organizer: event.user)
-                else 
-                    NotificationService.create_notification_remove_user(
-                        user: current_user,
-                        event: event,
-                        user_organizer: event.user)
-                end
             else 
                 message = "You are not authorized to unsubscribe from this event."
                 render json: { success: false, message: message }, status: :unauthorized
