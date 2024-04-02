@@ -389,8 +389,14 @@ class EventsController < ApplicationController
 
   # Attach new photo if presents
   def attach_new_photos
-      params[:event][:photos].each do |photo|
-        @event.photos.attach(photo)
+    params[:event][:photos].each do |photo|
+      unless @event.photos.attach(photo)
+        Rails.logger.debug("Failed to attach photo. #{@event.errors[:photos]}")
+        flash[:alert] = "Failed to attach photo. #{@event.errors[:photos]}"
+        #error cause:
+        Rails.logger.debug(@event.errors.full_messages)
+
+      end
     end
   end
 

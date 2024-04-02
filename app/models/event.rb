@@ -97,9 +97,7 @@ class Event < ApplicationRecord
     errors.add(:photos, "You can upload up to 3 photos.") if photos.size > 3
     #check content type
     photos.each do |photo|
-      errors.add(:photos, "must be a JPEG/JPG or PNG or GIF") unless photo.content_type.in?(%('image/jpeg image/png image/jpg image/gif'))
-
-    
+      errors.add(:photos, "must be a JPEG/JPG or PNG or GIF") unless photo.content_type.in?(%('image/jpeg image/png image/jpg image/gif image/webp'))
     end
 
   end
@@ -159,3 +157,4 @@ class Event < ApplicationRecord
 
   
 end
+
