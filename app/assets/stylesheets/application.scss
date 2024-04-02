@@ -22,7 +22,10 @@
 @import "flipdown.min";
 
 // h1,h2,h3 all in center
-h1, h2, h3,h4 {
+h1,
+h2,
+h3,
+h4 {
   text-align: center;
 }
 
@@ -34,7 +37,6 @@ h1, h2, h3,h4 {
   width: 100%;
   z-index: 8050; /* Ensure it's above other content */
 }
-
 
 // css for every country selection menù
 .suggestions {
@@ -55,7 +57,6 @@ h1, h2, h3,h4 {
   align-items: center;
 }
 
-
 // carousel style
 /* Adjust the size of the carousel */
 .carousel {
@@ -70,12 +71,10 @@ h1, h2, h3,h4 {
   margin: 0 auto; /* Center the images if they are smaller than the container */
 }
 
-.carousel-control-prev, .carousel-control-next {
+.carousel-control-prev,
+.carousel-control-next {
   width: 4%; /* Adjust control size */
 }
-
-
-
 
 /* Ensure images cover the area */
 .carousel-item-fixed img {
@@ -90,10 +89,9 @@ h1, h2, h3,h4 {
 }
 
 /* Paginator prev,next, first, last */
-.page-link1{
+.page-link1 {
   margin-left: 10px;
   margin-right: 10px;
-  
 }
 
 /* flipdown rescale */
@@ -101,4 +99,45 @@ h1, h2, h3,h4 {
   transform: scale(0.55); /* Adjust the scale value as needed */
   transform-origin: center top; /* This ensures the scaling is centered */
 }
+
+/* NOTIFICATIONS *//* Dropdown Menu */
+.dropdown-menu-not {
+  min-width: 300px;
+  max-width: 450px; /* Adjust based on your design needs */
+  box-shadow: 0 4px 6px rgba(0,0,0,.1); /* Subtle shadow for depth */
+  border-radius: 8px; /* Rounded corners */
+  overflow: hidden; /* Ensures the rounded corners clip the content */
+}
+
+/* Notification Item */
+.dropdown-item-not {
+  display: flex;
+  align-items: center;
+  white-space: normal; /* Allows wrapping */
+  overflow: hidden; /* Prevents overflow */
+  text-overflow: ellipsis; /* Adds ellipsis to overflow text */
+  padding: 10px; /* Spacing */
+}
+
+/* Icons */
+.dropdown-icon-not {
+  margin-right: 10px; /* Space between icon and text */
+  color: #007bff; /* Example color - adjust as needed */
+  min-width: 24px; /* Ensures alignment */
+}
+
+/* Notification Text */
+.dropdown-text-not {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* Limit to two lines */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-group-item:hover{
+  background-color: #f8d3f7;
+  color: black;
+}
+
 

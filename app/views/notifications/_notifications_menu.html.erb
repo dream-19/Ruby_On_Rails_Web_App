@@ -1,0 +1,28 @@
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-bell"></i> Notifications (<%= n_not %>)
+  </a>
+  <ul class="dropdown-menu dropdown-menu-not " aria-labelledby="navbarDropdown">
+  <% if n_not > 0 %>
+      <li>
+        <%= link_to mark_all_as_read_notifications_path, method: :patch, remote: true, class: 'dropdown-item dropdown-item-not' do %>
+          <i class="dropdown-icon bi bi-check-circle"></i><u>Mark All as Read</u>
+        <% end %>
+      </li>
+      <% notifications.each do |notification| %>
+        <li class="dropdown-item dropdown-item-not">
+          <%= link_to notification_path(notification), class: 'dropdown-link' do %>
+            <i class="dropdown-icon bi bi-envelope"></i><span class="dropdown-text dropdown-text-not"><%= notification.message %></span>
+          <% end %>
+          <small class="text-muted">
+            <%= time_ago_in_words(notification.created_at) %> ago
+          </small>
+        </li>
+      <% end %>
+    <% else %>
+      <li class="dropdown-item dropdown-item-not">No new notifications</li>
+    <% end %>
+    <li><hr class="dropdown-divider"></li>
+    <li><%= link_to 'See all', notifications_path, class: 'dropdown-item dropdown-item-not btn  bg-gradient-primary' %></li>
+  </ul>
+</li>

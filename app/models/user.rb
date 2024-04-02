@@ -51,7 +51,15 @@ class User < ApplicationRecord
     subscriptions.where(event_id: event.id).exists?
   end
 
-  
+  #Method to get the number of unread notifications
+  def count_unread
+    notifications.where(read: false).count
+  end
+
+  #Method to get the last n unread notification
+  def first_n_unread(n)
+    notifications.where(read: false).order(created_at: :desc).limit(n)
+  end
 
   private
 

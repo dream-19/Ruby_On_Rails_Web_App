@@ -21,81 +21,87 @@
           <ul class="navbar-nav ms-auto">
             <!-- USER SIGNED IN-->
             <% if user_signed_in? %>
+            <!-- notifications -->
+              <div id="notifications-container">
+                <%= render 'notifications/notifications_menu', notifications: current_user.first_n_unread(10), n_not: current_user.count_unread%>
+              </div>
+
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Ciao <%= current_user.get_name %>!</a>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end text-center" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">
-                    <%= link_to edit_user_registration_path, class: 'nav-link' do %>
-                      <i class="bi bi-pencil-square"></i> Edit Profile
-                    <% end %>
-                  </a>
-                </li>
-                <% if current_user.organizer? %>
-                  <li>
-                    <a class="dropdown-item" href="#">
-                      <%= link_to my_events_path, class: 'nav-link' do %>
-                        <i class="bi bi-calendar"></i> My Events
+                  Ciao <%= current_user.get_name %>!
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end text-center" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="#">
+                      <%= link_to edit_user_registration_path, class: 'nav-link' do %>
+                        <i class="bi bi-pencil-square"></i> Edit Profile
                       <% end %>
                     </a>
                   </li>
-                <% end %>
-                <% if current_user.normal? %>
+                  <% if current_user.organizer? %>
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <%= link_to my_events_path, class: 'nav-link' do %>
+                          <i class="bi bi-calendar"></i> My Events
+                        <% end %>
+                      </a>
+                    </li>
+                  <% end %>
+                  <% if current_user.normal? %>
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <%= link_to my_subscriptions_path, class: 'nav-link' do %>
+                          <i class="bi bi-journal-check"></i> My Subscriptions
+                        <% end %>
+                      </a>
+                    </li>
+                  <% end %>
                   <li>
                     <a class="dropdown-item" href="#">
-                      <%= link_to my_subscriptions_path, class: 'nav-link' do %>
-                        <i class="bi bi-journal-check"></i> My Subscriptions
+                      <%= link_to root_path , class: 'nav-link' do %>
+                        <i class="bi bi-house"></i> Home
                       <% end %>
                     </a>
                   </li>
-                <% end %>
-                <li>
-                  <a class="dropdown-item" href="#">
-                    <%= link_to root_path , class: 'nav-link' do %>
-                      <i class="bi bi-house"></i> Home
-                    <% end %>
-                  </a>
-                </li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                  <a class="dropdown-item">
-                    <!-- link to sign out the user -->
-                    <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: 'btn btn-outline-danger', form: { class: 'd-inline' } %>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- NEW USER -->
-          <% else %>
-            <li class="nav-item">
-              <%= link_to "Sign in", new_user_session_path, class: 'btn btn-outline-primary' %>
-            </li>
-            <li class="nav-item">
-              <%= link_to 'Sign Up as User', new_user_registration_path(user_type: UserRoles::USER_NORMAL), class: 'btn btn-primary ms-2' %>
-            </li>
-            <li>
-              <%= link_to 'Sign Up as Organizer', 'javascript:void(0);', class: 'btn btn-primary ms-2', 'data-bs-toggle': 'modal', 'data-bs-target': '#organizerModal' %>
-              <!-- Render the partial with the modal '_register_modal' in views>modals -->
-              <%= render 'modals/register_modal' %>
-            </li>
-          <% end %>
-        </ul>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <a class="dropdown-item">
+                      <!-- link to sign out the user -->
+                      <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: 'btn btn-outline-danger', form: { class: 'd-inline' } %>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              
+              <!-- NEW USER -->
+            <% else %>
+              <li class="nav-item">
+                <%= link_to "Sign in", new_user_session_path, class: 'btn btn-outline-primary' %>
+              </li>
+              <li class="nav-item">
+                <%= link_to 'Sign Up as User', new_user_registration_path(user_type: UserRoles::USER_NORMAL), class: 'btn btn-primary ms-2' %>
+              </li>
+              <li>
+                <%= link_to 'Sign Up as Organizer', 'javascript:void(0);', class: 'btn btn-primary ms-2', 'data-bs-toggle': 'modal', 'data-bs-target': '#organizerModal' %>
+                <!-- Render the partial with the modal '_register_modal' in views>modals -->
+                <%= render 'modals/register_modal' %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
-  <% if notice %>
-    <div class="alert alert-success alert-dismissible fade show text-center alert-fixed " role="alert">
-     <%= notice %> 
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  <% end %>
-  <% if alert %>
-    <div class="alert alert-danger alert-dismissible fade show text-center alert-fixed" role="alert">
-     <%= alert %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  <% end %>
-  <%= yield %>
-</body>
+    </nav>
+    <% if notice %>
+      <div class="alert alert-success alert-dismissible fade show text-center alert-fixed " role="alert">
+        <%= notice %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% end %>
+    <% if alert %>
+      <div class="alert alert-danger alert-dismissible fade show text-center alert-fixed" role="alert">
+        <%= alert %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% end %>
+    <%= yield %>
+  </body>
 </html>

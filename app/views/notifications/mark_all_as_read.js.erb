@@ -1,0 +1,2 @@
+// Replace the content of the notifications container with the updated list
+$("#notifications-container").html("<%= j (render 'notifications/notifications_menu', notifications: @notifications, n_not: @n_not) %>");

@@ -23,5 +23,10 @@ resources :events do
   resources :subscriptions, only: [:create, :destroy] # subscription is nested inside events
 end
 
+resources :notifications, only: [:index, :show] do
+  patch :mark_all_as_read, on: :collection
+  patch :mark_as_read, on: :member #member = single resource
+end
+
 
 end
