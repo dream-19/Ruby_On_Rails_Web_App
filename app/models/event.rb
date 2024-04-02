@@ -6,8 +6,8 @@ class Event < ApplicationRecord
   validates :description, length: { maximum: 500, too_long: "must be at most %{count} characters"  }
   validates :max_participants, numericality: { only_integer: true, greater_than: 0, message: "must be an integer > 0" }
 
-  before_destroy :generate_notifications
-
+ 
+  
   before_save :apply_camel_case
   validate :validate_time_date
   validate :photos_validation
@@ -23,7 +23,9 @@ class Event < ApplicationRecord
   #An event can have many notifications (when an event is deleted the notification aren't deleted! set to null)
   has_many :notifications, dependent: :nullify
 
-
+  # Notifications 
+  after_destroy :generate_notifications_destroy
+  after_create :generate_notifications_new
 
   # Return the events that are ongoing (current)
   def self.ongoing
@@ -158,8 +160,16 @@ class Event < ApplicationRecord
   end
 
   # Generate notifications for the subscribers of the event (and for the owner)
-  def generate_notifications
+  def generate_notifications_destroy
     NotificationService.create_notification_delete_event(
+      user_organizer: user,
+      event: self
+    )
+  end
+
+  # Generate notifications for the owner of the event when a new event is created
+  def generate_notifications_new
+    NotificationService.create_notification_new_event(
       user_organizer: user,
       event: self
     )

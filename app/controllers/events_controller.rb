@@ -179,12 +179,6 @@ class EventsController < ApplicationController
     @event = current_user.created_events.build(event_params)
     if @event.save
 
-      # Notify event creation
-      NotificationService.create_notification_create_event(
-            user_organizer: current_user,
-            event: @event
-        )
-
       # Reindirizzamento in caso di successo
       redirect_to @event, notice: 'Event was successfully created.'
       
@@ -316,7 +310,6 @@ class EventsController < ApplicationController
     if !changed_attributes.empty?
       update_message = "Changes: #{changed_attributes.join(", ")}."
     end
-  
 
       # Update event with new attributes excluding direct photo assignments if necessary
     if @event.update(event_params.except(:photos))

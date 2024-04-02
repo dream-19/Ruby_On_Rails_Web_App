@@ -16,7 +16,7 @@
       </li>
       <% notifications.each do |notification| %>
         <li class="dropdown-item dropdown-item-not">
-          <%= link_to notification_path(notification), class: 'dropdown-link' do %>
+         <%= link_to notification_path(notification), class: 'dropdown-link', remote: true do %>
             <i class="dropdown-icon bi bi-envelope"></i><span class="dropdown-text dropdown-text-not"><%= notification.message %></span>
           <% end %>
           <small class="text-muted">

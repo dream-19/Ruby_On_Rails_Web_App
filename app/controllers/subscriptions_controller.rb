@@ -13,11 +13,6 @@ class SubscriptionsController < ApplicationController
             flash[:alert] = "There was an issue subscribing to the event: #{subscription.errors.full_messages.join(', ')}"
         end
         
-        #if the event has reached full capacity generate notification
-        if event.full?
-            NotificationService.create_notification_full_capacity(user_organizer: event.user, event: event)
-        end
-        
         redirect_to event_path(event) # Redirect back to the event's page
     end
 
@@ -28,7 +23,8 @@ class SubscriptionsController < ApplicationController
 
         # Check if the user is the owner of the subscription or the event
         if current_user == subscription.user || current_user == event.user
-            subscription.destroy
+            subscription.destroy_with_user(current_user) if subscription.present?
+           
             flash[:notice] = "You have unsubscribed from the event: #{event.name}"
      
         else
@@ -52,14 +48,14 @@ class SubscriptionsController < ApplicationController
             end
             event = subscription.event
             if current_user == event.user || current_user == subscription.user
-                subscription.destroy
+                subscription.destroy_with_user(current_user) if subscription.present?
             else 
                 message = "You are not authorized to unsubscribe from this event."
                 render json: { success: false, message: message }, status: :unauthorized
                 return
             end
         end 
-        flash[:notice] = "Subscritpions Deleted Successfully."
+        flash[:notice] = "Subscriptions Deleted Successfully."
         render json: { success: true }
     end
 

@@ -1,0 +1,9 @@
+// Directly insert the notification content into the modal's body
+
+$('#notificationModal .modal-mex').html('<%= j  @notification.message %>');
+$('#notificationModal .modal-time').html('<%= j time_ago_in_words(@notification.created_at) %> ago');
+
+var myModal = new bootstrap.Modal(document.getElementById('notificationModal'), {})
+myModal.show();
+
+$("#notifications-container").html("<%= j (render 'notifications/notifications_menu', notifications: @notifications, n_not: @n_not) %>");

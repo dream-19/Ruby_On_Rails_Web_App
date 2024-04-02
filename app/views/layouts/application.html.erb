@@ -24,6 +24,7 @@
             <!-- notifications -->
               <div id="notifications-container">
                 <%= render 'notifications/notifications_menu', notifications: current_user.first_n_unread(10), n_not: current_user.count_unread%>
+                <%= render 'modals/notification_modal' %>
               </div>
 
               <li class="nav-item dropdown">

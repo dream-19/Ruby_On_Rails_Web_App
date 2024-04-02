@@ -9,8 +9,13 @@ class NotificationsController < ApplicationController
     end
   
     def show
-      #@notification.update(read: true)
-      redirect_to event_path(@notification.event)
+      @notification = Notification.find(params[:id])
+      @notification.update(read: true) 
+      @notifications = current_user.first_n_unread(10)
+      @n_not = current_user.count_unread
+      respond_to do |format|
+        format.js # for AJAX
+      end
     end
   
     def mark_as_read

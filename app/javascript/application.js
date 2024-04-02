@@ -866,6 +866,7 @@ function manageBulkDelete() {
           console.log("table reloaded");
         } else {
           // Handle failure
+          console.log("ERROR");
           alert("There was an issue deleting the selected events.");
         }
       });
