@@ -86,7 +86,6 @@ class SubscriptionsController < ApplicationController
     end
 
     def check_overlaps
-        Rails.logger.debug("CLARITA")
         event = Event.find(params[:event_id])
         event_start = DateTime.parse("#{event.beginning_date} #{event.beginning_time}")
         event_end = DateTime.parse("#{event.ending_date} #{event.ending_time}")

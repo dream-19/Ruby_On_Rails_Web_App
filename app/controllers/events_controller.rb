@@ -418,26 +418,21 @@ class EventsController < ApplicationController
       # Return early if date is nil or not a string or not a date
       return date unless date.is_a?(String)
       
-      Rails.logger.debug("date: #{date}")
       
       if date.include?('-')
         date = date.split('-')
       elsif date.include?('/')
         date = date.split('/')
       else
-        Rails.logger.debug("primo else: #{date}")
         return date
       end
     
       case date.length
       when 3
-        Rails.logger.debug("secondo if: #{date[2]}-#{date[1]}-#{date[0]}")
         return "#{date[2]}-#{date[1]}-#{date[0]}"
       when 2
-        Rails.logger.debug("secondo else: #{date[1]}-#{date[0]}")
         return "#{date[1]}-#{date[0]}"
       else
-        Rails.logger.debug("terzo else: #{date.join('-')}")
         return date.join('-')
       end
     end
