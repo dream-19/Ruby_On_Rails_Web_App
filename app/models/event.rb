@@ -24,7 +24,6 @@ class Event < ApplicationRecord
   has_many :notifications, dependent: :nullify
 
   # Notifications 
-  after_destroy :generate_notifications_destroy
   after_create :generate_notifications_new
 
   # Return the events that are ongoing (current)
@@ -159,19 +158,13 @@ class Event < ApplicationRecord
     Time.zone.now.dst? ?  Time.zone.now + 1.hour : Time.zone.now 
   end
 
-  # Generate notifications for the subscribers of the event (and for the owner)
-  def generate_notifications_destroy
-    NotificationService.create_notification_delete_event(
-      user_organizer: user,
-      event: self
-    )
-  end
+  
 
   # Generate notifications for the owner of the event when a new event is created
   def generate_notifications_new
-    NotificationService.create_notification_new_event(
+    NotificationService.create_notification_create_event(
       user_organizer: user,
-      event: self
+      event: self,
     )
   end
 

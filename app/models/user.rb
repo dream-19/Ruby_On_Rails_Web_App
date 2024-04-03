@@ -13,7 +13,8 @@ class User < ApplicationRecord
 
   #Relationship
   # Users can have many subscriptions to events (only normal user)
-  has_many :subscriptions, dependent: :destroy # (when a user is deleted all the subscriptions are deleted too)
+  has_many :subscriptions
+  #, dependent: :destroy # (when a user is deleted all the subscriptions are deleted too)
 
   # Through subscriptions, users can subscribe to many events (only normal user)
   has_many :subscribed_events, through: :subscriptions, source: :event
@@ -25,6 +26,7 @@ class User < ApplicationRecord
   has_many :notifications, dependent: :destroy
 
   before_save :apply_camel_case
+  before_destroy :notify_event_owners_and_destroy_subscriptions
 
   #Method to check if the user is an organizer
   def organizer?
@@ -75,6 +77,17 @@ class User < ApplicationRecord
 
   def to_title_case(str)
     str.split.map(&:capitalize).join(' ')
+  end
+
+  def notify_event_owners_and_destroy_subscriptions
+    # First, notify the event owners
+    subscriptions.each do |subscription|
+      event = subscription.event
+      NotificationService.create_notification_unsubscribe_delete(user: self, event: event, user_organizer: event.user)
+    end
+    
+    # Then, manually destroy subscriptions
+    subscriptions.destroy_all
   end
 
   protected

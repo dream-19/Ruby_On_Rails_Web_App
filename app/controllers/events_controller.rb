@@ -329,9 +329,12 @@ class EventsController < ApplicationController
 
   # DELETE /events/1
   def destroy
-    #Create the notification
-   
-        
+    # Generate notifications for the subscribers of the event (and for the owner)
+    NotificationService.create_notification_delete_event(
+      user_organizer: current_user,
+      event: @event,
+    )
+ 
     @event.destroy
     # Redirect to my_events_path
     redirect_to my_events_path, notice: 'Event was successfully destroyed.'
@@ -343,8 +346,12 @@ class EventsController < ApplicationController
     if event_ids.present?
       events = current_user.created_events.where(id: event_ids, user_id: current_user.id)
       events.each do |event|
+        NotificationService.create_notification_delete_event(
+          user_organizer: current_user,
+          event: event,
+        )
+        event.destroy
       end
-      events.destroy_all
       render json: { success: true }
     else
       render json: { success: false }, status: :unprocessable_entity

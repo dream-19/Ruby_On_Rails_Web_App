@@ -41,6 +41,19 @@ class NotificationService
         )
   end
 
+  # Create a notification: when a user unsubscribes from an event because it deletes his account
+  def self.create_notification_unsubscribe_delete(user:, event: , user_organizer:)
+    # For the event owner
+    Notification.create!(
+        user: user_organizer,
+        event: event,
+        read: false,
+        message: "#{user.name} #{user.surname} (email: #{user.email}) has unsubscribed from your event: #{event.name} (account deleted)",
+        notification_type: "user_unsubscribe"
+    )
+end
+
+
   #Create a notification: the owner of an event removes a user from the event
     def self.create_notification_remove_user(user:, event: , user_organizer:)
         # For the user who was removed from the event
@@ -103,7 +116,6 @@ class NotificationService
     def self.create_notification_delete_event(user_organizer:, event:)
         Notification.create!(
             user: user_organizer,
-            event: event,
             read: false,
             message: "You have deleted the event: #{event.name}",
             notification_type: "event_delete"
@@ -113,7 +125,6 @@ class NotificationService
          event.subscriptions.each do |subscription|
             Notification.create!(
                 user: subscription.user,
-                event: event,
                 read: false,
                 message: "The event: #{event.name} has been deleted",
                 notification_type: "event_delete"
