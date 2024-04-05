@@ -2,7 +2,7 @@
 FactoryBot.define do
   factory :user do
     name { Faker::Name.first_name }
-    email { Faker::Internet.unique.email }
+    email { Faker::Internet.unique.email(domain:'gmail.com') }
     phone { Faker::PhoneNumber.phone_number_with_country_code }
     address { Faker::Address.street_address }
     cap { Faker::Address.zip_code }

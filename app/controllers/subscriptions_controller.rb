@@ -96,7 +96,11 @@ class SubscriptionsController < ApplicationController
             subscribed_event_end = DateTime.parse("#{e.ending_date} #{e.ending_time}")
 
             # Check if the events overlap (start of the new event is between the start and end of the subscribed event, or the end of the new event is between the start and end of the subscribed event)
-           if  (event_start < subscribed_event_end && event_start > subscribed_event_start) || (event_end < subscribed_event_end && event_end > subscribed_event_start) 
+           if  event_start.between?(subscribed_event_start, subscribed_event_end) || 
+               event_end.between?(subscribed_event_start, subscribed_event_end) ||
+                subscribed_event_start.between?(event_start, event_end) ||
+                subscribed_event_end.between?(event_start, event_end)
+            
                 flash[:alert] = "You are already subscribed to an event that overlaps with this time: #{e.name}"
                 redirect_to event_path(event)
            end
