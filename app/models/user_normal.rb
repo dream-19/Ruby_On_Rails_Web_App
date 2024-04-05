@@ -7,8 +7,4 @@ class UserNormal < User
     validates :email, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email address" }
     validate :date_of_birth_cannot_be_in_the_future
 
-
-   
-    
-   
   end

@@ -51,6 +51,13 @@ gem 'mysql2', '~> 0.5'
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
+  gem 'factory_bot_rails' # = create test data
+  gem 'faker' # = create test data
+  gem 'rspec-rails' # = testing
+  gem 'capybara' # = testing
+  gem 'selenium-webdriver' # = testing
+  gem 'webdrivers' #  = testing
+  gem 'dotenv-rails'
 end
 
 group :development do
@@ -64,11 +71,6 @@ group :development do
   # gem "spring"
 end
 
-group :test do
-  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem "capybara"
-  gem "selenium-webdriver"
-end
 
 # bundle install
 # bundle update
@@ -80,3 +82,5 @@ gem 'htmlbeautifier'
 gem 'kaminari'  #pagination
 
 gem 'jquery-rails'
+
+gem "rufo" #formatting
