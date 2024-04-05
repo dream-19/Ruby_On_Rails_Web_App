@@ -11,24 +11,25 @@ FactoryBot.define do
     country { Faker::Address.country }
     password { "ciao123" }
     password_confirmation { "ciao123" }
+  end 
 
     # Subclass for CompanyOrganizer
-    factory :company_organizer do
+    factory :company_organizer, parent: :user  do
       type { "CompanyOrganizer" }
     end
 
     # Subclass for UserOrganizer
-    factory :user_organizer do
+    factory :user_organizer, parent: :user  do
       type { "UserOrganizer" }
       date_of_birth { Faker::Date.between(from: "1980-01-01", to: "2010-12-31").to_s }
       surname { Faker::Name.last_name } 
     end
 
     # Subclass for UserNormal
-    factory :user_normal do
+    factory :user_normal, parent: :user  do
       type { "UserNormal" }
       date_of_birth { Faker::Date.between(from: "1980-01-01", to: "2010-12-31").to_s }
       surname { Faker::Name.last_name } 
     end
   end
-end
+
