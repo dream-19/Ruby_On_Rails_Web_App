@@ -8,7 +8,7 @@ class EventsController < ApplicationController
 
   # GET /events
   def index
-    pagination_par = 28 #28 x page
+    pagination_par = 18 
     begin
       @events = Event.upcoming
 
@@ -26,13 +26,15 @@ class EventsController < ApplicationController
 
       #ORDERING
       direction = %w[asc desc].include?(params[:direction]) ? params[:direction] : 'asc'
+      #sanitize input
+      params[:order_by] = Event.column_names.include?(params[:order_by]) ? params[:order_by] : 'beginning_date'
       if params[:order_by] == 'organizer'
         @events = @events.joins(:user).order('users.name ' +  direction)
       elsif params[:order_by] == 'participants'
         @events = direction == 'asc' ? @events.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) ASC' ) : @events.left_joins(:subscriptions).group('events.id').order('COUNT(subscriptions.id) DESC' )
+      elsif params[:order_by] == 'beginning_date' || params[:order_by] == 'ending_date'
+        @events = @events.order(params[:order_by] + ' ' + direction + ', beginning_time ' + direction)
       else
-      #sanitize input
-      params[:order_by] = Event.column_names.include?(params[:order_by]) ? params[:order_by] : 'beginning_date'
       #Normal case with order
       @events =  @events.order(params[:order_by] + ' ' + direction) 
       end
@@ -75,7 +77,7 @@ class EventsController < ApplicationController
         end
       end
     else 
-      @events = @events.order(beginning_date: :asc)
+      @events = @events.order(beginning_date: :asc, beginning_time: :asc)
     end
   
   

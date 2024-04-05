@@ -63,8 +63,8 @@ class Event < ApplicationRecord
   def self.future
     now = get_time_now()
     where("TIMESTAMP(beginning_date, beginning_time) > ?", now)
-  end
-
+  end 
+  
   # Return the events that are upcoming (current and future)
   def self.upcoming
     now = get_time_now()

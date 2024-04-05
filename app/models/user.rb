@@ -5,7 +5,7 @@ class User < ApplicationRecord
 
   # validates the length of all the possible fields:
   validates :name, :surname,:email, :phone,:address, :cap, :province, :city, :country, length: { maximum: 255, too_long: "must be at most %{count} characters" }
-
+  validates :email, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email address" }
 
   validates :type, presence: true
   # The type of the user must be one of the following: UserNormal, UserOrganizer, CompanyOrganizer
