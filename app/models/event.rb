@@ -86,9 +86,7 @@ class Event < ApplicationRecord
 
   #SCOPE
   scope :notfull, -> {
-    left_joins(:subscriptions) # Adjust :participants to match the actual association name.
-      .group('events.id')
-      .having('COUNT(subscriptions.id) < events.max_participants')
+    where("max_participants > (SELECT COUNT(*) FROM subscriptions WHERE subscriptions.event_id = events.id)")
   }
 
 

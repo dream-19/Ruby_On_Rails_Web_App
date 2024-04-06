@@ -1,6 +1,7 @@
 <div class="container mt-5">
   <h1>All Events</h1>
   <div class="row">
+     
     <!-- search by menù: selection for the field and input field -->
     <div class="col-md-8 mb-3">
       <div class="row">
@@ -49,11 +50,12 @@
     </div>
     <!-- Select menù to decide the order of the events -->
     <div class="col-md-4 mb-3">
+      <%= form_with url: events_path, method: :get, local: false, id: "sorting_form" do |form| %>
       <div class="row mb-3">
         <p>Order By:</p>
       </div>
       <div class="row mb-3">
-         <%= form_with url: events_path, method: :get, local: false, id: "sorting_form" do |form| %>
+        
         <%= select_tag :sort_selection,
                        options_for_select({
                          "Beginning Date (ASC)" => "beginning_date-asc",
@@ -73,38 +75,33 @@
                          "Organizer (ASC)" => "organizer-asc",
                          "Organizer (DESC)" => "organizer-desc",
                        }, selected: "#{params[:order_by]}-#{params[:direction]}"),
-                 onchange: "updateSortParameters(this.value);",
-                 class: "form-select",
-                 id: "sort_selection" %>
+                       onchange: "updateEventsList(this.value);",
+                       class: "form-select",
+                       id: "sort_selection" %>
   <%= hidden_field_tag :order_by, params[:order_by] %>
   <%= hidden_field_tag :direction, params[:direction] %>
-      <% end %>
+    
       </div>
       
     </div>
   </div>
   <!-- show a check for 'ongoing events', 'not full', 'my events' -->
   <div class="row justify-content-center">
-  <div class="d-flex justify-content-center mt-3 mb-3"> <!-- Ensure the container is flex and centers its children -->
+  <div class="d-flex justify-content-center mt-3 mb-3"> 
+   <div class="form-check me-3">
+  <%= check_box_tag "on_going", "1", params[:on_going].present?, id: "ongoing-events", class: "form-check-input", onchange: "updateEventsList()" %>
+  <%= label_tag "ongoing-events", "Show only ongoing events", class: "form-check-label" %>
+</div>
+
+<div class="form-check me-3">
+  <%= check_box_tag "not_full", "1", params[:not_full].present?, id: "not-full-events", class: "form-check-input", onchange: "updateEventsList()" %>
+  <%= label_tag "not-full-events", "Show only not full events", class: "form-check-label" %>
+</div>
     <div class="form-check me-3">
-      <input class="form-check-input" type="checkbox" value="" id="ongoing-events" onchange="updateEventsList()">
-      <label class="form-check-label" for="ongoing-events">
-        Show only ongoing events
-      </label>
-    </div>
-    <div class="form-check me-3">
-      <input class="form-check-input" type="checkbox" value="" id="not-full-events" onchange="updateEventsList()">
-      <label class="form-check-label" for="not-full-events">
-        Show only not full events
-      </label>
-      
-    </div>
-    <div class="form-check me-3">
-      <input class="form-check-input" type="checkbox" value="" id="my-events" onchange="updateEventsList()">
-      <label class="form-check-label" for="my-events">
-        Show only my events
-      </label>
-    </div>
+  <%= check_box_tag "my_events", "1", params[:my_events].present?, id: "my-events", class: "form-check-input", onchange: "updateEventsList()" %>
+  <%= label_tag "my-events", "Show only my events", class: "form-check-label" %>
+</div>
+  <% end %>
   </div>
 </div>
 
@@ -130,19 +127,28 @@
 </div>
 <script>
 
-  function updateSortParameters(selectedValue) {
-  var parts = selectedValue.split('-');
+  function updateEventsList(selectedValue) {
+  // SORTING
+  var sortSelection = document.getElementById('sort_selection').value;
+  var parts = sortSelection.split('-');
   var orderBy = parts[0];
   var direction = parts.length > 1 ? parts[1] : 'asc'; // Default to 'asc' if not specified
   
   document.getElementById('order_by').value = orderBy;
   document.getElementById('direction').value = direction;
   console.log("Sort request, order_by and direction:" + orderBy + " " + direction);
+
+  //CHECKS (ongoing, not full, my events)
+  var myEventsChecked = document.getElementById('my-events').checked;
+  var notFullEventsChecked = document.getElementById('not-full-events').checked;
+  var ongoingEventsChecked = document.getElementById('ongoing-events').checked;
+  
   
   // Submit the form
   document.getElementById('sorting_form').requestSubmit();
 }
 
+/*
   function updateEventsList() {
     var orderByValue = document.getElementById('order_by').value.split('-');
     var orderBy = orderByValue[0]; // The attribute to sort by
@@ -190,7 +196,7 @@
    
     
 
-    /*fetch(path, {
+    fetch(path, {
       headers: {
         'Accept': 'application/javascript',
         'X-Requested-With': 'XMLHttpRequest'
@@ -210,9 +216,9 @@
     .catch(error => {
       console.error('Error:', error);
       document.getElementById('error-message').classList.remove('d-none');
-    });*/
+    });
 
-  }
+  }*/
 
 
   document.addEventListener('DOMContentLoaded', function() {

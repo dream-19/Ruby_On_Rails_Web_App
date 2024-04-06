@@ -8,6 +8,9 @@ class EventsController < ApplicationController
 
   # GET /events
   def index
+    #Log the params of the requests
+    Rails.logger.debug("AIAAAAAAAAA")
+    Rails.logger.debug("Params: #{params}")
     pagination_par = 18
     begin
       @events = Event.upcoming
