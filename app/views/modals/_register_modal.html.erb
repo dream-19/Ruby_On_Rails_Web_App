@@ -10,8 +10,8 @@
         </div>
         <div class="modal-body text-center">
         <p> How would you like to sign up? Are you an user or a company?</p>
-        <%= link_to 'User', new_user_registration_path(user_type: UserRoles::USER_ORGANIZER), class: 'btn btn-primary ms-2' %>
-        <%= link_to 'Company', new_user_registration_path(user_type: UserRoles::COMPANY_ORGANIZER), class: 'btn btn-primary ms-2' %>
+        <%= link_to "User", new_user_registration_path(user_type: UserRoles::USER_ORGANIZER), class: "btn btn-primary ms-2" %>
+        <%= link_to "Company", new_user_registration_path(user_type: UserRoles::COMPANY_ORGANIZER), class: "btn btn-primary ms-2" %>
         </div>
     </div>
     </div>

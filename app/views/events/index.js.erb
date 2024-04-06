@@ -1,4 +1,4 @@
 // index.js.erb
-$("#events-list").html("<%= escape_javascript(render 'events_list', events: @events) %>");
+$("#events-list").html("<%= escape_javascript(render "events_list", events: @events) %>");
 $("#pagination").html("<%= escape_javascript(paginate @events, remote: true) %>");
 

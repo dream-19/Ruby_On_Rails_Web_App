@@ -29,13 +29,13 @@
   <div class="row g-4">
     <!-- Left Column: Event Photos -->
     <div class="col-md-6">
-      <%= render 'carousel', event: @event, fixed: false %>
+      <%= render "carousel", event: @event, fixed: false %>
       <div class="row justify-content-center">
         <div class="col-auto">
-      <% if @event.future?%>
+      <% if @event.future? %>
         <p class="text-center"><strong>To the start of the event:</strong></p>
         <div id="flipdown" class="flipdown flipdown__theme-dark" data='<%= @event.beginning_date %>' data-min='<%= format_time(@event.beginning_time) %>'></div>
-      <%elsif @event.ongoing?%>
+      <% elsif @event.ongoing? %>
       <p class="text-center"><strong>To the end of the event:</strong></p>
         <div id="flipdown" class="flipdown flipdown__theme-dark" data='<%= @event.ending_date %>' data-min='<%= format_time(@event.ending_time) %>'></div>
       <% end %>
@@ -54,31 +54,31 @@
         <p class="mb-3"><strong>City:</strong> <%= @event.city %>, <%= @event.province %> (<%= @event.cap %>), <%= @event.country %></p>
         <% if @event.description and @event.description != "" and @event.description.length > 0 %>
           <p class="mb-3"><strong>Description:</strong> <%= @event.description %></p>
-        <%end%>
+        <% end %>
         <hr/>
         <div class="d-flex justify-content-between align-items-center mt-4">
           <!-- Subscribe to the events -->
-          <% if user_signed_in?%>
-            <%= render 'subscriptions/subscribe_button', event: @event%>
-          <%else %>
+          <% if user_signed_in? %>
+            <%= render "subscriptions/subscribe_button", event: @event %>
+          <% else %>
             <!-- log in to subscribe -->
-            <%= link_to "Sign in to Subscribe", new_user_session_path, class: 'btn btn-outline-primary' %>
+            <%= link_to "Sign in to Subscribe", new_user_session_path, class: "btn btn-outline-primary" %>
           <% end %>
           <% if @event.user == current_user %>
             <% if @event.ending_date >= Date.today %>
-              <%= link_to 'Edit', edit_event_path(@event), class: 'btn btn-outline-primary' %>
+              <%= link_to "Edit", edit_event_path(@event), class: "btn btn-outline-primary" %>
             <% end %>
-            <%= link_to 'Delete', 'javascript:void(0);', class: 'btn btn-outline-danger', 'data-bs-toggle': 'modal', 'data-bs-target': "#deleteEvent#{@event.id}"  %>
-            <%= render 'modals/delete_event_modal', event: @event %>
-            <%= link_to 'My Events', my_events_path, class: 'btn btn-outline-secondary'%>
+            <%= link_to "Delete", "javascript:void(0);", class: "btn btn-outline-danger", 'data-bs-toggle': "modal", 'data-bs-target': "#deleteEvent#{@event.id}" %>
+            <%= render "modals/delete_event_modal", event: @event %>
+            <%= link_to "My Events", my_events_path, class: "btn btn-outline-secondary" %>
           <% end %>
-          <%= link_to 'Back to Events', events_path, class: 'btn btn-outline-secondary' %>
+          <%= link_to "Back to Events", events_path, class: "btn btn-outline-secondary" %>
         </div>
       </div>
     </div>
   </div>
   <!-- Display the subscriptions (if user is signed in and is the owner) -->
   <% if user_signed_in? && current_user == @event.user %>
-    <%= render 'subscriptions/event_subscriptions_list', event: @event, subscriptions: @subscriptions, subscriptions_json: @subscriptions_json%>
+    <%= render "subscriptions/event_subscriptions_list", event: @event, subscriptions: @subscriptions, subscriptions_json: @subscriptions_json %>
   <% end %>
 </div>

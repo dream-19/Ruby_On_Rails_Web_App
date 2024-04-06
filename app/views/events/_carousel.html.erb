@@ -4,18 +4,18 @@
     <!-- Carousel Indicators -->
     <div class="carousel-indicators">
       <% event.photos.each_with_index do |photo, index| %>
-        <button type="button" data-bs-target="#eventPhotosCarousel<%= event.id %>" data-bs-slide-to="<%= index %>" class="<%= 'active' if index.zero? %>"></button>
+        <button type="button" data-bs-target="#eventPhotosCarousel<%= event.id %>" data-bs-slide-to="<%= index %>" class="<%= "active" if index.zero? %>"></button>
       <% end %>
     </div>
     <!-- Photos -->
     <div class="carousel-inner rounded">
       <% event.photos.each_with_index do |photo, index| %>
         <% if fixed %>
-          <div class="carousel-item carousel-item-fixed <%= 'active' if index.zero? %>">
-          <%else%>
-            <div class="carousel-item  <%= 'active' if index.zero? %>">
-            <%end %>
-            <%= image_tag photo, class: 'd-block w-100 rounded' %>
+          <div class="carousel-item carousel-item-fixed <%= "active" if index.zero? %>">
+          <% else %>
+            <div class="carousel-item  <%= "active" if index.zero? %>">
+            <% end %>
+            <%= image_tag photo, class: "d-block w-100 rounded" %>
           </div>
         <% end %>
       </div>
@@ -36,10 +36,10 @@
       <div class="carousel-inner rounded">
         <% if fixed %>
           <div class="carousel-item carousel-item-fixed active">
-          <%else%>
+          <% else %>
             <div class="carousel-item active">
-            <%end %>
-            <%= image_tag 'default_event_image.jpg', class: 'd-block w-100 rounded' %>
+            <% end %>
+            <%= image_tag "default_event_image.jpg", class: "d-block w-100 rounded" %>
           </div>
         </div>
       </div>

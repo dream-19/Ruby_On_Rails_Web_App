@@ -4,12 +4,12 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
 
   # validates the length of all the possible fields:
-  validates :name, :surname,:email, :phone,:address, :cap, :province, :city, :country, length: { maximum: 255, too_long: "must be at most %{count} characters" }
+  validates :name, :surname, :email, :phone, :address, :cap, :province, :city, :country, length: { maximum: 255, too_long: "must be at most %{count} characters" }
   validates :email, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email address" }
 
   validates :type, presence: true
   # The type of the user must be one of the following: UserNormal, UserOrganizer, CompanyOrganizer
-  validates :type, inclusion: { in: UserRoles::ALL_ROLES, message: "must be one of the following: #{UserRoles::ALL_ROLES.join(', ')}" }
+  validates :type, inclusion: { in: UserRoles::ALL_ROLES, message: "must be one of the following: #{UserRoles::ALL_ROLES.join(", ")}" }
 
   #Relationship
   # Users can have many subscriptions to events (only normal user)
@@ -20,7 +20,7 @@ class User < ApplicationRecord
   has_many :subscribed_events, through: :subscriptions, source: :event
   # An organizer can create many events (and the events has a foreign key 'user_id')
   # when and organizer deletes its account all the events created by him will be deleted
-  has_many :created_events, class_name: 'Event', foreign_key: "user_id", dependent: :destroy #(when an organizer is deleted all the events created by him are deleted too)
+  has_many :created_events, class_name: "Event", foreign_key: "user_id", dependent: :destroy #(when an organizer is deleted all the events created by him are deleted too)
 
   # A user can have many notifications
   has_many :notifications, dependent: :destroy
@@ -39,11 +39,11 @@ class User < ApplicationRecord
   end
 
   def get_name
-    name = ''
+    name = ""
     if self.type == UserRoles::COMPANY_ORGANIZER
-      name = self.name 
-    else 
-      name = self.name + ' ' + self.surname
+      name = self.name
+    else
+      name = self.name + " " + self.surname
     end
     return name
   end
@@ -76,7 +76,7 @@ class User < ApplicationRecord
   end
 
   def to_title_case(str)
-    str.split.map(&:capitalize).join(' ')
+    str.split.map(&:capitalize).join(" ")
   end
 
   def notify_event_owners_and_destroy_subscriptions
@@ -85,18 +85,16 @@ class User < ApplicationRecord
       event = subscription.event
       NotificationService.create_notification_unsubscribe_delete(user: self, event: event, user_organizer: event.user)
     end
-    
+
     # Then, manually destroy subscriptions
     subscriptions.destroy_all
   end
 
   protected
-  
+
   def date_of_birth_cannot_be_in_the_future
     if date_of_birth.present? && date_of_birth > Date.today
       errors.add(:date_of_birth, "can't be in the future")
     end
   end
-
 end
-

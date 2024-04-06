@@ -8,7 +8,6 @@ class EventsController < ApplicationController
 
   # GET /events
   def index
-
     pagination_par = 18
     begin
       @events = Event.upcoming
@@ -56,7 +55,6 @@ class EventsController < ApplicationController
           if params[:search_by] == "organizer" # organizer can be name + surname
             @events = @events.joins(:user).where('CONCAT(users.name,\' \',users.surname) LIKE ?', "%" + params[:search] + "%") # ? to sanitaze input
           elsif params[:search_by] == ("beginning_date" || "ending_date")
-
             @events = @events.where(params[:search_by] + " LIKE ?", "%" + params[:search] + "%")
           elsif params[:search_by] == "interval"
             from_date = params[:from_date]
@@ -85,7 +83,6 @@ class EventsController < ApplicationController
     end
 
     @events = @events.page(params[:page]).per(pagination_par)
-
 
     # Respond to
     respond_to do |format|
@@ -392,29 +389,6 @@ class EventsController < ApplicationController
   def check_organizer_role
     unless current_user&.organizer?
       redirect_to root_path, alert: "You must be an organizer to access this section."
-    end
-  end
-
-  #Format date to iso
-  def iso_date(date)
-    # Return early if date is nil or not a string or not a date
-    return date unless date.is_a?(String)
-
-    if date.include?("-")
-      date = date.split("-")
-    elsif date.include?("/")
-      date = date.split("/")
-    else
-      return date
-    end
-
-    case date.length
-    when 3
-      return "#{date[2]}-#{date[1]}-#{date[0]}"
-    when 2
-      return "#{date[1]}-#{date[0]}"
-    else
-      return date.join("-")
     end
   end
 

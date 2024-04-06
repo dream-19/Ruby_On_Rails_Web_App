@@ -3,26 +3,26 @@
   <div class= "alert alert-info" role="alert" >
     <strong>There are no events to display. </strong>
   </div>
-<%else%>
+<% else %>
   <% @events.each do |event| %>
     <div class="col-md-4 mb-3">
-      <div class="card h-100  <%= 'ongoing-event' if event.ongoing? %>">
+      <div class="card h-100  <%= "ongoing-event" if event.ongoing? %>">
         <div class="card-header d-flex justify-content-end bg-transparent border-0">
           <% if event.ongoing? %>
             <div class="badge bg-gradient-success me-2">Ongoing</div>
-          <%else %>
+          <% else %>
             <div class="badge bg-gradient-secondary me-2">Future event</div>
           <% end %>
-          <% if event.full?%>
+          <% if event.full? %>
             <div class="badge bg-gradient-warning me-2">Full</div>
-          <%end %>
+          <% end %>
           <% if user_signed_in? && current_user.subscribed?(event) %>
             <div class="badge bg-gradient-primary me-2">Subscribed</div>
           <% end %>
         </div>
         <div class="card-body">
           <h5 class="card-title"><%= event.name %></h5>
-          <%= render 'carousel', event: event, fixed: true %>
+          <%= render "carousel", event: event, fixed: true %>
           <h6 class="card-text">Event Organizer: <%= event.user.get_name %></h6>
           <h6 class="card-subtitle mb-2 text-muted">Start: <%= format_date(event.beginning_date) %> at <%= format_time(event.beginning_time) %></h6>
           <h6 class="card-subtitle mb-2 text-muted">End: <%= format_date(event.ending_date) %> at <%= format_time(event.ending_time) %></h6>
@@ -32,21 +32,21 @@
         </div>
         <div class="card-footer bg-transparent ">
           <div class="d-flex justify-content-center gap-2">
-            <%= link_to 'View', event_path(event), class: 'btn btn-info btn-sm' %>
+            <%= link_to "View", event_path(event), class: "btn btn-info btn-sm" %>
             <!-- Owner of the events -->
             <% if event.user == current_user %>
-              <%= link_to 'Edit', edit_event_path(event), class: 'btn btn-primary btn-sm' %>
+              <%= link_to "Edit", edit_event_path(event), class: "btn btn-primary btn-sm" %>
             <% end %>
             <!-- Normal user -->
-            <%= render 'subscriptions/subscribe_button', event: event%>
+            <%= render "subscriptions/subscribe_button", event: event %>
             <!-- Organizer of the event -->
             <% if event.user == current_user %>
-              <%= link_to 'Delete', 'javascript:void(0);', class: 'btn btn-danger btn-sm', 'data-bs-toggle': 'modal', 'data-bs-target': "#deleteEvent#{event.id}"  %>
-              <%= render 'modals/delete_event_modal', event: event %>
+              <%= link_to "Delete", "javascript:void(0);", class: "btn btn-danger btn-sm", 'data-bs-toggle': "modal", 'data-bs-target': "#deleteEvent#{event.id}" %>
+              <%= render "modals/delete_event_modal", event: event %>
             <% end %>
           </div>
         </div>
       </div>
     </div>
   <% end %>
-<%end %>
+<% end %>

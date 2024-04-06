@@ -39,7 +39,7 @@ class Subscription < ApplicationRecord
          subscribed_event_start.between?(event_start, event_end) ||
          subscribed_event_end.between?(event_start, event_end)
         errors.add(:base, "You are already subscribed to an event that overlaps with this event: #{e.name}")
-        
+
         return false
       end
     end
@@ -55,25 +55,25 @@ class Subscription < ApplicationRecord
   def check_event_and_user
     if user.organizer?
       errors.add(:base, "You are an organizer and cannot subscribe to events")
-      
+
       return false
     end
 
     if event.full?
       errors.add(:base, "The event is already full")
-      
+
       return false
     end
 
     if event.past?
       errors.add(:base, "The event has already passed")
-      
+
       return false
     end
 
     if user.subscribed_events.include?(event)
       errors.add(:base, "You are already subscribed to this event")
-      
+
       return false
     end
     return true
