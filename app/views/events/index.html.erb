@@ -4,6 +4,7 @@
      
     <!-- search by menù: selection for the field and input field -->
     <div class="col-md-8 mb-3">
+       <%= form_with url: events_path, method: :get, local: false, id: "sorting_form" do |form| %>
       <div class="row">
         <div class="col-md-3 mb-3">
           <label for="search_by" class="form-label">Search By:</label>
@@ -33,24 +34,28 @@
           <label for="search" class="form-label">Search:</label>
         </div>
         <div class="col-md-9 mb-3">
-          <%= text_field_tag :search, nil, class: "form-control", id: "search", oninput: "updateEventsList()" %>
+          <%= text_field_tag :search_form, nil, class: "form-control", id: "search-form", oninput: "updateEventsList()" %>
+          <%= hidden_field_tag :search, nil, id: "search" %>
+
         </div>
       </div>
       <!-- Date Interval Fields (Initially Hidden) -->
       <div class="row d-none" id="interval-search-fields">
         <div class="col-md-6 mb-3">
-          <%= label_tag :from_date, "From:", class: "form-label" %>
-          <%= date_field_tag :from_date, nil, class: "form-control", id: "from_date", oninput: "updateEventsList()" %>
+          <%= label_tag :from_date_form, "Begin from (included):", class: "form-label" %>
+          <%= date_field_tag :from_date_form, nil, class: "form-control", id: "from_date_form", oninput: "updateEventsList()" %>
+           <%= hidden_field_tag :from_date, nil, id: "from_date" %>
         </div>
         <div class="col-md-6 mb-3">
-          <%= label_tag :to_date, "To:", class: "form-label" %>
-          <%= date_field_tag :to_date, nil, class: "form-control", id: "to_date", oninput: "updateEventsList()" %>
+          <%= label_tag :to_date_form, "End Before (included):", class: "form-label" %>
+          <%= date_field_tag :to_date_form, nil, class: "form-control", id: "to_date_form", oninput: "updateEventsList()" %>
+           <%= hidden_field_tag :to_date, nil, id: "to_date" %>
         </div>
       </div>
     </div>
     <!-- Select menù to decide the order of the events -->
     <div class="col-md-4 mb-3">
-      <%= form_with url: events_path, method: :get, local: false, id: "sorting_form" do |form| %>
+     
       <div class="row mb-3">
         <p>Order By:</p>
       </div>
@@ -142,84 +147,29 @@
   var myEventsChecked = document.getElementById('my-events').checked;
   var notFullEventsChecked = document.getElementById('not-full-events').checked;
   var ongoingEventsChecked = document.getElementById('ongoing-events').checked;
-  
+
+  //SEARCH
+   var search_form = document.getElementById('search-form').value;
+  // modify the search value only if search_form is not empty or formed only by spaces
+  var search = search_form.trim();
+  document.getElementById('search').value = search;
+  console.log("search by: " + search);
+
+  //SEARCH BY DATE INTERVAL
+  var searchBy = document.getElementById('search_by').value;
+  var useInterval = searchBy === 'interval';
+  var fromDate = document.getElementById('from_date_form').value;
+  var toDate = document.getElementById('to_date_form').value;
+  // Modify the date values by removing spaces
+  fromDate = fromDate.trim();
+  toDate = toDate.trim();
+  document.getElementById('from_date').value = fromDate;
+  document.getElementById('to_date').value = toDate;
+
   
   // Submit the form
   document.getElementById('sorting_form').requestSubmit();
 }
-
-/*
-  function updateEventsList() {
-    var orderByValue = document.getElementById('order_by').value.split('-');
-    var orderBy = orderByValue[0]; // The attribute to sort by
-    var direction = orderByValue[1]; // The direction of sort
-    var searchBy = document.getElementById('search_by').value;
-    var search = document.getElementById('search').value;
-    var useInterval = searchBy === 'interval';
-    console.log("request:");
-    console.log(orderBy, searchBy, search);
-    
-    // checks
-    var showOngoing = document.getElementById('ongoing-events').checked;
-    var showNotFull = document.getElementById('not-full-events').checked;
-    var showMyEvents = document.getElementById('my-events').checked;
-
-    var path = `/events?order_by=${orderBy}&direction=${direction}`;
-
-    if (showOngoing) {
-      path += '&on_going=true';
-    }
-    if (showNotFull) {
-      path += '&not_full=true';
-    }
-    if (showMyEvents) {
-      path += '&my_events=true';
-    }
-
-    if (useInterval) {
-      var fromDate = document.getElementById('from_date').value;
-      var toDate = document.getElementById('to_date').value;
-      // strip spaces
-      fromDate = fromDate.replace(/\s/g, '');
-      toDate = toDate.replace(/\s/g, '');
-      if (fromDate || toDate) {
-        path += `&search_by=${searchBy}&from_date=${fromDate}&to_date=${toDate}`;
-      }
-    } else {
-      var search = document.getElementById('search').value;
-      search = search.replace(/\s/g, '');
-      if (search) {
-        path += `&search_by=${searchBy}&search=${search}`;
-      }
-    }
-
-   
-    
-
-    fetch(path, {
-      headers: {
-        'Accept': 'application/javascript',
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    })
-    .then(response => {
-      if (!response.ok) { // Check if the response status code is not OK (200-299)
-        throw new Error('Network response was not ok'); // This will be caught by the catch block
-      }
-      return response.text(); // Continue processing the response if it's OK
-    })
-    .then(html => {
-       document.getElementById('error-message').classList.add('d-none');
-      document.getElementById('events-list').innerHTML = html;
-
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      document.getElementById('error-message').classList.remove('d-none');
-    });
-
-  }*/
-
 
   document.addEventListener('DOMContentLoaded', function() {
       const queryParams = new URLSearchParams(window.location.search);
