@@ -39,6 +39,7 @@
 
         </div>
       </div>
+     
       <!-- Date Interval Fields (Initially Hidden) -->
       <div class="row d-none" id="interval-search-fields">
         <div class="col-md-6 mb-3">
@@ -180,6 +181,10 @@
   var isInterval = searchBy === 'interval';
   document.getElementById('single-search-field').classList.toggle('d-none', isInterval);
   document.getElementById('interval-search-fields').classList.toggle('d-none', !isInterval);
+
+  var isDate = searchBy === 'beginning_date' || searchBy === 'ending_date';
+  // change text-field in a date_field_tag
+  document.getElementById('search-form').type = isDate ? 'date' : 'text';
   });
   });
 </script>

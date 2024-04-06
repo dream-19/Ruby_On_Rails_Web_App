@@ -56,9 +56,8 @@ class EventsController < ApplicationController
           if params[:search_by] == "organizer" # organizer can be name + surname
             @events = @events.joins(:user).where('CONCAT(users.name,\' \',users.surname) LIKE ?', "%" + params[:search] + "%") # ? to sanitaze input
           elsif params[:search_by] == ("beginning_date" || "ending_date")
-            #TODO
-            date = iso_date(params[:search])
-            @events = @events.where(params[:search_by] + " LIKE ?", "%" + date + "%")
+
+            @events = @events.where(params[:search_by] + " LIKE ?", "%" + params[:search] + "%")
           elsif params[:search_by] == "interval"
             from_date = params[:from_date]
             to_date = params[:to_date]
