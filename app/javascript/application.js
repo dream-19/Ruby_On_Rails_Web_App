@@ -5,6 +5,7 @@
 //= require jquery
 //= require flipdown.min
 
+
 import "@hotwired/turbo-rails";
 import "controllers";
 import "popper";

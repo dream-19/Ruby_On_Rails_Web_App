@@ -9,21 +9,21 @@
         </div>
         <div class="col-md-9 mb-3">
           <%= select_tag :search_by,
-                   options_for_select({
-                    'Event Name' => 'name',
-                    'Organizer' => 'organizer',
-                    'City' => 'city',
-                    'Cap' => 'cap',
-                    'Province' => 'province',
-                    'Country' => 'country',
-                    'Beginning Date' => 'beginning_date',
-                    'Ending Date' => 'ending_date',
-                    'Date Interval' => 'interval',
-
-                   }),
-                   onchange: 'updateEventsList()',
-                   class: 'form-select',
-                   id: 'search_by' %>
+                         options_for_select({
+                           "Event Name" => "name",
+                           "Organizer" => "organizer",
+                           "City" => "city",
+                           "Cap" => "cap",
+                           "Province" => "province",
+                           "Country" => "country",
+                           "Beginning Date" => "beginning_date",
+                           "Ending Date" => "ending_date",
+                           "Date Interval" => "interval",
+              
+                         }),
+                         onchange: "updateEventsList()",
+                         class: "form-select",
+                         id: "search_by" %>
         </div>
       </div>
       <!-- Normal Search Menù -->
@@ -32,18 +32,18 @@
           <label for="search" class="form-label">Search:</label>
         </div>
         <div class="col-md-9 mb-3">
-          <%= text_field_tag :search, nil, class: 'form-control', id: 'search', oninput: 'updateEventsList()' %>
+          <%= text_field_tag :search, nil, class: "form-control", id: "search", oninput: "updateEventsList()" %>
         </div>
       </div>
       <!-- Date Interval Fields (Initially Hidden) -->
       <div class="row d-none" id="interval-search-fields">
         <div class="col-md-6 mb-3">
-          <%= label_tag :from_date, 'From:', class: 'form-label' %>
-          <%= date_field_tag :from_date, nil, class: 'form-control', id: 'from_date', oninput: 'updateEventsList()' %>
+          <%= label_tag :from_date, "From:", class: "form-label" %>
+          <%= date_field_tag :from_date, nil, class: "form-control", id: "from_date", oninput: "updateEventsList()" %>
         </div>
         <div class="col-md-6 mb-3">
-          <%= label_tag :to_date, 'To:', class: 'form-label' %>
-          <%= date_field_tag :to_date, nil, class: 'form-control', id: 'to_date', oninput: 'updateEventsList()' %>
+          <%= label_tag :to_date, "To:", class: "form-label" %>
+          <%= date_field_tag :to_date, nil, class: "form-control", id: "to_date", oninput: "updateEventsList()" %>
         </div>
       </div>
     </div>
@@ -53,29 +53,34 @@
         <p>Order By:</p>
       </div>
       <div class="row mb-3">
-        <%= select_tag :order_by,
-                   options_for_select({
-                    'Beginning Date (ASC)' => 'beginning_date-asc',
-                    'Beginning Date (DESC)' => 'beginning_date-desc',
-                    'Beginning Time (ASC)' => 'beginning_time-asc',
-                    'Beginning Time (DESC)' => 'beginning_time-desc',
-                    'Ending Date (ASC)' => 'ending_date-asc',
-                    'Ending Date (DESC)' => 'ending_date-desc',
-                    'Ending Time (ASC)' => 'ending_time-asc',
-                    'Ending Time (DESC)' => 'ending_time-desc',
-                    'Name (ASC)' => 'name-asc',
-                    'Name (DESC)' => 'name-desc',
-                    'Number of Participants (ASC)' => 'participants-asc',
-                    'Number of Participants (DESC)' => 'participants-desc',
-                    'City (ASC)' => 'city-asc',
-                    'City (DESC)' => 'city-desc',
-                    'Organizer (ASC)' => 'organizer-asc',
-                    'Organizer (DESC)' => 'organizer-desc'
-                   }),
-                   onchange: 'updateEventsList()',
-                   class: 'form-select',
-                   id: 'order_by' %>
+         <%= form_with url: events_path, method: :get, local: false, id: "sorting_form" do |form| %>
+        <%= select_tag :sort_selection,
+                       options_for_select({
+                         "Beginning Date (ASC)" => "beginning_date-asc",
+                         "Beginning Date (DESC)" => "beginning_date-desc",
+                         "Beginning Time (ASC)" => "beginning_time-asc",
+                         "Beginning Time (DESC)" => "beginning_time-desc",
+                         "Ending Date (ASC)" => "ending_date-asc",
+                         "Ending Date (DESC)" => "ending_date-desc",
+                         "Ending Time (ASC)" => "ending_time-asc",
+                         "Ending Time (DESC)" => "ending_time-desc",
+                         "Name (ASC)" => "name-asc",
+                         "Name (DESC)" => "name-desc",
+                         "Number of Participants (ASC)" => "participants-asc",
+                         "Number of Participants (DESC)" => "participants-desc",
+                         "City (ASC)" => "city-asc",
+                         "City (DESC)" => "city-desc",
+                         "Organizer (ASC)" => "organizer-asc",
+                         "Organizer (DESC)" => "organizer-desc",
+                       }, selected: "#{params[:order_by]}-#{params[:direction]}"),
+                 onchange: "updateSortParameters(this.value);",
+                 class: "form-select",
+                 id: "sort_selection" %>
+  <%= hidden_field_tag :order_by, params[:order_by] %>
+  <%= hidden_field_tag :direction, params[:direction] %>
+      <% end %>
       </div>
+      
     </div>
   </div>
   <!-- show a check for 'ongoing events', 'not full', 'my events' -->
@@ -113,17 +118,31 @@
 
   <!-- Event container -->
   <div class="row" id ="events-list">
-    <%= render 'events_list', events: @events %>
+    <%= render "events_list", events: @events %>
   </div>
 
   <!-- Pagination -->
   <div class="d-flex justify-content-center mt-3 mb-3" id="pagination">
- <%= paginate @events%>
+ <%= paginate @events, remote: true %>
 </div>
 
 
 </div>
 <script>
+
+  function updateSortParameters(selectedValue) {
+  var parts = selectedValue.split('-');
+  var orderBy = parts[0];
+  var direction = parts.length > 1 ? parts[1] : 'asc'; // Default to 'asc' if not specified
+  
+  document.getElementById('order_by').value = orderBy;
+  document.getElementById('direction').value = direction;
+  console.log("Sort request, order_by and direction:" + orderBy + " " + direction);
+  
+  // Submit the form
+  document.getElementById('sorting_form').requestSubmit();
+}
+
   function updateEventsList() {
     var orderByValue = document.getElementById('order_by').value.split('-');
     var orderBy = orderByValue[0]; // The attribute to sort by
@@ -168,8 +187,10 @@
       }
     }
 
+   
+    
 
-    fetch(path, {
+    /*fetch(path, {
       headers: {
         'Accept': 'application/javascript',
         'X-Requested-With': 'XMLHttpRequest'
@@ -189,7 +210,7 @@
     .catch(error => {
       console.error('Error:', error);
       document.getElementById('error-message').classList.remove('d-none');
-    });
+    });*/
 
   }
 
