@@ -58,6 +58,8 @@ group :development, :test do
   gem 'selenium-webdriver' # = testing
   gem 'webdrivers' #  = testing
   gem 'dotenv-rails'
+  gem 'simplecov', require: false
+
 end
 
 group :development do

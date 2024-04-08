@@ -7,10 +7,12 @@ class User < ApplicationRecord
   validates :name, :surname, :email, :phone, :address, :cap, :province, :city, :country, length: { maximum: 255, too_long: "must be at most %{count} characters" }
   validates :email, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email address" }
 
+  validates :name,  :email, presence: true
   validates :type, presence: true
   # The type of the user must be one of the following: UserNormal, UserOrganizer, CompanyOrganizer
   validates :type, inclusion: { in: UserRoles::ALL_ROLES, message: "must be one of the following: #{UserRoles::ALL_ROLES.join(", ")}" }
 
+  
   #Relationship
   # Users can have many subscriptions to events (only normal user)
   has_many :subscriptions
