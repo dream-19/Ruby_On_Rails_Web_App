@@ -6,7 +6,7 @@
 #
 default: &default
   adapter: mysql2
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 10 } %>
   timeout: 5000
   encoding: utf8
   username: <%= ENV['DATABASE_USERNAME'] %>
@@ -20,3 +20,4 @@ development:
 test:
   <<: *default
   database: EventManager_test
+  pool: 20

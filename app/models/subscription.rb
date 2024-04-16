@@ -44,7 +44,7 @@ class Subscription < ApplicationRecord
       end
     end
     end
-    return true
+    errors.blank?
   end
 
   #When the user try to subscribe to an event:

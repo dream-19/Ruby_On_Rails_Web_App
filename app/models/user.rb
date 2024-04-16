@@ -27,7 +27,7 @@ class User < ApplicationRecord
   # A user can have many notifications
   has_many :notifications, dependent: :destroy
 
-  before_save :apply_camel_case
+ 
   before_destroy :notify_event_owners_and_destroy_subscriptions
 
   #Method to check if the user is an organizer
@@ -65,22 +65,11 @@ class User < ApplicationRecord
     notifications.where(read: false).order(created_at: :desc).limit(n)
   end
 
+
   private
 
-  #Apply camel case to fields
-  def apply_camel_case
-    self.name = to_title_case(name) if name.present?
-    self.surname = to_title_case(surname) if surname.present?
-    self.country = to_title_case(country) if country.present?
-    self.city = to_title_case(city) if city.present?
-    self.province = to_title_case(province) if province.present?
-    self.address = to_title_case(address) if address.present?
-  end
-
-  def to_title_case(str)
-    str.split.map(&:capitalize).join(" ")
-  end
-
+  # Method to notify the event owners and destroy the subscriptions
+  # method called before deleting an user account
   def notify_event_owners_and_destroy_subscriptions
     # First, notify the event owners
     subscriptions.each do |subscription|

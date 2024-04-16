@@ -6,7 +6,7 @@ class Event < ApplicationRecord
   validates :description, length: { maximum: 500, too_long: "must be at most %{count} characters" }
   validates :max_participants, numericality: { only_integer: true, greater_than: 0, message: "must be an integer > 0" }
 
-  before_save :apply_camel_case
+ 
   validate :validate_time_date
   validate :photos_validation
 
@@ -128,17 +128,6 @@ class Event < ApplicationRecord
     end
   end
 
-  #Apply camel case to fields
-  def apply_camel_case
-    self.country = to_title_case(country) if country.present?
-    self.city = to_title_case(city) if city.present?
-    self.province = to_title_case(province) if province.present?
-    self.address = to_title_case(address) if address.present?
-  end
-
-  def to_title_case(str)
-    str.split.map(&:capitalize).join(" ")
-  end
 
   #workaround
   def self.get_time_now #class method

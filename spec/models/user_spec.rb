@@ -130,5 +130,70 @@ RSpec.describe User, type: :model do
     end
   end
 
- 
+  describe "#subscribed?" do
+    let(:user) { create(:user_normal) }
+    let(:event) { create(:event) }
+
+    context "when the user is subscribed to the event" do
+      before { create(:subscription, user: user, event: event) }
+
+      it "returns true" do
+        expect(user.subscribed?(event)).to be true
+      end
+    end
+
+    context "when the user is not subscribed to the event" do
+      it "returns false" do
+        expect(user.subscribed?(event)).to be false
+      end
+    end
+  end
+
+  describe "#count_unread" do
+    let(:user) { create(:user_normal) }
+
+    before do
+      # create a list of notifications (read and unread)
+      create_list(:notification, 5, user: user, read: false)
+      create_list(:notification, 3, user: user, read: true)
+    end
+
+    it "returns the count of unread notifications" do
+      expect(user.count_unread).to eq(5)
+    end
+  end
+
+  describe "#first_n_unread" do
+    let(:user) { create(:user_normal) }
+
+    before do
+      create(:notification, user: user, read: false, created_at: 1.day.ago)
+      create(:notification, user: user, read: false, created_at: 2.days.ago)
+      create(:notification, user: user, read: true, created_at: 3.days.ago)
+    end
+
+    it "returns the first n unread notifications in descending order of creation" do
+      unread_notifications = user.first_n_unread(2)
+      expect(unread_notifications.length).to eq(2)
+      expect(unread_notifications.first.created_at).to be > unread_notifications.last.created_at
+      expect(unread_notifications.all? { |notification| notification.read == false }).to be true
+    end
+  end
+
+  # before an user is destroyed
+  describe '#notify_event_owners_and_destroy_subscriptions' do
+  let(:user) { create(:user_normal) }
+  let(:event) { create(:event) }
+
+  before do
+    create(:subscription, user: user, event: event)
+  end
+
+  it 'notifies event owners and destroys subscriptions' do
+    # expect to receive the method create_notification_unsubscribe_delete
+    expect(NotificationService).to receive(:create_notification_unsubscribe_delete).with(user: user, event: event, user_organizer: event.user)
+    # expect to receive the method destroy_all (delete all of the subscriptions)
+    expect { user.send(:notify_event_owners_and_destroy_subscriptions) }.to change { user.subscriptions.count }.from(1).to(0)
+  end
+end
 end
