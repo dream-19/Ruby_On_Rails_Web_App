@@ -74,7 +74,7 @@ group :development do
 end
 
 group :test do
-  #gem 'database_cleaner-active_record' #database cleaner
+  gem 'database_cleaner-active_record' #database cleaner
 end
 
 

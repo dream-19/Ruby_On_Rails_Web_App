@@ -30,6 +30,30 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 RSpec.configure do |config|
+   # This says that before the entire test suite runs, clear the test database out completely
+   config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  # Set the default database cleaning strategy to be transactions
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  # For tests tagged with :js, use the truncation strategy
+  config.before(:each, js: true) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  # Start the current cleaning strategy before each test
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  # Rollback and clean up the database after each test
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
   
   #config.include ActiveStorage::TestHelper #line not needed
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
@@ -37,10 +61,11 @@ RSpec.configure do |config|
     Rails.root.join('spec/fixtures')
   ]
 
+
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
