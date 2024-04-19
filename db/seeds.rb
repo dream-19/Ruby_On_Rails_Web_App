@@ -42,8 +42,38 @@ event1 = FactoryBot.create(:event, user: user_organizer1, beginning_date: 1.day.
 event2 = FactoryBot.create(:event, user: user_organizer1, beginning_date: 2.day.from_now, ending_date: 7.days.from_now)
 event3 = FactoryBot.create(:event, user: user_organizer2, beginning_date: 2.days.from_now, ending_date: 3.days.from_now)
 event4 = FactoryBot.create(:event, user: user_organizer2, beginning_date: 4.month.from_now, ending_date: 5.month.from_now)
+event_past  = Event.new(
+  name: "Event",
+  max_participants: 10,
+  beginning_date: 2.days.ago,
+  ending_date: 1.day.ago,
+  beginning_time: "10:00",
+  ending_time: "12:00",
+  address: "Address",
+  cap: "City",
+  country: "Country",
+  province: "Province",
+  city: "City",
+  user: user_organizer1,
+)
+event_past.save(validate: false)
+
+
 sub = FactoryBot.create(:subscription, user: user_normal1, event: event1)
 sub = FactoryBot.create(:subscription, user: user_normal1, event: event2)
 sub = FactoryBot.create(:subscription, user: user_normal1, event: event4)
 sub = FactoryBot.create(:subscription, user: user_normal2, event: event1)
 sub = FactoryBot.create(:subscription, user: user_normal2, event: event3)
+
+sub_past = Subscription.new(
+  user: user_normal1,
+  event: event_past,
+)
+
+sub_past.save(validate: false)
+
+sub_past2 = Subscription.new(
+  user: user_normal2,
+  event: event_past,
+)
+sub_past2.save(validate: false)

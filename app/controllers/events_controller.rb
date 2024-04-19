@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   #check Authentication
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :my_events]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :my_events, :my_events_user, :bulk_destroy, :delete_photo, :data]
   before_action :set_event, only: [:show, :edit, :update, :destroy]
   # Check if the user in an organizer to access this functions
   before_action :check_organizer_role, only: [:new, :create, :edit, :update, :destroy, :my_events, :bulk_destroy, :delete_photo, :data]
@@ -8,7 +8,6 @@ class EventsController < ApplicationController
 
   # GET /events
   def index
-
     pagination_par = 18
     begin
       @events = Event.upcoming

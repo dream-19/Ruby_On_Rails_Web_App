@@ -1,5 +1,5 @@
 class SubscriptionsController < ApplicationController
-  before_action :authenticate_user! # Assuming you're using Devise for user authentication
+  before_action :authenticate_user! 
 
   def create
     event = Event.find(params[:event_id]) # Find the event that the user wants to subscribe to
@@ -19,8 +19,13 @@ class SubscriptionsController < ApplicationController
     event = subscription.event
 
     # Check if the user is the owner of the subscription or the event
+
     if current_user == subscription.user || current_user == event.user
-      subscription.destroy_with_user(current_user) if subscription.present?
+      if event.past?
+        flash[:alert] = "You cannot unsubscribe from a past event."
+      else
+        subscription.destroy_with_user(current_user) if subscription.present?
+      end
 
       flash[:notice] = "You have unsubscribed from the event: #{event.name}"
     else

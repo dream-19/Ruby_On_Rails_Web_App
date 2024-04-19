@@ -645,7 +645,7 @@ function manageTableSubscriptionsUser() {
   }
 }
 
-// Function to manage tabulator 2
+// Function to manage tabulator 2 (owner see the subscriptions to his event)
 function manageTableSubscriptions() {
   //check if element is present in the page
   if (document.getElementById("events-subscriptions") == null) {
@@ -721,7 +721,7 @@ function manageTableSubscriptions() {
         headerHozAlign: "center",
         hozAlign: "center",
         formatter: past_event == "true" ? "plaintext" : "rowSelection",
-        titleFormatter: past_event == "true" ? "plaintext" : "rowSelection",
+        titleFormatter: past_event == "true" ? "" : "rowSelection",
         cellClick: function (e, cell) {
           cell.getRow().toggleSelect();
         },
