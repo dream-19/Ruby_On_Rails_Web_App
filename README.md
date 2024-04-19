@@ -1,37 +1,30 @@
-# Ruby_On_Rails_Web_App
+# Ruby On Rails Web App - Event Booking System
 
-# Consegna Progetto
-Prenotazione Eventi
-Sviluppare un’applicazione Web che permetta ad utenti ed organizzatori di gestire la
-prenotazione ad eventi.
-L’applicazione dovrà implementare le seguenti feature:
-● Registrazione di utenti
-● Registrazione di organizzatori
-● Permettere ad organizzatori di creare eventi caratterizzati da
-    ○ Nome
-    ○ Orario Inizio (anche data)
-    ○ Orario Fine (anche data)
-    ○ Luogo evento
-    ○ Posizione geografica
-    ○ Massimo numero di partecipanti
+## Project Delivery: Event Booking
 
-● Gli utenti invece saranno in grado di
-    ○ Ricercare eventi (anche filtrando per posizione geografica)
-    ○ Registrarsi e deregistrarsi ad eventi
-● impedire ad utenti di registrarsi ad un evento se concomitante ad un altro ai
-quali sono già iscritti.
-● Permettere agli organizzatori di consultare la lista dei partecipanti ai propri
-eventi ed eventualmente rimuovere utenti iscritti indesiderati dai propri eventi
+Develop a web application that allows users and organizers to manage bookings for events. The application will need to implement the following features:
 
-Inoltre, l’applicazione dovrà implementare un sistema di notifiche per permettere ad
-utenti registrati ad un evento se esso ha avuto variazioni, se esso viene annullato
-dall’organizzatore, o se essi sono stati rimossi. Allo stesso modo, gli organizzatori
-dovranno essere notificati in caso di vari scenari legati ai loro eventi (es massima
-capienza raggiunta).
+### Features for Organizers
+- **User Registration:** Allow users to register on the platform.
+- **Organizer Registration:** Allow organizers to register on the platform.
+- **Event Creation:** Organizers can create events with specific details:
+  - Name of the event
+  - Start time and date
+  - End time and date
+  - Event location
+  - Geographic position
+  - Maximum number of participants
 
-Per gruppi più numerosi:
-● Possibilità da parte degli organizzatori di inviare messaggi (tramite notifica) a
-tutti gli iscritti ad un proprio evento
-● Possibilità degli organizzatori di gestire una blacklist per utenti la quale
-impedirà agli utenti bannati di iscriversi agli eventi da loro creati
-● Sistema di chat tra organizzatori ed utenti
+### Features for Users
+- **Event Search:** Users can search for events, including filtering by geographic location.
+- **Event Registration and Deregistration:** Users can sign up for or deregister from events.
+- **Concurrent Event Restriction:** Prevent users from registering for events that overlap with other events they are already registered for.
+
+### Administrative Features for Organizers
+- **Participant Management:** Organizers can view the list of participants for their events and remove unwanted users.
+
+### Notifications System
+- **Variation Notifications:** Notify users registered for an event about any changes, cancellations by the organizer, or if they have been removed from the event.
+- **Organizer Notifications:** Notify organizers about scenarios related to their events, such as reaching maximum capacity.
+
+
