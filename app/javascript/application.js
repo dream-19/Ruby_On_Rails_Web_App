@@ -1065,6 +1065,23 @@ function setUpTimer() {
   }
 }
 
+//set up the listener for the homepage
+function setUpHomePageEventListeners() {
+  if  (document.getElementById('search_by')){
+    document.getElementById('search_by').addEventListener('change', function() {
+      var searchBy = this.value;
+      var isInterval = searchBy === 'interval';
+      document.getElementById('single-search-field').classList.toggle('d-none', isInterval);
+      document.getElementById('interval-search-fields').classList.toggle('d-none', !isInterval);
+    
+      var isDate = searchBy === 'beginning_date' || searchBy === 'ending_date';
+      // change text-field in a date_field_tag
+      document.getElementById('search-form').type = isDate ? 'date' : 'text';
+    });
+  }
+}
+
+
 /* -------------- LOAD THE PAGE-------------------- */
 
 // Variable to manage the loading of the page
@@ -1077,6 +1094,7 @@ document.addEventListener("turbo:render", () => {
   setUpEventListeners();
   setUpLocationListeners();
   setUpTimer();
+  setUpHomePageEventListeners();
 });
 
 // Load is called only the first time I load the page
@@ -1087,6 +1105,7 @@ document.addEventListener("turbo:load", () => {
     setUpEventListeners();
     setUpLocationListeners();
     setUpTimer();
+    setUpHomePageEventListeners();
     loading++;
   }
 });

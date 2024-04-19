@@ -8,6 +8,7 @@ class EventsController < ApplicationController
 
   # GET /events
   def index
+
     pagination_par = 18
     begin
       @events = Event.upcoming

@@ -1,115 +1,111 @@
 <div class="container mt-5">
   <h1>All Events</h1>
+  <div class="form-container">
+    <!-- start of the form: careful with the position of the tag form -->
+    <%= form_with url: events_path, method: :get, local: false, id: "sorting_form" do |form| %>
   <div class="row">
-     
     <!-- search by menù: selection for the field and input field -->
-    <div class="col-md-8 mb-3">
-       <%= form_with url: events_path, method: :get, local: false, id: "sorting_form" do |form| %>
-      <div class="row">
-        <div class="col-md-3 mb-3">
-          <label for="search_by" class="form-label">Search By:</label>
+      <div class="col-md-8 mb-3">
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <label for="search_by" class="form-label">Search By:</label>
+          </div>
+          <div class="col-md-9 mb-3">
+            <%= select_tag :search_by,
+                           options_for_select({
+                             "Event Name" => "name",
+                             "Organizer" => "organizer",
+                             "City" => "city",
+                             "Cap" => "cap",
+                             "Province" => "province",
+                             "Country" => "country",
+                             "Beginning Date" => "beginning_date",
+                             "Ending Date" => "ending_date",
+                             "Date Interval" => "interval",
+                
+                           }),
+                           onchange: "updateEventsList()",
+                           class: "form-select",
+                           id: "search_by" %>
+          </div>
         </div>
-        <div class="col-md-9 mb-3">
-          <%= select_tag :search_by,
+        <!-- Normal Search Menù -->
+        <div class="row", id="single-search-field">
+          <div class="col-md-3 mb-3">
+            <label for="search" class="form-label">Search:</label>
+          </div>
+          <div class="col-md-9 mb-3">
+            <%= text_field_tag :search_form, nil, class: "form-control", id: "search-form", oninput: "updateEventsList()" %>
+            <%= hidden_field_tag :search, nil, id: "search" %>
+          </div>
+        </div>
+        <!-- Date Interval Fields (Initially Hidden) -->
+        <div class="row d-none" id="interval-search-fields">
+          <div class="col-md-6 mb-3">
+            <%= label_tag :from_date_form, "Begin from (included):", class: "form-label" %>
+            <%= date_field_tag :from_date_form, nil, class: "form-control", id: "from_date_form", oninput: "updateEventsList()" %>
+            <%= hidden_field_tag :from_date, nil, id: "from_date" %>
+          </div>
+          <div class="col-md-6 mb-3">
+            <%= label_tag :to_date_form, "End Before (included):", class: "form-label" %>
+            <%= date_field_tag :to_date_form, nil, class: "form-control", id: "to_date_form", oninput: "updateEventsList()" %>
+            <%= hidden_field_tag :to_date, nil, id: "to_date" %>
+          </div>
+        </div>
+      </div>
+      <!-- Select menù to decide the order of the events -->
+      <div class="col-md-4 mb-3">
+        <div class="row mb-3">
+          <p>Order By:</p>
+        </div>
+        <div class="row mb-3">
+          <%= select_tag :sort_selection,
                          options_for_select({
-                           "Event Name" => "name",
-                           "Organizer" => "organizer",
-                           "City" => "city",
-                           "Cap" => "cap",
-                           "Province" => "province",
-                           "Country" => "country",
-                           "Beginning Date" => "beginning_date",
-                           "Ending Date" => "ending_date",
-                           "Date Interval" => "interval",
-              
-                         }),
-                         onchange: "updateEventsList()",
+                           "Beginning Date (ASC)" => "beginning_date-asc",
+                           "Beginning Date (DESC)" => "beginning_date-desc",
+                           "Beginning Time (ASC)" => "beginning_time-asc",
+                           "Beginning Time (DESC)" => "beginning_time-desc",
+                           "Ending Date (ASC)" => "ending_date-asc",
+                           "Ending Date (DESC)" => "ending_date-desc",
+                           "Ending Time (ASC)" => "ending_time-asc",
+                           "Ending Time (DESC)" => "ending_time-desc",
+                           "Name (ASC)" => "name-asc",
+                           "Name (DESC)" => "name-desc",
+                           "Number of Participants (ASC)" => "participants-asc",
+                           "Number of Participants (DESC)" => "participants-desc",
+                           "City (ASC)" => "city-asc",
+                           "City (DESC)" => "city-desc",
+                           "Organizer (ASC)" => "organizer-asc",
+                           "Organizer (DESC)" => "organizer-desc",
+                         }, selected: "#{params[:order_by]}-#{params[:direction]}"),
+                         onchange: "updateEventsList(this.value);",
                          class: "form-select",
-                         id: "search_by" %>
-        </div>
-      </div>
-      <!-- Normal Search Menù -->
-      <div class="row", id="single-search-field">
-        <div class="col-md-3 mb-3">
-          <label for="search" class="form-label">Search:</label>
-        </div>
-        <div class="col-md-9 mb-3">
-          <%= text_field_tag :search_form, nil, class: "form-control", id: "search-form", oninput: "updateEventsList()" %>
-          <%= hidden_field_tag :search, nil, id: "search" %>
-
-        </div>
-      </div>
-     
-      <!-- Date Interval Fields (Initially Hidden) -->
-      <div class="row d-none" id="interval-search-fields">
-        <div class="col-md-6 mb-3">
-          <%= label_tag :from_date_form, "Begin from (included):", class: "form-label" %>
-          <%= date_field_tag :from_date_form, nil, class: "form-control", id: "from_date_form", oninput: "updateEventsList()" %>
-           <%= hidden_field_tag :from_date, nil, id: "from_date" %>
-        </div>
-        <div class="col-md-6 mb-3">
-          <%= label_tag :to_date_form, "End Before (included):", class: "form-label" %>
-          <%= date_field_tag :to_date_form, nil, class: "form-control", id: "to_date_form", oninput: "updateEventsList()" %>
-           <%= hidden_field_tag :to_date, nil, id: "to_date" %>
+                         id: "sort_selection" %>
+          <%= hidden_field_tag :order_by, params[:order_by] %>
+          <%= hidden_field_tag :direction, params[:direction] %>
         </div>
       </div>
     </div>
-    <!-- Select menù to decide the order of the events -->
-    <div class="col-md-4 mb-3">
-     
-      <div class="row mb-3">
-        <p>Order By:</p>
-      </div>
-      <div class="row mb-3">
-        
-        <%= select_tag :sort_selection,
-                       options_for_select({
-                         "Beginning Date (ASC)" => "beginning_date-asc",
-                         "Beginning Date (DESC)" => "beginning_date-desc",
-                         "Beginning Time (ASC)" => "beginning_time-asc",
-                         "Beginning Time (DESC)" => "beginning_time-desc",
-                         "Ending Date (ASC)" => "ending_date-asc",
-                         "Ending Date (DESC)" => "ending_date-desc",
-                         "Ending Time (ASC)" => "ending_time-asc",
-                         "Ending Time (DESC)" => "ending_time-desc",
-                         "Name (ASC)" => "name-asc",
-                         "Name (DESC)" => "name-desc",
-                         "Number of Participants (ASC)" => "participants-asc",
-                         "Number of Participants (DESC)" => "participants-desc",
-                         "City (ASC)" => "city-asc",
-                         "City (DESC)" => "city-desc",
-                         "Organizer (ASC)" => "organizer-asc",
-                         "Organizer (DESC)" => "organizer-desc",
-                       }, selected: "#{params[:order_by]}-#{params[:direction]}"),
-                       onchange: "updateEventsList(this.value);",
-                       class: "form-select",
-                       id: "sort_selection" %>
-  <%= hidden_field_tag :order_by, params[:order_by] %>
-  <%= hidden_field_tag :direction, params[:direction] %>
-    
-      </div>
-      
+    <!-- show a check for 'ongoing events', 'not full', 'my events' -->
+    <div class="row justify-content-center">
+      <div class="d-flex justify-content-center mt-3 mb-3">
+        <div class="form-check me-3">
+          <%= check_box_tag "on_going", "1", params[:on_going].present?, id: "ongoing-events", class: "form-check-input", onchange: "updateEventsList()" %>
+          <%= label_tag "ongoing-events", "Show only ongoing events", class: "form-check-label" %>
+        </div>
+        <div class="form-check me-3">
+          <%= check_box_tag "not_full", "1", params[:not_full].present?, id: "not-full-events", class: "form-check-input", onchange: "updateEventsList()" %>
+          <%= label_tag "not-full-events", "Show only not full events", class: "form-check-label" %>
+        </div>
+        <div class="form-check me-3">
+          <%= check_box_tag "my_events", "1", params[:my_events].present?, id: "my-events", class: "form-check-input", onchange: "updateEventsList()" %>
+          <%= label_tag "my-events", "Show only my events", class: "form-check-label" %>
+        </div>
+       <!-- form end -->
     </div>
   </div>
-  <!-- show a check for 'ongoing events', 'not full', 'my events' -->
-  <div class="row justify-content-center">
-  <div class="d-flex justify-content-center mt-3 mb-3"> 
-   <div class="form-check me-3">
-  <%= check_box_tag "on_going", "1", params[:on_going].present?, id: "ongoing-events", class: "form-check-input", onchange: "updateEventsList()" %>
-  <%= label_tag "ongoing-events", "Show only ongoing events", class: "form-check-label" %>
-</div>
-
-<div class="form-check me-3">
-  <%= check_box_tag "not_full", "1", params[:not_full].present?, id: "not-full-events", class: "form-check-input", onchange: "updateEventsList()" %>
-  <%= label_tag "not-full-events", "Show only not full events", class: "form-check-label" %>
-</div>
-    <div class="form-check me-3">
-  <%= check_box_tag "my_events", "1", params[:my_events].present?, id: "my-events", class: "form-check-input", onchange: "updateEventsList()" %>
-  <%= label_tag "my-events", "Show only my events", class: "form-check-label" %>
-</div>
   <% end %>
-  </div>
-</div>
+  </div> <!-- fine form container -->
 
 
   <!-- Error alert  -->
@@ -118,28 +114,25 @@
       An error occurred. Please try again.
     </div>
   </div>
-
   <!-- Event container -->
   <div class="row" id ="events-list">
     <%= render "events_list", events: @events %>
   </div>
-
   <!-- Pagination -->
   <div class="d-flex justify-content-center mt-3 mb-3" id="pagination">
- <%= paginate @events, remote: true %>
+    <%= paginate @events, remote: true %>
+  </div>
 </div>
-
-
-</div>
+<!-- Script to update the events list -->
 <script>
-
+  // Update the list of the events shown in the homepage (called by the forms)
   function updateEventsList(selectedValue) {
   // SORTING
   var sortSelection = document.getElementById('sort_selection').value;
   var parts = sortSelection.split('-');
   var orderBy = parts[0];
   var direction = parts.length > 1 ? parts[1] : 'asc'; // Default to 'asc' if not specified
-  
+
   document.getElementById('order_by').value = orderBy;
   document.getElementById('direction').value = direction;
   console.log("Sort request, order_by and direction:" + orderBy + " " + direction);
@@ -167,24 +160,8 @@
   document.getElementById('from_date').value = fromDate;
   document.getElementById('to_date').value = toDate;
 
-  
+
   // Submit the form
   document.getElementById('sorting_form').requestSubmit();
-}
-
-  document.addEventListener('DOMContentLoaded', function() {
-      const queryParams = new URLSearchParams(window.location.search);
-     
-
-  document.getElementById('search_by').addEventListener('change', function() {
-  var searchBy = this.value;
-  var isInterval = searchBy === 'interval';
-  document.getElementById('single-search-field').classList.toggle('d-none', isInterval);
-  document.getElementById('interval-search-fields').classList.toggle('d-none', !isInterval);
-
-  var isDate = searchBy === 'beginning_date' || searchBy === 'ending_date';
-  // change text-field in a date_field_tag
-  document.getElementById('search-form').type = isDate ? 'date' : 'text';
-  });
-  });
+  }
 </script>
