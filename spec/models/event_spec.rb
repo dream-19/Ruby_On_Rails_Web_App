@@ -325,7 +325,7 @@ RSpec.describe Event, type: :model do
       event.photos.attach(io: File.open(Rails.root.join("spec", "fixtures", "files", "sample_document.pdf")), filename: "sample_document.pdf", content_type: "application/pdf")
 
       event.valid?
-      expect(event.errors[:photos]).to include("must be a JPEG/JPG or PNG or GIF")
+      expect(event.errors[:photos]).to include("must be a JPEG/JPG or PNG or GIF or WEBP")
     end
   end
 end

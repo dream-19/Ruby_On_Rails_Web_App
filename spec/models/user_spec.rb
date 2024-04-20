@@ -180,13 +180,19 @@ RSpec.describe User, type: :model do
     end
   end
 
-  # before an user is destroyed
+  # before an user is destroyed send a notification to the events he is subscribed to
+  # or to the user that are subscribed to his events
   describe '#notify_event_owners_and_destroy_subscriptions' do
   let(:user) { create(:user_normal) }
   let(:event) { create(:event) }
 
+  #let(:user2) { create(:user_normal) }
+  #let(:organizer) { create(:user_organizer) }
+  #let(:event2) { create(:event, user: organizer) }
+
   before do
     create(:subscription, user: user, event: event)
+    #create(:subscription, user: user2, event: event2)
   end
 
   it 'notifies event owners and destroys subscriptions' do
@@ -195,5 +201,10 @@ RSpec.describe User, type: :model do
     # expect to receive the method destroy_all (delete all of the subscriptions)
     expect { user.send(:notify_event_owners_and_destroy_subscriptions) }.to change { user.subscriptions.count }.from(1).to(0)
   end
+
+  #it 'notifies the user that the event has been deleted' do
+   # expect(NotificationService).to receive(:create_notification_delete_event).with(user_organizer: organizer, event: event2)
+    #expect { user2.send(:notify_event_owners_and_destroy_subscriptions) }.to change { user2.subscriptions.count }.from(1).to(0)
+  #end
 end
 end
