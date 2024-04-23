@@ -470,7 +470,7 @@ function manageTable() {
     //show bootstrap alert
     document.getElementById(
       "past-events"
-    ).innerHTML = `<div class="alert alert-info" role="alert"> No past events available </div>`;
+    ).innerHTML = `<div class="alert alert-secondary" role="alert"> There are no past events available </div>`;
   }
 }
 
@@ -822,7 +822,6 @@ function manageBulkDelete() {
   }
 
   // Trigger the modal to delete multiple events
-  // Trigger the modal
   var deleteModal = new bootstrap.Modal(
     document.getElementById("deleteConfirmationModal")
   );
@@ -874,15 +873,11 @@ function manageBulkDelete() {
   };
 }
 
-// Manage bulk delete for subscriptions (type = user or owner)
-function manageBulkDeleteSub(type) {
-  let path = "";
-  if (type == "owner") {
-    path = "/bulk_destroy_sub";
-  } else {
-    path = "/bulk_destroy_sub";
-  }
-
+// Manage bulk delete for subscriptions 
+function manageBulkDeleteSub() {
+  let path = "/bulk_destroy_sub";
+ 
+ 
   const selectedData = table_sub != "" ? table_sub.getSelectedData() : [];
   const selectedDataUser =
     table_current_sub != "" ? table_current_sub.getSelectedData() : [];
@@ -896,12 +891,13 @@ function manageBulkDeleteSub(type) {
   console.log("selected data id " + subIds);
 
   if (subIds.length === 0) {
+ 
     var alertModal = new bootstrap.Modal(document.getElementById("alertModal"));
     alertModal.show();
     return;
   }
 
-  // Trigger the modal
+  // Trigger the modal to delete multiple subscriptions
   var deleteModal = new bootstrap.Modal(
     document.getElementById("deleteConfirmationModal")
   );
@@ -909,7 +905,6 @@ function manageBulkDeleteSub(type) {
 
   document.getElementById("confirmDeletion").onclick = function () {
     deleteModal.hide();
-    console.log("deleting");
     fetch(path, {
       method: "POST",
       headers: {
@@ -1002,23 +997,25 @@ function setUpEventListeners() {
   }
 
   //Bulk delete for subscriptions (owner side)
+  //owners removes users from his event
   if (document.getElementById("bulk-delete-sub") != null) {
     document
       .getElementById("bulk-delete-sub")
       .removeEventListener("click", manageBulkDeleteSub); // Remove existing event listeners
     document
       .getElementById("bulk-delete-sub")
-      .addEventListener("click", () => manageBulkDeleteSub("owner"));
+      .addEventListener("click", () => manageBulkDeleteSub());
   }
 
   //Bulk delete for subscriptions (user side)
+  // user removes himself from events
   if (document.getElementById("bulk-delete-user-sub") != null) {
     document
       .getElementById("bulk-delete-user-sub")
       .removeEventListener("click", manageBulkDeleteSub); // Remove existing event listeners
     document
       .getElementById("bulk-delete-user-sub")
-      .addEventListener("click", () => manageBulkDeleteSub("user"));
+      .addEventListener("click", () => manageBulkDeleteSub());
   }
 }
 

@@ -38,10 +38,13 @@ end
 end
 
 # create events
+event0 = FactoryBot.create(:event, user: user_organizer1, beginning_date: 10.day.ago, ending_date: 2.days.from_now)
+event01 = FactoryBot.create(:event, user: user_organizer1, beginning_date: 3.day.ago, ending_date: 20.days.from_now)
+event02 = FactoryBot.create(:event, user: user_organizer1, beginning_date: 1.day.ago, ending_date: 1.day.from_now)
 event1 = FactoryBot.create(:event, user: user_organizer1, beginning_date: 1.day.ago, ending_date: 1.day.from_now, max_participants: 2)
 event2 = FactoryBot.create(:event, user: user_organizer1, beginning_date: 2.day.from_now, ending_date: 7.days.from_now)
 event3 = FactoryBot.create(:event, user: user_organizer2, beginning_date: 2.days.from_now, ending_date: 3.days.from_now)
-event4 = FactoryBot.create(:event, user: user_organizer2, beginning_date: 4.month.from_now, ending_date: 5.month.from_now)
+event4 = FactoryBot.create(:event, user: user_organizer2, beginning_date: 1.month.from_now, ending_date: 2.month.from_now)
 event_past  = Event.new(
   name: "Event",
   max_participants: 10,
