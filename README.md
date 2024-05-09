@@ -28,3 +28,11 @@ Develop a web application that allows users and organizers to manage bookings fo
 - **Organizer Notifications:** Notify organizers about scenarios related to their events, such as reaching maximum capacity.
 
 
+## How to Run the app on Docker with docker-compose
+When launched the app automatically executes the migrations and the seeders
+
+`sudo docker image build --tag eventmanager:2024 .`
+
+`docker-compose up --build`
+
+
