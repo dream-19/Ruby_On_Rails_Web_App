@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:latest
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: EventManager_development
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    restart: always
+
+  web:
+    build: .
+    env_file:
+      - .env.container
+    command: >
+      bash -c "rails db:prepare && rails db:seed && rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - .:/myapp
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    restart: always
+
+volumes:
+  mysql-data:

@@ -1,18 +1,19 @@
 # Mysql for the database
 default: &default
   adapter: mysql2
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 10 } %>
-  timeout: 5000
   encoding: utf8
-  username: <%= ENV['DATABASE_USERNAME'] %>
-  password: <%= ENV['DATABASE_PASSWORD'] %>
-  host: localhost
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+  username: <%= ENV['MYSQL_USER'] %>
+  password: <%= ENV['MYSQL_PASSWORD'] %>
+  host: <%= ENV['HOST'] %>
 
 development:
   <<: *default
   database: EventManager_development
 
-test:
-  <<: *default
-  database: EventManager_test
-  pool: 20
+#test:
+#  <<: *default
+#  database: EventManager_test
+
+

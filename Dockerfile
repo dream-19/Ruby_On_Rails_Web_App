@@ -33,3 +33,8 @@ CMD rm -f tmp/pids/server.pid && rails s -b '0.0.0.0'
 
 # To run the container opening a shell
 # sudo docker container run -it eventmanager:2024 bash
+
+# To run the docker compose
+# docker-compose up --build
+# docker-compose down
+
