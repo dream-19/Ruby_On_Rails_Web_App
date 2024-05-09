@@ -30,3 +30,6 @@ CMD rm -f tmp/pids/server.pid && rails s -b '0.0.0.0'
 # How to run
 # sudo docker image build --tag eventmanager:2024 .
 # sudo docker container run -p 3000:3000 eventmanager:2024
+
+# To run the container opening a shell
+# sudo docker container run -it eventmanager:2024 bash
