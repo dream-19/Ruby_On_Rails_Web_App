@@ -1,62 +1,32 @@
-# syntax = docker/dockerfile:1
+# Take image from dockerhub with ruby 3.3
+FROM ruby:3.3
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.3.0
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+# Run update and install build-essential, apt-utils, libpq-dev and nodejs
+RUN apt-get update -qq && apt-get install -y build-essential apt-utils libpq-dev nodejs
 
-# Rails app lives here
-WORKDIR /rails
+# Create a directory /myapp
+WORKDIR /myapp
 
-# Set production environment
-ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+# Copy the Gemfile and Gemfile.lock from the current directory into the /myapp directory
+RUN gem install bundler
+COPY Gemfile* ./
 
+# Install the gems
+RUN bundle install
 
-# Throw-away build stage to reduce size of final image
-FROM base as build
+# Copy the current directory contents into the container at /myapp
+ADD . /myapp
 
-# Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libvips pkg-config
+# Set the environment variable RAILS_ENV to development
+ARG DEFAULT_PORT 3000
+EXPOSE ${DEFAULT_PORT}
 
-# Install application gems
-COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
-    bundle exec bootsnap precompile --gemfile
-
-# Copy application code
-COPY . .
-
-# Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile app/ lib/
-
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+# Start the main process: the rails server
+# -b 0.0.0.0 because we want to access the server from outside the container
+# rm -f tmp/pids/server.pid to remove the server.pid file: this is necessary because the server.pid file is created when the server starts and it is not removed when the server stops
+CMD rm -f tmp/pids/server.pid && rails s -b '0.0.0.0'
 
 
-# Final stage for app image
-FROM base
-
-# Install packages needed for deployment
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libsqlite3-0 libvips && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-# Copy built artifacts: gems, application
-COPY --from=build /usr/local/bundle /usr/local/bundle
-COPY --from=build /rails /rails
-
-# Run and own only the runtime files as a non-root user for security
-RUN useradd rails --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
-USER rails:rails
-
-# Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
-
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
-CMD ["./bin/rails", "server"]
+# How to run
+# sudo docker image build --tag eventmanager:2024 .
+# sudo docker container run -p 3000:3000 eventmanager:2024
