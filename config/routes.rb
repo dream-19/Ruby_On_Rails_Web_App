@@ -29,4 +29,7 @@ resources :notifications, only: [:index, :show] do
 end
 
 
+get '*path', to: 'application#handle_unknown_route'#redirects all unknown paths to the root path
+
+
 end

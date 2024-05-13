@@ -31,8 +31,6 @@ Develop a web application that allows users and organizers to manage bookings fo
 ## How to Run the app on Docker with docker-compose
 When launched the app automatically executes the migrations and the seeders
 
-`sudo docker image build --tag eventmanager:2024 .`
-
 `docker-compose up --build`
 
 
