@@ -19,7 +19,6 @@ class SubscriptionsController < ApplicationController
     event = subscription.event
 
     # Check if the user is the owner of the subscription or the event
-
     if current_user == subscription.user || current_user == event.user
       if event.past?
         flash[:alert] = "You cannot unsubscribe from a past event."
