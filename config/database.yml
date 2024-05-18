@@ -11,9 +11,11 @@ default: &default
 development:
   <<: *default
   database: EventManager_development
+  host: <%= ENV['HOST_DEVELOPMENT'] %>
 
 test:
   <<: *default
   database: EventManager_test
+  host: <%= ENV['HOST_TEST'] %>
 
 

@@ -1,16 +1,29 @@
-version: '3.8'
+#version: '3.8'
 services:
-  db:
+  db_development:
     image: mysql:latest
     volumes:
-      - mysql-data:/var/lib/mysql
+      - mysql-data-dev:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: EventManager_development
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
-      - "3306:3306"
+      - "3307:3306" # 3307 is the host port, 3306 is the container port
+    restart: always
+  
+  db_test:
+    image: mysql:latest
+    volumes:
+      - mysql-data-test:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: EventManager_test
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3308:3306"  # different port to avoid collision
     restart: always
 
   web:
@@ -24,8 +37,10 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
+      - db_development
+      - db_test
     restart: always
 
 volumes:
-  mysql-data:
+  mysql-data-dev:
+  mysql-data-test:
