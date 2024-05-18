@@ -1,6 +1,13 @@
 require "rails_helper"
 
 RSpec.describe User, type: :model do
+  let(:organizer) { create(:user_organizer) }
+  let(:upcoming_event) { create(:event, user: organizer) }
+
+  before do
+    organizer.created_events << upcoming_event
+    allow(NotificationService).to receive(:create_notification_delete_event)
+  end
   # COMMON TESTS for every user type
   describe "User Attribute Validations" do
     include_examples "user attribute validation", :user_normal
@@ -183,28 +190,20 @@ RSpec.describe User, type: :model do
   # before an user is destroyed send a notification to the events he is subscribed to
   # or to the user that are subscribed to his events
   describe '#notify_event_owners_and_destroy_subscriptions' do
-  let(:user) { create(:user_normal) }
-  let(:event) { create(:event) }
+  context 'when the user is an organizer' do
+    it 'sends notifications only for upcoming events' do
+      organizer.send(:notify_event_owners_and_destroy_subscriptions)
+      expect(NotificationService).to have_received(:create_notification_delete_event)
+        .with(user_organizer: organizer, event: upcoming_event)
+    end
 
-  #let(:user2) { create(:user_normal) }
-  #let(:organizer) { create(:user_organizer) }
-  #let(:event2) { create(:event, user: organizer) }
-
-  before do
-    create(:subscription, user: user, event: event)
-    #create(:subscription, user: user2, event: event2)
+    it 'deletes all events' do
+      expect { organizer.send(:notify_event_owners_and_destroy_subscriptions) }
+        .to change { Event.count }.by(-1)
+    end
   end
-
-  it 'notifies event owners and destroys subscriptions' do
-    # expect to receive the method create_notification_unsubscribe_delete
-    expect(NotificationService).to receive(:create_notification_unsubscribe_delete).with(user: user, event: event, user_organizer: event.user)
-    # expect to receive the method destroy_all (delete all of the subscriptions)
-    expect { user.send(:notify_event_owners_and_destroy_subscriptions) }.to change { user.subscriptions.count }.from(1).to(0)
-  end
-
-  #it 'notifies the user that the event has been deleted' do
-   # expect(NotificationService).to receive(:create_notification_delete_event).with(user_organizer: organizer, event: event2)
-    #expect { user2.send(:notify_event_owners_and_destroy_subscriptions) }.to change { user2.subscriptions.count }.from(1).to(0)
-  #end
 end
+
+
+
 end
