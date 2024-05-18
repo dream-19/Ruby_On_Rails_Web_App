@@ -12,8 +12,8 @@ development:
   <<: *default
   database: EventManager_development
 
-#test:
-#  <<: *default
-#  database: EventManager_test
+test:
+  <<: *default
+  database: EventManager_test
 
 

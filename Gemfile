@@ -59,7 +59,7 @@ group :development, :test do
   gem 'webdrivers' #  = testing
   gem 'dotenv-rails'
   gem 'simplecov', require: false # = testing, code coverage
-
+  gem 'rails-controller-testing'
 end
 
 group :development do
