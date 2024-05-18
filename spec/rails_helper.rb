@@ -69,6 +69,7 @@ RSpec.configure do |config|
   config.include ActionView::Helpers::TextHelper, type: :controller
   config.include ActionView::Helpers::UrlHelper, type: :controller
   config.include Rails.application.routes.url_helpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :controller
 
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
