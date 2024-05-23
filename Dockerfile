@@ -21,10 +21,10 @@ ADD . /myapp
 ARG DEFAULT_PORT 3000
 EXPOSE ${DEFAULT_PORT}
 
-# Start the main process: the rails server
+# Start the main process: the rails server (managed in the docker compose)
 # -b 0.0.0.0 because we want to access the server from outside the container
 # rm -f tmp/pids/server.pid to remove the server.pid file: this is necessary because the server.pid file is created when the server starts and it is not removed when the server stops
-CMD rm -f tmp/pids/server.pid && rails s -b '0.0.0.0'
+# CMD rm -f tmp/pids/server.pid && rails s -b '0.0.0.0' 
 
 
 # How to run
@@ -34,7 +34,7 @@ CMD rm -f tmp/pids/server.pid && rails s -b '0.0.0.0'
 # To run the container opening a shell
 # sudo docker container run -it eventmanager:2024 bash
 
-# To run the docker compose
+# How To run with the docker compose
 # docker-compose up --build
 # docker-compose down
 
