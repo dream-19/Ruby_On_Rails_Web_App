@@ -9,3 +9,12 @@
 1 copertura
 2 repository Git strutturato (cartelle e almeno messaggi di commit)
 1 hosting su provider Git
+
+
+domande:
+- come fare le specifiche
+- test unità va bene su model e controller o anche altro?
+- property based testing su cosa? -> funzione per il controllo delle date. Quanti valori provare?
+- test di integrazione su cosa e come?
+
+- come deve funzionare la pipeline?  
