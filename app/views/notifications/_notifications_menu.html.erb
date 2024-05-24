@@ -11,7 +11,7 @@
     <% if n_not > 0 %>
       <li >
         <%= link_to mark_all_as_read_notifications_path, method: :patch, remote: true, class: "dropdown-item dropdown-item-not " do %>
-          <i class="dropdown-icon-not bi bi-check-circle"></i><u> Mark All as Read</u>
+          <i class="dropdown-icon-not bi bi-check-circle"></i><u> Mark All as Read!</u>
         <% end %>
       </li>
       <% notifications.each do |notification| %>
