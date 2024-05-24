@@ -10,7 +10,7 @@
       </div>
       <div class="modal-body text-center">
         <p> Are you sure you want to unsubscribe from the event? </p>
-        <%= link_to "Unsubscribe", event_subscription_path(subscription.event, subscription), data: { turbo_method: :delete }, class: "btn btn-danger" %>
+        <%= link_to "Yes Unsubscribe", event_subscription_path(subscription.event, subscription), data: { turbo_method: :delete }, class: "btn btn-danger" %>
       </div>
     </div>
   </div>

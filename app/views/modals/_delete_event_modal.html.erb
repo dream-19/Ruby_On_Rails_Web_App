@@ -11,7 +11,7 @@
       <div class="modal-body text-center">
         <p> Are you sure you want to delete the event? </p>
         <p>Deleting the events means also canceling all of the subscriptions</p>
-        <%= link_to "Delete", event, data: { turbo_method: :delete }, class: "btn btn-danger" %>
+        <%= link_to "Confirm Deletion", event, data: { turbo_method: :delete }, class: "btn btn-danger", id: 'confirm_del' %>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Go Back</button>
       </div>
     </div>
