@@ -1,24 +1,29 @@
-# spec/features/event_management_spec.rb
+# spec/features/events_display_spec.rb
 require 'rails_helper'
 
-RSpec.feature "UserSubscribe", type: :feature do
-  let(:organizer) { create(:user_organizer) }
-  let(:event) { create(:event, user: organizer, name: "test", max_participants: 100, beginning_date: Date.tomorrow, ending_date: 1.month.from_now) }
-  let(:event2) { create(:event, user: organizer, name: "Overlap", max_participants: 100, beginning_date: Date.tomorrow, ending_date: 1.week.from_now) }
-  let(:normal) { create(:user_normal)}
- 
+RSpec.feature "Homepage", type: :feature do
+  let(:user) { create(:user_normal) }
+  let(:organizer)  { create(:user_organizer) }
 
   before do
-    login_as(normal, scope: :user)
+    Capybara.current_driver = :rack_test # To avoid errors with the default driver: selenium_chrome_headless
+    login_as(user, scope: :user)
   end
 
-  scenario "User Find the 2 events listed in the homepage" do
+  scenario "User sees existing events" do
+    create(:event, name: "Event 1", user: organizer)
+    create(:event, name: "Event 2", user: organizer)
+
     visit root_path
 
-    puts page.html
+    expect(page).to have_content("Event 1")
+    expect(page).to have_content("Event 2")
+  end
 
-    expect(page).to have_content(event.name)
-    expect(page).to have_content(event2.name)
+  scenario "User sees 'no events' message when there are no events" do
+    visit root_path
+
+    expect(page).to have_content("There are no events to display")
   end
 
  

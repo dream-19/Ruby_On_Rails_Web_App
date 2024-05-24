@@ -44,6 +44,8 @@ RSpec.configure do |config|
   end
    # Set Capybara's JavaScript driver
    #Capybara.javascript_driver = :selenium_chrome_headless
+
+   
   
    # This says that before the entire test suite runs, clear the test database out completely
    config.before(:suite) do
