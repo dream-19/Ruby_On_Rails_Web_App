@@ -1,21 +1,22 @@
 # Ruby On Rails Web App - Event Booking System
 
-## Project Delivery: Event Booking
+## Project Delivery: Event Manager
 
 Develop a web application that allows users and organizers to manage bookings for events. The application will need to implement the following features:
 
 ### Features for Organizers
-- **User Registration:** Allow users to register on the platform.
-- **Organizer Registration:** Allow organizers to register on the platform.
+- **User Registration:** Allow users to register on the platform. They can register as a normal user or as an organizer.
 - **Event Creation:** Organizers can create events with specific details:
   - Name of the event
+  - Description
   - Start time and date
   - End time and date
-  - Event location
-  - Geographic position
+  - Event location (country, city, province, zip, address)
   - Maximum number of participants
+  - Photos can be added to the event
 
 ### Features for Users
+- **Registration:** Users can register for the platform.
 - **Event Search:** Users can search for events, including filtering by geographic location.
 - **Event Registration and Deregistration:** Users can sign up for or deregister from events.
 - **Concurrent Event Restriction:** Prevent users from registering for events that overlap with other events they are already registered for.

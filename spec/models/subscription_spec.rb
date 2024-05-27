@@ -67,113 +67,65 @@ RSpec.describe Subscription, type: :model do
   end
 
   describe "overlaps validation" do
-
-    # Generate a random beginning date (it can be in the past)
-    def random_date_beginning
-      rand(Date.today - 2.year..Date.today + 2.year)
+    # Generate a random beginning and ending dates)
+    def random_dates()
+      beginning = rand(Date.today - 2.year..Date.today + 2.year)
+      ending =  beginning > Date.today ? rand(beginning..beginning + 2.year) : rand(Date.tomorrow..Date.tomorrow + 2.year)
+      [beginning,ending]
     end
 
-    # Generate a random ending date (it can be in the past and it must be after the beginning)
-    def random_date_ending(beginning)
-      beginning > Date.today ? rand(beginning..beginning + 2.year) : rand(Date.tomorrow..Date.tomorrow + 2.year)
-    end
-  
-    # Generate a random beginning date and ending date inside the specified range
+ 
+    # Generate a random beginning date and ending date for and overlapping event
+    # at least 1 date is overlapping (es: beginning_date is inside the range of the old event, 
+    # ending_date is outside the range of the old event)
     def generate_event_dates(start_rand, end_range)
-      date1 = rand(start_rand..end_range)
-      date2 =  date1 > Date.today ? rand(date1..end_range) : rand(Date.tomorrow..end_range) #ensure ending date is after today
-      [date1, date2]
+      case rand(0..3)
+        # 1 ) both beginning and ending date are inside the range of the old event
+        when 0
+          date1 = rand(start_rand..end_range)
+          date2 =  date1 > Date.today ? rand(date1..end_range) : rand(Date.tomorrow..end_range) 
+        # 2 ) beginning date is inside the range of the old event, ending date is outside the range of the old event
+        when 1 
+          date1 = rand(start_rand..end_range)
+          date2 = rand (end_range..end_range + 2.year)
+        # 3) beginning date is outside the range of the old event, ending date is inside the range of the old event
+        when 2
+          date1 = rand(start_rand - 2.years..start_rand)
+          date2 = rand(Date.today..end_range)
+        # 4) the new event contains the old event
+        when 3
+          date1 = rand(start_rand - 2.years..start_rand)
+          date2 = rand(end_range..end_range + 2.years)
+        end
+        [date1, date2]
     end
   
-    it "case 0 (PBT): new event overlaps with a subscribed event (new event is inside)" do
-      user = create(:user_normal)  # Create the user outside the property test
+    it "(PBT): new event overlaps with a subscribed event (can't subscribe)" do
+      user = create(:user_normal) 
+      dates = random_dates() # Randomize the dates
 
-      b_date = random_date_beginning # Randomize the beginning date
-      e_date = random_date_ending(b_date) # Randomize the ending date
-
-      overlapping_event = create(:event,  # Ensure you use factory methods correctly
-        beginning_date: b_date,
-        ending_date: e_date,
+      # subcribed event
+      overlapping_event = create(:event,  
+        beginning_date: dates.first,
+        ending_date: dates.last,
       )
-
-      #Subscribe to the event
       create(:subscription, user: user, event: overlapping_event)
     
-      # test 100 cases in which the new event I want to subscribe to overlaps with the event I am already subscribed to (the new event is inside the period of the old event)
-      100.times do
-        new_event_dates = generate_event_dates(b_date, e_date)
+      # test 500 cases
+      500.times do
+        new_event_dates = generate_event_dates(dates.first, dates.last)
         new_event_beginning = new_event_dates.first
         new_event_ending = new_event_dates.last
         new_event = build(:event, beginning_date: new_event_beginning.to_date, ending_date: new_event_ending.to_date)
-  
         user.reload  # Reload to ensure the user's subscriptions are up-to-date
         
+        # Try to subscribe to the new event
         new_subscription = build(:subscription, user: user, event: new_event)
   
         # Assertions
         expect(new_subscription.valid?).to be_falsey
         expect(new_subscription.errors[:base]).to include("You are already subscribed to an event that overlaps with this event: #{overlapping_event.name}")
       end
-    end
-
-    it "case 1: new event ovelaps with a subscribed event (new event is inside)" do
-      user = create(:user_normal)
-      overlapping_event = create(:event, beginning_date: 3.days.ago, beginning_time: "10:00", ending_date: 3.days.from_now, ending_time: "12:00")
-      create(:subscription, user: user, event: overlapping_event)
-
-      user.reload #reload the user to get the subscribed events
-
-      #the next one will not be valid
-      new_event = build(:event, beginning_date: 2.days.ago, beginning_time: "11:00", ending_date: 2.days.from_now, ending_time: "13:00")
-      new_subscription = build(:subscription, user: user, event: new_event)
-
-      expect(new_subscription.valid?).to be false
-      expect(new_subscription.errors[:base]).to include("You are already subscribed to an event that overlaps with this event: #{overlapping_event.name}")
-    end
-
-    it "case 2: new event overlaps with a subscribed event (beginning inside another event)" do
-      user = create(:user_normal)
-      overlapping_event = create(:event, beginning_date: 3.days.ago, beginning_time: "10:00", ending_date: 3.days.from_now, ending_time: "12:00")
-      create(:subscription, user: user, event: overlapping_event)
-
-      user.reload
-
-      #the next one will not be valid
-      new_event = build(:event, beginning_date: 2.days.ago, beginning_time: "11:00", ending_date: 4.days.from_now, ending_time: "13:00")
-      new_subscription = build(:subscription, user: user, event: new_event)
-
-      expect(new_subscription.valid?).to be false
-      expect(new_subscription.errors[:base]).to include("You are already subscribed to an event that overlaps with this event: #{overlapping_event.name}")
-    end
-
-    it "case 3: new event overlaps with a subscribed event (ending date inside another event)" do
-      user = create(:user_normal)
-      overlapping_event = create(:event, beginning_date: 3.days.ago, beginning_time: "10:00", ending_date: 3.days.from_now, ending_time: "12:00")
-      create(:subscription, user: user, event: overlapping_event)
-
-      user.reload
-
-      #the next one will not be valid
-      new_event = build(:event, beginning_date: 4.days.ago, beginning_time: "11:00", ending_date: 2.days.from_now, ending_time: "11:59")
-      new_subscription = build(:subscription, user: user, event: new_event)
-
-      expect(new_subscription.valid?).to be false
-      expect(new_subscription.errors[:base]).to include("You are already subscribed to an event that overlaps with this event: #{overlapping_event.name}")
-    end
-
-    it "case 4: new event overlaps with a subscribed event (old event is inside) " do
-      user = create(:user_normal)
-      overlapping_event = create(:event, beginning_date: 2.days.ago, beginning_time: "10:00", ending_date: 2.days.from_now, ending_time: "12:00")
-      create(:subscription, user: user, event: overlapping_event)
-
-      user.reload
-
-      #the next one will not be valid
-      new_event = build(:event, beginning_date: 3.days.ago, beginning_time: "11:00", ending_date: 3.days.from_now, ending_time: "13:00")
-      new_subscription = build(:subscription, user: user, event: new_event)
-
-      expect(new_subscription.valid?).to be false
-      expect(new_subscription.errors[:base]).to include("You are already subscribed to an event that overlaps with this event: #{overlapping_event.name}")
     end
   end
 

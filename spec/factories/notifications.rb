@@ -3,8 +3,7 @@ FactoryBot.define do
         message { Faker::Lorem.sentence }
         notification_type { "info" }
         read { false }
-        event { nil } # the event associated is optional
- 
+        event { nil } 
         association :user
     end
 end
