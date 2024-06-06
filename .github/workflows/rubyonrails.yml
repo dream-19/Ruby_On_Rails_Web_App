@@ -39,16 +39,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install libmysqlclient-dev
         bundle install
+
     - name: Start MySQL
       run: |
         sudo service mysql start
-    - name: Configure Database
-      run: |
-        echo "DATABASE_URL=mysql2://root:password@localhost:3306/EventManager_test" >> $GITHUB_ENV
-    - name: Setup Database
-      run: |
-        bundle exec rake db:create
-        bundle exec rake db:schema:load
+
+
     - name: Run Tests
       env:
         RAILS_ENV: test
