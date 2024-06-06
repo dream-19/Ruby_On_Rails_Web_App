@@ -19,7 +19,6 @@ jobs:
           MYSQL_DATABASE: EventManager_test
           MYSQL_USER: ${{ secrets.DB_USER }}
           MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          HOST: db_test
         ports:
           - 3306:3306
 
@@ -39,11 +38,13 @@ jobs:
 
     - name: Install netcat
       run: sudo apt-get install -y netcat
-      
-    - name: Wait for DB to be ready
-      run: |
-        timeout 60 bash -c 'until nc -z db 3306; do echo "Waiting for database to be ready..."; sleep 2; done'
 
+    - name: Test MySQL Service
+      run: |
+        mysql -h db -u ${{ secrets.DB_USERNAME }} -p${{ secrets.DB_PASSWORD }} -e "SHOW DATABASES;"
+    
+      
+  
 
     - name: Run tests
       run: |
