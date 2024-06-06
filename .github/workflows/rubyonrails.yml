@@ -16,9 +16,9 @@ jobs:
       mysql:
         image: mysql:latest
         env:
-          MYSQL_ROOT_PASSWORD: viola1
-          MYSQL_USER: luciaa
-          MYSQL_PASSWORD: viola1
+          MYSQL_ROOT_PASSWORD: viola1  # Using the secret here
+          MYSQL_USER: luciaa  # Using the secret here
+          MYSQL_PASSWORD: viola1  # Using the secret here
           MYSQL_DATABASE: db_test
         ports:
           - 3306:3306
@@ -28,12 +28,18 @@ jobs:
           --health-timeout=10s
           --health-retries=10
 
+    env:
+      MYSQL_USER: luciaa
+      MYSQL_PASSWORD: viola1
+      HOST_TEST: '127.0.0.1'
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: 3.3  # Ensure this matches the Ruby version you want to use
+
     - name: Install dependencies
       run: |
         sudo apt-get update
@@ -49,8 +55,6 @@ jobs:
         echo "MYSQL_USER=$MYSQL_USER"
         echo "MYSQL_PASSWORD=$MYSQL_PASSWORD"
         echo "HOST_TEST=$HOST_TEST"
-
-
 
     - name: Run Tests
       env:
