@@ -31,7 +31,7 @@ jobs:
     env:
       MYSQL_USER: luciaa
       MYSQL_PASSWORD: viola1
-      HOST_TEST: '127.0.0.1'
+      HOST_TEST: 'localhost'
 
     steps:
     - uses: actions/checkout@v3
@@ -52,7 +52,7 @@ jobs:
 
     - name: Wait for MySQL
       run: |
-          until mysqladmin ping --host=127.0.0.1 --user=luciaa --password=viola1 --silent; do
+          until mysqladmin ping --host=localhost --user=luciaa --password=viola1 --silent; do
             echo 'Waiting for MySQL to be ready...'
             sleep 5
           done
