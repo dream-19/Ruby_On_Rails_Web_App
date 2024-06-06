@@ -13,30 +13,30 @@ jobs:
       DB_DATABASE: EventManager_test
       DB_USER: root
       DB_PASSWORD: root
+      DB_HOST: 127.0.0.1
 
-   
     steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
-  
-        - name: Set up Ruby
-          uses: ruby/setup-ruby@v1
-          with:
-            ruby-version: 3.3  # Ensure this matches the Ruby version you want to use
-  
-        - name: Install dependencies
-          run: |
-            sudo apt-get update
-            sudo apt-get install -y libmysqlclient-dev
-            bundle install
-  
-        - name: Start MySQL
-          run: |
-            sudo /etc/init.d/mysql start
-            mysql -e "CREATE DATABASE IF NOT EXISTS $DB_DATABASE;" -u$DB_USER -p$DB_PASSWORD
-  
-        - name: Run Tests
-          env:
-            RAILS_ENV: test
-          run: |
-            bundle exec rspec
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3  # Ensure this matches the Ruby version you want to use
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libmysqlclient-dev
+          bundle install
+
+      - name: Start MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e "CREATE DATABASE IF NOT EXISTS $DB_DATABASE;" -u$DB_USER -p$DB_PASSWORD
+
+      - name: Run Tests
+        env:
+          RAILS_ENV: test
+        run: |
+          bundle exec rspec
