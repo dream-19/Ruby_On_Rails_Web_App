@@ -44,6 +44,13 @@ jobs:
       run: |
         sudo service mysql start
 
+    - name: Print Environment Info
+      run: |
+        echo "MYSQL_USER=$MYSQL_USER"
+        echo "MYSQL_PASSWORD=$MYSQL_PASSWORD"
+        echo "HOST_TEST=$HOST_TEST"
+
+
 
     - name: Run Tests
       env:
