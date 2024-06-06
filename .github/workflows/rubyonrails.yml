@@ -50,6 +50,18 @@ jobs:
       run: |
         sudo service mysql start
 
+        - name: Wait for MySQL
+        run: |
+          until mysqladmin ping --host=127.0.0.1 --user=luciaa --password=viola1 --silent; do
+            echo 'Waiting for MySQL to be ready...'
+            sleep 5
+          done
+
+    - name: Create Test Database
+      run: |
+        mysql -uluciaa -pviola1 -e "CREATE DATABASE IF NOT EXISTS EventManager_test;"
+
+
     - name: Print Environment Info
       run: |
         echo "MYSQL_USER=$MYSQL_USER"
