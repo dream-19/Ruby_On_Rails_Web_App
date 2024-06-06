@@ -16,9 +16,9 @@ jobs:
       mysql:
         image: mysql:latest
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}  # Using the secret here
-          MYSQL_USER: ${{ secrets.DB_USERNAME }}  # Using the secret here
-          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}  # Using the secret here
+          MYSQL_ROOT_PASSWORD: viola1
+          MYSQL_USER: luciaa
+          MYSQL_PASSWORD: viola1
           MYSQL_DATABASE: db_test
         ports:
           - 3306:3306
