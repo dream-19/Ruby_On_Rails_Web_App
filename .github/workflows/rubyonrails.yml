@@ -53,3 +53,8 @@ jobs:
             context: .
             push: true
             tags: ${{ secrets.DOCKER_USERNAME }}/railsapp:lastest
+
+      # deploy docker compose (run docker-compose up --build)
+      - name: Deploy Docker Compose
+        run: |
+          docker-compose up --build -d
