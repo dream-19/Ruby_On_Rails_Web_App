@@ -24,8 +24,8 @@ jobs:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
       HOST: db
-      HOST_DEVELOPMENT: db
-      HOST_TEST: db
+      HOST_DEVELOPMENT: db_development
+      HOST_TEST: db_test
       RAILS_MAX_THREADS: 5
       
     steps:
@@ -40,17 +40,7 @@ jobs:
         sudo apt-get install -y libpq-dev nodejs
         gem install bundler
         bundle install
-    - name: Wait for database
-      run: |
-        echo "Waiting for MySQL..."
-     
-        for i in {1..15}; do
-          nc -z $HOST 3306 && echo "MySQL is up" && exit 0
-          echo "Retrying..."
-          sleep 4
-        done
-        echo "MySQL failed to start" && exit 1
-
+    
     - name: Run tests
       run: |
         bundle exec rspec
