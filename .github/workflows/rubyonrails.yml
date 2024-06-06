@@ -9,49 +9,46 @@ on:
       - main
 
 jobs:
-    build:
-      runs-on: ubuntu-latest
-      
-      services:
-        mysql:
-          image: mysql:latest
-          env:
-            MYSQL_ROOT_PASSWORD: password
-            MYSQL_DATABASE: EventManager_test
-          ports:
-            - 3306:3306
-          volumes:
-            - mysql-data-test:/var/lib/mysql
-          options: >-
-            --health-cmd="mysqladmin ping"
-            --health-interval=10s
-            --health-timeout=10s
-            --health-retries=10
-  
-      steps:
-      - uses: actions/checkout@v3
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.3
-      - name: Install dependencies
-        run: |
-          sudo apt-get install libmysqlclient-dev
-          bundle install
-
-      - name: Start the sql server
-        run: |
-
-          bundle exec rake db:prepare
-
-      - name: Setup Database Config
-        run: |
-            echo "MYSQL_PASSWORD=password" >> $GITHUB_ENV
-            echo "HOST=mysql" >> $GITHUB_ENV
-            echo "RAILS_ENV=test" >> $GITHUB_ENV
-        
-      - name: Run tests
+  build:
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:latest
         env:
-          RAILS_ENV: test
-        run: |
-          bundle exec rspec
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: EventManager_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=10s
+          --health-retries=10
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.3  # Ensure this matches the Ruby version you want to use
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install libmysqlclient-dev
+        bundle install
+    - name: Start MySQL
+      run: |
+        sudo service mysql start
+    - name: Configure Database
+      run: |
+        echo "DATABASE_URL=mysql2://root:password@localhost:3306/EventManager_test" >> $GITHUB_ENV
+    - name: Setup Database
+      run: |
+        bundle exec rake db:create
+        bundle exec rake db:schema:load
+    - name: Run Tests
+      env:
+        RAILS_ENV: test
+      run: |
+        bundle exec rspec
