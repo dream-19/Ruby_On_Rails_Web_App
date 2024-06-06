@@ -57,10 +57,13 @@ jobs:
             sleep 5
           done
 
-    - name: Create Test Database
+    - name: Initialize Database and User
       run: |
-        mysql -uluciaa -pviola1 -e "CREATE DATABASE IF NOT EXISTS EventManager_test;"
-
+          mysql -uroot -pviola1 -e "CREATE USER IF NOT EXISTS 'luciaa'@'%' IDENTIFIED BY 'viola1';"
+          mysql -uroot -pviola1 -e "GRANT ALL PRIVILEGES ON *.* TO 'luciaa'@'%' WITH GRANT OPTION;"
+          mysql -uroot -pviola1 -e "FLUSH PRIVILEGES;"
+          mysql -uroot -pviola1 -e "CREATE DATABASE IF NOT EXISTS EventManager_test;"
+  
 
     - name: Print Environment Info
       run: |
