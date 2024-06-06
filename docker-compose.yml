@@ -23,7 +23,7 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
-      - "3308:3306"  # different port to avoid collision
+      - "3308:3306"  
     restart: always
 
   web:
@@ -33,10 +33,10 @@ services:
     command: >
       bash -c "rm -f tmp/pids/server.pid && rails db:prepare && rails db:seed && rails s -p 3000 -b '0.0.0.0'"
     volumes:
-      - .:/myapp
+      - .:/myapp # mount the current directory to /myapp in the container
     ports:
-      - "3000:3000"
-    depends_on:
+      - "3010:3000" #la porta del container 3000 viene mappata sulla porta del host 3010
+    depends_on: # start after the db containers are up
       - db_development
       - db_test
     restart: always

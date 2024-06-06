@@ -14,11 +14,8 @@ COPY Gemfile* ./
 # Install the gems
 RUN bundle install
 
-# Copy the current directory contents into the container at /myapp
-ADD . /myapp
-
 # Set the environment variable RAILS_ENV to development
-ARG DEFAULT_PORT 3000
+ARG DEFAULT_PORT 3010
 EXPOSE ${DEFAULT_PORT}
 
 # Start the main process: the rails server (managed in the docker compose)

@@ -49,16 +49,15 @@ gem 'mysql2', '~> 0.5'
 # gem "image_processing", "~> 1.2"
 
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
-  gem 'factory_bot_rails' # = create test data
-  gem 'faker' # = create test data
-  gem 'rspec-rails' # = testing
-  gem 'capybara' # = testing
-  gem 'selenium-webdriver' # = testing
-  gem 'webdrivers' #  = testing
+  gem 'factory_bot_rails' 
+  gem 'faker'
+  gem 'rspec-rails' 
+  gem 'capybara' 
+  gem 'selenium-webdriver'
+  gem 'webdrivers' 
   gem 'dotenv-rails'
-  gem 'simplecov', require: false # = testing, code coverage
+  gem 'simplecov', require: false
   gem 'rails-controller-testing'
 end
 
