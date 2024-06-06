@@ -17,5 +17,6 @@ test:
   <<: *default
   database: EventManager_test
   host: <%= ENV['HOST_TEST'] %>
+  port: 3306 
 
 

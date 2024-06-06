@@ -36,7 +36,13 @@ jobs:
         run: |
           sudo apt-get install libmysqlclient-dev
           bundle install
-      
+
+      - name: Setup Database Config
+        run: |
+            echo "MYSQL_PASSWORD=password" >> $GITHUB_ENV
+            echo "HOST=mysql" >> $GITHUB_ENV
+            echo "RAILS_ENV=test" >> $GITHUB_ENV
+        
       - name: Run tests
         env:
           RAILS_ENV: test
