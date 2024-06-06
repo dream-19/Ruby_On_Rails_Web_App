@@ -16,8 +16,9 @@ jobs:
       mysql:
         image: mysql:latest
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: EventManager_test
+          MYSQL_ROOT_PASSWORD:  ENV['MYSQL_PASSWORD']
+          MYSQL_USER: ENV['MYSQL_USER']
+          MYSQL_DATABASE: db_test
         ports:
           - 3306:3306
         options: >-
