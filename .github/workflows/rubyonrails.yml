@@ -31,19 +31,12 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0.3  # Specify your Ruby version
+          ruby-version: 3.3
       - name: Install dependencies
         run: |
           sudo apt-get install libmysqlclient-dev
           bundle install
-      - name: Setup Database
-        env:
-          MYSQL_USER: root
-          MYSQL_PASSWORD: password
-          HOST_TEST: 127.0.0.1
-        run: |
-          bundle exec rake db:create
-          bundle exec rake db:schema:load
+      
       - name: Run tests
         env:
           RAILS_ENV: test
