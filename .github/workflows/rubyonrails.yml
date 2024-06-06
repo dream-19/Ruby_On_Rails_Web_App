@@ -39,7 +39,8 @@ jobs:
 
       - name: Start the sql server
         run: |
-          rake db:migrate
+
+          bundle exec rake db:prepare
 
       - name: Setup Database Config
         run: |
