@@ -37,6 +37,10 @@ jobs:
           sudo apt-get install libmysqlclient-dev
           bundle install
 
+      - name: Start the sql server
+        run: |
+          rake db:migrate
+
       - name: Setup Database Config
         run: |
             echo "MYSQL_PASSWORD=password" >> $GITHUB_ENV
