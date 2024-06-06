@@ -57,8 +57,8 @@ jobs:
             sleep 5
           done
 
-          - name: Initialize Database and User
-          run: |
+    - name: Initialize Database and User
+      run: |
             mysql -uroot -pviola1 -e "CREATE USER IF NOT EXISTS 'luciaa'@'localhost' IDENTIFIED BY 'viola1';"
             mysql -uroot -pviola1 -e "CREATE USER IF NOT EXISTS 'luciaa'@'%' IDENTIFIED BY 'viola1';"
             mysql -uroot -pviola1 -e "GRANT ALL PRIVILEGES ON *.* TO 'luciaa'@'localhost' WITH GRANT OPTION;"
