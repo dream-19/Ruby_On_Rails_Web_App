@@ -1,4 +1,4 @@
-name: MYSQL CI
+name: Pipeline CI/CD
 
 on:
   push:
