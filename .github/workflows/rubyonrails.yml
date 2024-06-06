@@ -20,6 +20,8 @@ jobs:
             MYSQL_DATABASE: EventManager_test
           ports:
             - 3306:3306
+          volumes:
+            - mysql-data-test:/var/lib/mysql
           options: >-
             --health-cmd="mysqladmin ping"
             --health-interval=10s
