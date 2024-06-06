@@ -50,8 +50,8 @@ jobs:
       run: |
         sudo service mysql start
 
-        - name: Wait for MySQL
-        run: |
+    - name: Wait for MySQL
+      run: |
           until mysqladmin ping --host=127.0.0.1 --user=luciaa --password=viola1 --silent; do
             echo 'Waiting for MySQL to be ready...'
             sleep 5
