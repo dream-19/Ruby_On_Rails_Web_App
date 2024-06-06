@@ -11,10 +11,10 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
     services:
-      db:
+      db_test:  # This name must match the HOST_TEST variable
         image: mysql:latest
         env:
-          MYSQL_ROOT_PASSWORD: password  # Consider using GitHub Secrets here
+          MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: EventManager_test
           MYSQL_USER: user
           MYSQL_PASSWORD: password
@@ -23,10 +23,9 @@ jobs:
     env:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
-      HOST: db
-      HOST_DEVELOPMENT: db_development
-      HOST_TEST: db_test
+      HOST_TEST: db_test  # Ensure this matches the service name
       RAILS_MAX_THREADS: 5
+
       
     steps:
     - uses: actions/checkout@v2
