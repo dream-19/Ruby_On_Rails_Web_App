@@ -15,10 +15,11 @@ jobs:
       db:
         image: mysql:latest
         env:
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
           MYSQL_DATABASE: EventManager_test
-          MYSQL_USER: user
-          MYSQL_PASSWORD: password
+          MYSQL_USER: ${{ secrets.DB_USER }}
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          HOST: db_test
         ports:
           - 3306:3306
 
@@ -36,14 +37,14 @@ jobs:
         gem install bundler
         bundle install
 
+    - name: Install netcat
+      run: sudo apt-get install -y netcat
+      
     - name: Wait for DB to be ready
       run: |
-        until nc -z db 3306; do
-          echo "Waiting for database to be ready..."
-          sleep 2
-        done
-  
-    
+        timeout 60 bash -c 'until nc -z db 3306; do echo "Waiting for database to be ready..."; sleep 2; done'
+
+
     - name: Run tests
       run: |
         bundle exec rspec
