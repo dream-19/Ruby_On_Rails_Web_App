@@ -4,7 +4,6 @@ require 'rails-controller-testing'
 require 'capybara/rspec'
 #require 'selenium-webdriver'
 
-puts "Database configuration: #{ActiveRecord::Base.connection_config}"
 
 Rails::Controller::Testing.install
 
