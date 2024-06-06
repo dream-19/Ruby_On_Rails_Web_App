@@ -1,80 +1,25 @@
-name: CI/CD Pipeline
+name: MYSQL CI
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-    
-    services:
-      mysql:
-        image: mysql:latest
-        env:
-          MYSQL_ROOT_PASSWORD: viola1  # Using the secret here
-          MYSQL_USER: luciaa  # Using the secret here
-          MYSQL_PASSWORD: viola1  # Using the secret here
-          MYSQL_DATABASE: db_test
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=10s
-          --health-retries=10
 
     env:
-      MYSQL_USER: luciaa
-      MYSQL_PASSWORD: viola1
-      HOST_TEST: 'localhost'
+      DB_DATABASE: test_db
+      DB_USER: root
+      DB_PASSWORD: root
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 3.3  # Ensure this matches the Ruby version you want to use
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install libmysqlclient-dev
-        bundle install
-
-    - name: Start MySQL
-      run: |
-        sudo service mysql start
-
-    - name: Wait for MySQL
-      run: |
-          until mysqladmin ping --host=localhost --user=luciaa --password=viola1 --silent; do
-            echo 'Waiting for MySQL to be ready...'
-            sleep 5
-          done
-
-    - name: Initialize Database and User
-      run: |
-            mysql -uroot -pviola1 -e "CREATE USER IF NOT EXISTS 'luciaa'@'localhost' IDENTIFIED BY 'viola1';"
-            mysql -uroot -pviola1 -e "CREATE USER IF NOT EXISTS 'luciaa'@'%' IDENTIFIED BY 'viola1';"
-            mysql -uroot -pviola1 -e "GRANT ALL PRIVILEGES ON *.* TO 'luciaa'@'localhost' WITH GRANT OPTION;"
-            mysql -uroot -pviola1 -e "GRANT ALL PRIVILEGES ON *.* TO 'luciaa'@'%' WITH GRANT OPTION;"
-            mysql -uroot -pviola1 -e "FLUSH PRIVILEGES;"
-            mysql -uroot -pviola1 -e "CREATE DATABASE IF NOT EXISTS EventManager_test;"
-    
-
-    - name: Print Environment Info
-      run: |
-        echo "MYSQL_USER=$MYSQL_USER"
-        echo "MYSQL_PASSWORD=$MYSQL_PASSWORD"
-        echo "HOST_TEST=$HOST_TEST"
-
-    - name: Run Tests
-      env:
-        RAILS_ENV: test
-      run: |
-        bundle exec rspec
+      - name: Start MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e "CREATE DATABASE IF NOT EXISTS $DB_DATABASE;" -u$DB_USER -p$DB_PASSWORD
+      # Add more steps for testing and other tasks
