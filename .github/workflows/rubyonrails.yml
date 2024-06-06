@@ -11,8 +11,8 @@ jobs:
 
     env:
       DB_DATABASE: EventManager_test
-      DB_USER: root
-      DB_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
       DB_HOST: 127.0.0.1
 
     steps:
