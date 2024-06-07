@@ -53,10 +53,3 @@ jobs:
             context: .
             push: true
             tags: ${{ secrets.DOCKER_USERNAME }}/railsapp:lastest
-
-      # deploy containers
-      - name: Deploy Docker Compose
-        run: |
-          sudo service docker start
-          docker-compose up -d
-        shell: bash
