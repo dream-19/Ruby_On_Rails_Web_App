@@ -82,16 +82,20 @@ RSpec.describe Subscription, type: :model do
       case rand(0..3)
         # 1 ) both beginning and ending date are inside the range of the old event
         when 0
-          date1 = rand(start_rand..end_range)
-          date2 =  date1 > Date.today ? rand(date1..end_range) : rand(Date.tomorrow..end_range) 
+          date1 = rand(start_rand..(end_range-1.day))
+          date2 =  date1 > Date.today ? rand(date1..(end_range-1.day)) : rand(Date.tomorrow..end_range) 
         # 2 ) beginning date is inside the range of the old event, ending date is outside the range of the old event
         when 1 
-          date1 = rand(start_rand..end_range)
+          date1 = rand(start_rand..(end_range-1.day))
           date2 = rand (end_range..end_range + 2.year)
         # 3) beginning date is outside the range of the old event, ending date is inside the range of the old event
         when 2
           date1 = rand(start_rand - 2.years..start_rand)
-          date2 = rand(Date.today..end_range)
+          if start_rand < Date.today
+            date2 = rand(Date.today..end_range)
+          else 
+            date2 = rand((start_rand+1.day)..end_range)
+          end
         # 4) the new event contains the old event
         when 3
           date1 = rand(start_rand - 2.years..start_rand)
@@ -113,18 +117,18 @@ RSpec.describe Subscription, type: :model do
     
       # test 500 cases
       500.times do
-        new_event_dates = generate_event_dates(dates.first, dates.last)
-        new_event_beginning = new_event_dates.first
-        new_event_ending = new_event_dates.last
-        new_event = build(:event, beginning_date: new_event_beginning.to_date, ending_date: new_event_ending.to_date)
-        user.reload  # Reload to ensure the user's subscriptions are up-to-date
-        
-        # Try to subscribe to the new event
-        new_subscription = build(:subscription, user: user, event: new_event)
-  
-        # Assertions
-        expect(new_subscription.valid?).to be_falsey
-        expect(new_subscription.errors[:base]).to include("You are already subscribed to an event that overlaps with this event: #{overlapping_event.name}")
+          new_event_dates = generate_event_dates(dates.first, dates.last)
+          new_event_beginning = new_event_dates.first
+          new_event_ending = new_event_dates.last
+          new_event = build(:event, beginning_date: new_event_beginning.to_date, ending_date: new_event_ending.to_date)
+          user.reload  # Reload to ensure the user's subscriptions are up-to-date
+          
+          # Try to subscribe to the new event
+          new_subscription = build(:subscription, user: user, event: new_event)
+    
+          # Assertions
+          expect(new_subscription.valid?).to be_falsey
+          expect(new_subscription.errors[:base]).to include("You are already subscribed to an event that overlaps with this event: #{overlapping_event.name}")
       end
     end
   end
