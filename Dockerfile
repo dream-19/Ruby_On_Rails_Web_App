@@ -35,3 +35,5 @@ EXPOSE ${DEFAULT_PORT}
 # docker-compose up --build
 # docker-compose down
 
+
+# the web app is accessible at localhost:3010

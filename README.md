@@ -34,4 +34,5 @@ When launched the app automatically executes the migrations and the seeders
 
 `docker-compose up --build`
 
+The web app is at: localhost:3010
 
