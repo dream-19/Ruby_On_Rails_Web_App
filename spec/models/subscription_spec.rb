@@ -73,8 +73,7 @@ RSpec.describe Subscription, type: :model do
       ending =  beginning > Date.today ? rand(beginning..beginning + 2.year) : rand(Date.tomorrow..Date.tomorrow + 2.year)
       [beginning,ending]
     end
-
- 
+    
     # Generate a random beginning date and ending date for and overlapping event
     # at least 1 date is overlapping (es: beginning_date is inside the range of the old event, 
     # ending_date is outside the range of the old event)
